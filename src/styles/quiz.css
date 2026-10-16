@@ -174,3 +174,10 @@ td.weak {
 .ok-text {
   color: var(--success);
 }
+.review-title {
+  font-size: 1.05rem;
+  margin: 0;
+}
+.review-palette {
+  margin-top: 12px;
+}
