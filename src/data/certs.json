@@ -313,45 +313,46 @@
       "step": 3,
       "order": 1,
       "name": "Salesforce Certified Platform Strategy Designer",
-      "summary": "顧客理解とデザイン思考をもとに、ソリューションのビジョンとロードマップを描く資格。",
-      "status": "outline",
+      "summary": "デザイン思考で顧客の課題を捉え、ビジネス価値を定義し、ステークホルダーの合意を作りながら Salesforce ソリューションの方向性を描く資格。",
+      "status": "ready",
       "exam": {
-        "questions": null,
-        "minutes": null,
-        "passingScore": null,
-        "fee": null,
-        "retakeFee": null,
-        "prerequisite": "公式ガイドで確認",
+        "questions": 60,
+        "minutes": 105,
+        "passingScore": 70,
+        "fee": "US$200（税別）",
+        "retakeFee": "US$100（税別）",
+        "prerequisite": "なし",
         "verified": false,
         "checkedAt": "2026-10-16",
         "notes": [
-          "出題範囲は想定トピックです。教材を作るときに公式ガイドで確定します。"
+          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます。",
+          "出題範囲と配点は複数の解説サイトで一致した値です。公式試験ガイドで最終確認してください。"
         ]
       },
       "domains": [
         {
-          "id": "discovery",
-          "name": "顧客理解とデザインリサーチ",
-          "nameEn": "Discovery and Research",
-          "weight": null
+          "id": "value-design",
+          "name": "価値のデザイン",
+          "nameEn": "Value Design",
+          "weight": 32
         },
         {
-          "id": "alignment",
-          "name": "ステークホルダーの合意形成",
-          "nameEn": "Stakeholder Alignment",
-          "weight": null
+          "id": "tools-artifacts",
+          "name": "ツールと成果物",
+          "nameEn": "Tools and Artifacts",
+          "weight": 23
         },
         {
-          "id": "vision",
-          "name": "ソリューションのビジョン策定",
-          "nameEn": "Solution Vision",
-          "weight": null
+          "id": "intangible",
+          "name": "目に見えない成果物（合意形成）",
+          "nameEn": "Intangible Deliverables",
+          "weight": 26
         },
         {
-          "id": "roadmap",
-          "name": "ロードマップと価値の実現",
-          "nameEn": "Roadmap and Value Realization",
-          "weight": null
+          "id": "adjacent-roles",
+          "name": "隣接する役割とスキルの活用",
+          "nameEn": "Leveraging Adjacent Roles and Skills",
+          "weight": 19
         }
       ],
       "links": []
@@ -363,18 +364,19 @@
       "name": "Salesforce Certified Platform Integration Architect",
       "formerName": "Salesforce Certified Integration Architect",
       "summary": "既存システムの把握から、連携パターンの選択、API の使い分け、エラー処理と監視までを設計する資格。",
-      "status": "outline",
+      "status": "ready",
       "exam": {
-        "questions": null,
-        "minutes": null,
-        "passingScore": null,
-        "fee": null,
-        "retakeFee": null,
-        "prerequisite": "公式ガイドで確認",
+        "questions": 60,
+        "minutes": 105,
+        "passingScore": 67,
+        "fee": "US$400（税別）",
+        "retakeFee": "US$200（税別）",
+        "prerequisite": "なし（推奨の前提知識あり）",
         "verified": false,
         "checkedAt": "2026-10-16",
         "notes": [
-          "配点は教材を作るときに公式ガイドで確定します。"
+          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます。",
+          "出題範囲と配点は複数の解説サイトで一致した値です。公式試験ガイドで最終確認してください。"
         ]
       },
       "domains": [
@@ -382,37 +384,37 @@
           "id": "landscape",
           "name": "現行システム環境の評価",
           "nameEn": "Evaluate the Current System Landscape",
-          "weight": null
+          "weight": 8
         },
         {
           "id": "business-needs",
           "name": "ビジネスニーズの評価",
           "nameEn": "Evaluate Business Needs",
-          "weight": null
+          "weight": 11
         },
         {
           "id": "requirements",
           "name": "連携要件への落とし込み",
           "nameEn": "Translate Needs to Integration Requirements",
-          "weight": null
+          "weight": 22
         },
         {
           "id": "design",
           "name": "連携ソリューションの設計",
           "nameEn": "Design Integration Solutions",
-          "weight": null
+          "weight": 28
         },
         {
           "id": "build",
           "name": "ソリューションの構築",
           "nameEn": "Build Solution",
-          "weight": null
+          "weight": 23
         },
         {
           "id": "maintain",
           "name": "連携の保守",
           "nameEn": "Maintain Integration",
-          "weight": null
+          "weight": 8
         }
       ],
       "links": []
@@ -424,18 +426,19 @@
       "name": "Salesforce Certified Platform Data Architect",
       "formerName": "Salesforce Certified Data Architect",
       "summary": "データモデル設計、マスターデータ管理、大量データ（LDV）、データガバナンス、データ移行を設計する資格。",
-      "status": "outline",
+      "status": "ready",
       "exam": {
-        "questions": null,
-        "minutes": null,
-        "passingScore": null,
-        "fee": null,
-        "retakeFee": null,
-        "prerequisite": "公式ガイドで確認",
+        "questions": 60,
+        "minutes": 105,
+        "passingScore": 67,
+        "fee": "US$400（税別）",
+        "retakeFee": "US$200（税別）",
+        "prerequisite": "なし（推奨の前提知識あり）",
         "verified": false,
         "checkedAt": "2026-10-16",
         "notes": [
-          "配点は教材を作るときに公式ガイドで確定します。"
+          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます。",
+          "出題範囲と配点は複数の解説サイトで一致した値です。公式試験ガイドで最終確認してください。（情報源によって配点に差があります）"
         ]
       },
       "domains": [
@@ -443,37 +446,37 @@
           "id": "data-modeling",
           "name": "データモデリングとデータベース設計",
           "nameEn": "Data Modeling / Database Design",
-          "weight": null
+          "weight": 25
         },
         {
           "id": "mdm",
           "name": "マスターデータ管理",
           "nameEn": "Master Data Management",
-          "weight": null
+          "weight": 5
         },
         {
           "id": "data-management",
           "name": "Salesforce のデータ管理",
           "nameEn": "Salesforce Data Management",
-          "weight": null
+          "weight": 25
         },
         {
           "id": "governance",
           "name": "データガバナンス",
           "nameEn": "Data Governance",
-          "weight": null
+          "weight": 10
         },
         {
           "id": "ldv",
           "name": "大量データへの配慮",
           "nameEn": "Large Data Volume Considerations",
-          "weight": null
+          "weight": 20
         },
         {
           "id": "migration",
           "name": "データ移行",
           "nameEn": "Data Migration",
-          "weight": null
+          "weight": 15
         }
       ],
       "links": []
@@ -485,38 +488,45 @@
       "name": "Salesforce Certified Platform Sharing and Visibility Architect",
       "formerName": "Salesforce Certified Sharing and Visibility Architect",
       "summary": "組織の共有設定、ロール階層、共有ルール、Apex 共有、大規模組織でのパフォーマンスを踏まえて可視性を設計する資格。",
-      "status": "outline",
+      "status": "ready",
       "exam": {
-        "questions": null,
-        "minutes": null,
-        "passingScore": null,
-        "fee": null,
-        "retakeFee": null,
-        "prerequisite": "公式ガイドで確認",
+        "questions": 60,
+        "minutes": 120,
+        "passingScore": 67,
+        "fee": "US$400（税別）",
+        "retakeFee": "US$200（税別）",
+        "prerequisite": "なし（推奨の前提知識あり）",
         "verified": false,
         "checkedAt": "2026-10-16",
         "notes": [
-          "出題範囲と配点は教材を作るときに公式ガイドで確定します。"
+          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます。",
+          "出題範囲と配点は複数の解説サイトで一致した値です。公式試験ガイドで最終確認してください。"
         ]
       },
       "domains": [
         {
-          "id": "declarative",
-          "name": "宣言的な共有",
-          "nameEn": "Declarative Sharing",
-          "weight": null
+          "id": "object-field",
+          "name": "標準・カスタムオブジェクトと項目の権限",
+          "nameEn": "Permissions to Standard Objects, Custom Objects, and Fields",
+          "weight": 27
         },
         {
-          "id": "programmatic",
-          "name": "プログラムによる共有",
-          "nameEn": "Programmatic Sharing",
-          "weight": null
+          "id": "records",
+          "name": "レコードへのアクセス",
+          "nameEn": "Access to Records",
+          "weight": 39
         },
         {
-          "id": "performance",
-          "name": "パフォーマンスとスケーラビリティ",
-          "nameEn": "Performance and Scalability",
-          "weight": null
+          "id": "other-data",
+          "name": "その他のデータへのアクセス",
+          "nameEn": "Access to Other Data",
+          "weight": 21
+        },
+        {
+          "id": "implications",
+          "name": "セキュリティモデルの選択による影響",
+          "nameEn": "Implications of Security Model Choice",
+          "weight": 13
         }
       ],
       "links": []
@@ -528,56 +538,57 @@
       "name": "Salesforce Certified Data 360 Consultant",
       "formerName": "Salesforce Certified Data Cloud Consultant",
       "summary": "データの取り込みとモデリング、ID 解決、セグメント、インサイト、アクティベーションで顧客データを活用する設計を扱う資格。",
-      "status": "outline",
+      "status": "ready",
       "exam": {
-        "questions": null,
-        "minutes": null,
-        "passingScore": null,
-        "fee": null,
-        "retakeFee": null,
-        "prerequisite": "公式ガイドで確認",
+        "questions": 60,
+        "minutes": 105,
+        "passingScore": 70,
+        "fee": "US$200（税別）",
+        "retakeFee": "US$100（税別）",
+        "prerequisite": "なし",
         "verified": false,
         "checkedAt": "2026-10-16",
         "notes": [
-          "出題範囲と配点は教材を作るときに公式ガイドで確定します。"
+          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます。",
+          "出題範囲と配点は複数の解説サイトで一致した値です。公式試験ガイドで最終確認してください。"
         ]
       },
       "domains": [
         {
-          "id": "overview",
-          "name": "Data 360 の全体像",
-          "nameEn": "Overview",
-          "weight": null
+          "id": "positioning",
+          "name": "ソリューションの位置づけ",
+          "nameEn": "Solution Positioning",
+          "weight": 14
         },
         {
           "id": "setup",
           "name": "セットアップと管理",
-          "nameEn": "Setup and Administration",
-          "weight": null
+          "nameEn": "Data 360 Setup and Administration",
+          "weight": 13
         },
         {
-          "id": "ingestion-modeling",
-          "name": "データの取り込みとモデリング",
-          "nameEn": "Data Ingestion and Modeling",
-          "weight": null
+          "id": "ingestion",
+          "name": "データソースの接続と取り込み",
+          "nameEn": "Data Source Connection and Ingestion",
+          "weight": 18
         },
         {
-          "id": "identity-resolution",
-          "name": "ID 解決",
-          "nameEn": "Identity Resolution",
-          "weight": null
+          "id": "harmonization",
+          "name": "データの調和と統合（ID 解決）",
+          "nameEn": "Harmonization and Unification",
+          "weight": 17
         },
         {
-          "id": "segmentation-insights",
-          "name": "セグメントとインサイト",
-          "nameEn": "Segmentation and Insights",
-          "weight": null
+          "id": "enhancement",
+          "name": "データの拡張・共有・分析",
+          "nameEn": "Data Enhancements, Sharing, and Analysis",
+          "weight": 18
         },
         {
-          "id": "act-on-data",
-          "name": "データの活用（アクティベーション）",
-          "nameEn": "Act on Data",
-          "weight": null
+          "id": "activation",
+          "name": "アクティベーションと活用",
+          "nameEn": "Data Activations and Utilization",
+          "weight": 20
         }
       ],
       "links": []
@@ -589,7 +600,7 @@
       "name": "Salesforce Certified Agentforce Specialist",
       "formerName": "Salesforce Certified AI Specialist",
       "summary": "エージェントの設計（トピック・アクション・指示）、プロンプトビルダー、データによるグラウンディング、テストと運用を扱う資格。",
-      "status": "outline",
+      "status": "ready",
       "exam": {
         "questions": 60,
         "minutes": 105,
@@ -600,45 +611,47 @@
         "verified": false,
         "checkedAt": "2026-10-16",
         "notes": [
-          "合格ラインと配点は情報源によって差があるため、教材を作るときに公式ガイドで確定します。"
+          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます。",
+          "2026 年の改定で 6 分野の構成になりました。出題範囲と配点は複数の解説サイトで一致した値です。公式試験ガイドで最終確認してください。",
+          "合格ラインは情報源によって 72%〜73% と差があります。"
         ]
       },
       "domains": [
         {
-          "id": "concepts",
-          "name": "Agentforce の概念",
-          "nameEn": "Agentforce Concepts",
-          "weight": null
+          "id": "ai-agents",
+          "name": "AI エージェント",
+          "nameEn": "AI Agents",
+          "weight": 35
         },
         {
-          "id": "agent-design",
-          "name": "エージェント設計（トピック・アクション・指示）",
-          "nameEn": "Agent Design",
-          "weight": null
+          "id": "prompt-engineering",
+          "name": "プロンプトエンジニアリング",
+          "nameEn": "Prompt Engineering",
+          "weight": 20
         },
         {
-          "id": "prompt-builder",
-          "name": "プロンプトビルダー",
-          "nameEn": "Prompt Builder",
-          "weight": null
-        },
-        {
-          "id": "grounding",
-          "name": "データとグラウンディング",
-          "nameEn": "Data and Grounding",
-          "weight": null
+          "id": "data-360",
+          "name": "Data 360 の基礎",
+          "nameEn": "Data 360 Fundamentals",
+          "weight": 20
         },
         {
           "id": "test-deploy",
-          "name": "テスト・リリース・監視",
-          "nameEn": "Testing, Deployment and Monitoring",
-          "weight": null
+          "name": "テスト・リリース・保守",
+          "nameEn": "Testing, Deployment and Maintenance",
+          "weight": 10
         },
         {
-          "id": "trust",
-          "name": "信頼性とセキュリティ",
-          "nameEn": "Trust and Security",
-          "weight": null
+          "id": "governance",
+          "name": "ガバナンスと可観測性",
+          "nameEn": "Governance and Observability",
+          "weight": 10
+        },
+        {
+          "id": "multi-agent",
+          "name": "マルチエージェントのオーケストレーション",
+          "nameEn": "Multi-Agent Orchestration",
+          "weight": 5
         }
       ],
       "links": []
