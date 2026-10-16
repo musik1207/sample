@@ -1,46 +1,626 @@
 [
-  { "term": "組織の共有設定（OWD）", "reading": "Organization-Wide Defaults", "description": "オブジェクトごとのレコードアクセスのベースライン。最も制限された状態をここで決め、他の仕組みで広げる。", "certs": ["platform-admin", "sharing-visibility-architect"], "tags": ["セキュリティ"] },
-  { "term": "ロール階層", "reading": "Role Hierarchy", "description": "組織の上下関係。上位ロールのユーザーは下位ロールのユーザーが所有するレコードにアクセスできる。", "certs": ["platform-admin", "sharing-visibility-architect"], "tags": ["セキュリティ"] },
-  { "term": "共有ルール", "reading": "Sharing Rule", "description": "所有者または条件に基づき、公開グループ・ロールなどにレコードアクセスを例外的に広げる仕組み。", "certs": ["platform-admin", "sharing-visibility-architect"], "tags": ["セキュリティ"] },
-  { "term": "制限ルール", "reading": "Restriction Rule", "description": "条件に合うレコードだけを見えるようにし、アクセスを狭める仕組み。", "certs": ["platform-admin", "sharing-visibility-architect"], "tags": ["セキュリティ"] },
-  { "term": "プロファイル", "reading": "Profile", "description": "ユーザーに 1 つ必ず付く基本の権限設定。ログイン時間・IP 範囲・ページレイアウトの割り当てなども持つ。", "certs": ["platform-admin"], "tags": ["セキュリティ"] },
-  { "term": "権限セット", "reading": "Permission Set", "description": "プロファイルに追加で権限を足す仕組み。複数割り当てられ、権限を取り上げることはできない。", "certs": ["platform-admin"], "tags": ["セキュリティ"] },
-  { "term": "権限セットグループ", "reading": "Permission Set Group", "description": "複数の権限セットを束ねたもの。ミュート権限セットで一部の権限を打ち消せる。", "certs": ["platform-admin"], "tags": ["セキュリティ"] },
-  { "term": "項目レベルセキュリティ", "reading": "Field-Level Security", "description": "項目ごとに参照可能・参照のみを制御する設定。プロファイルや権限セットで付与する。", "certs": ["platform-admin"], "tags": ["セキュリティ"] },
-  { "term": "凍結", "reading": "Freeze", "description": "ユーザーのログインだけを一時的に止める操作。すぐに無効化できない事情があるときに使う。", "certs": ["platform-admin"], "tags": ["ユーザー"] },
-  { "term": "主従関係", "reading": "Master-Detail Relationship", "description": "強い親子関係。親を削除すると子も削除され、子は親の共有設定を継承する。積み上げ集計が使える。", "certs": ["platform-admin", "data-architect"], "tags": ["データモデル"] },
-  { "term": "参照関係", "reading": "Lookup Relationship", "description": "弱い関連付け。子は独自の所有者と共有設定を持つ。", "certs": ["platform-admin", "data-architect"], "tags": ["データモデル"] },
-  { "term": "連結オブジェクト", "reading": "Junction Object", "description": "2 つの主従関係を持ち、多対多の関係を表すカスタムオブジェクト。", "certs": ["platform-admin", "data-architect"], "tags": ["データモデル"] },
-  { "term": "積み上げ集計項目", "reading": "Roll-Up Summary Field", "description": "主従関係の主側で、子レコードの件数・合計・最小・最大を表示する項目。", "certs": ["platform-admin"], "tags": ["データモデル"] },
-  { "term": "外部 ID", "reading": "External ID", "description": "外部システムのキーを保持する項目。データローダーの upsert や連携で一致判定に使う。", "certs": ["platform-admin", "integration-architect", "data-architect"], "tags": ["データ"] },
-  { "term": "入力規則", "reading": "Validation Rule", "description": "数式が TRUE になったときに保存をエラーにする規則。画面・API の両方に効く。", "certs": ["platform-admin"], "tags": ["データ品質"] },
-  { "term": "レコードタイプ", "reading": "Record Type", "description": "業務ごとに選択リストの値・ページレイアウト・ビジネスプロセスを切り替える仕組み。", "certs": ["platform-admin"], "tags": ["UI"] },
-  { "term": "動的フォーム", "reading": "Dynamic Forms", "description": "Lightning レコードページで項目単位に配置し、条件に応じて表示・非表示を切り替える機能。", "certs": ["platform-admin"], "tags": ["UI"] },
-  { "term": "コンパクトレイアウト", "reading": "Compact Layout", "description": "レコードページ上部のハイライトやモバイルのレコード表示に使われる主要項目の設定。", "certs": ["platform-admin"], "tags": ["UI"] },
-  { "term": "取引開始（リードのコンバート）", "reading": "Lead Conversion", "description": "リードから取引先・取引先責任者・（任意で）商談を作成する操作。", "certs": ["platform-admin", "agentforce-sales-consultant"], "tags": ["営業"] },
-  { "term": "セールスプロセス", "reading": "Sales Process", "description": "商談のレコードタイプごとに使うフェーズの値を選ぶ設定。", "certs": ["platform-admin", "agentforce-sales-consultant"], "tags": ["営業"] },
-  { "term": "パス", "reading": "Path", "description": "フェーズごとに重要な項目と成功へのガイダンスを表示する機能。", "certs": ["platform-admin", "agentforce-sales-consultant"], "tags": ["営業"] },
-  { "term": "価格表", "reading": "Price Book", "description": "商品の価格を管理する表。商品は標準価格表に登録してからカスタム価格表に登録する。", "certs": ["platform-admin", "agentforce-sales-consultant"], "tags": ["営業"] },
-  { "term": "キャンペーンメンバー", "reading": "Campaign Member", "description": "キャンペーンに登録されたリードまたは取引先責任者と、その反応状況。", "certs": ["platform-admin"], "tags": ["マーケティング"] },
-  { "term": "エスカレーションルール", "reading": "Escalation Rule", "description": "一定時間内に解決しないケースを再割り当てや通知でエスカレーションする規則。", "certs": ["platform-admin", "agentforce-service-consultant"], "tags": ["サービス"] },
-  { "term": "自動レスポンスルール", "reading": "Auto-Response Rule", "description": "Web-to-ケース／リードやメール-to-ケースで作成されたレコードに自動返信する規則。", "certs": ["platform-admin", "agentforce-service-consultant"], "tags": ["サービス"] },
-  { "term": "オムニチャネル", "reading": "Omni-Channel", "description": "キューやスキルに基づき、対応可能なエージェントに作業をプッシュ型で配信する機能。", "certs": ["platform-admin", "agentforce-service-consultant"], "tags": ["サービス"] },
-  { "term": "エンタイトルメント", "reading": "Entitlement", "description": "顧客が受けられるサポート内容。マイルストンで初回応答などの時間目標を管理する。", "certs": ["platform-admin", "agentforce-service-consultant"], "tags": ["サービス"] },
-  { "term": "データカテゴリ", "reading": "Data Category", "description": "ナレッジ記事を分類し、誰がどの記事を見られるかを制御する仕組み。", "certs": ["platform-admin", "agentforce-service-consultant"], "tags": ["サービス"] },
-  { "term": "upsert", "reading": "アップサート", "description": "キー（外部 ID など）で一致すれば更新、一致しなければ新規作成する操作。", "certs": ["platform-admin", "integration-architect", "data-architect"], "tags": ["データ"] },
-  { "term": "データローダー", "reading": "Data Loader", "description": "最大 500 万件のデータを取り込み・更新・削除・エクスポートできるクライアントツール。コマンドラインで定期実行できる。", "certs": ["platform-admin", "data-architect"], "tags": ["データ"] },
-  { "term": "Sandbox", "reading": "サンドボックス", "description": "本番から作る検証用の環境。Developer・Developer Pro・Partial Copy・Full の 4 種類。", "certs": ["platform-admin"], "tags": ["環境"] },
-  { "term": "バケット項目", "reading": "Bucket Field", "description": "レポート内で値を範囲やカテゴリに分類して集計する項目。オブジェクトに項目を作る必要がない。", "certs": ["platform-admin"], "tags": ["分析"] },
-  { "term": "動的ダッシュボード", "reading": "Dynamic Dashboard", "description": "表示ユーザーを閲覧者にしたダッシュボード。閲覧者の権限で見えるデータだけを表示する。", "certs": ["platform-admin"], "tags": ["分析"] },
-  { "term": "カスタムレポートタイプ", "reading": "Custom Report Type", "description": "レポートできるオブジェクトの組み合わせと、関連レコードがない場合を含めるかを定義したもの。", "certs": ["platform-admin"], "tags": ["分析"] },
-  { "term": "レコードトリガーフロー", "reading": "Record-Triggered Flow", "description": "レコードの作成・更新・削除で起動する Flow。保存前は同じレコードの更新、保存後は関連処理に使う。", "certs": ["platform-admin"], "tags": ["自動化"] },
-  { "term": "スケジュール済みパス", "reading": "Scheduled Path", "description": "レコードトリガーフローで、日付項目などを基準に後のタイミングで処理を実行する機能。", "certs": ["platform-admin"], "tags": ["自動化"] },
-  { "term": "承認プロセス", "reading": "Approval Process", "description": "レコードを承認者に回して承認・却下させる仕組み。申請時にレコードをロックできる。", "certs": ["platform-admin"], "tags": ["自動化"] },
-  { "term": "ガバナ制限", "reading": "Governor Limits", "description": "マルチテナント環境を守るための実行上の制限。Flow や Apex のループ内 DML は制限超過の原因になる。", "certs": ["platform-admin", "integration-architect", "data-architect"], "tags": ["自動化"] },
-  { "term": "トピック（Agentforce）", "reading": "Topic", "description": "エージェントが扱う仕事の単位。分類の説明と範囲で、どの依頼を扱うかを決める。", "certs": ["platform-admin", "agentforce-specialist"], "tags": ["AI"] },
-  { "term": "アクション（Agentforce）", "reading": "Agent Action", "description": "エージェントが実行する処理。Flow・Apex・プロンプトテンプレートなどを呼び出す。", "certs": ["platform-admin", "agentforce-specialist"], "tags": ["AI"] },
-  { "term": "グラウンディング", "reading": "Grounding", "description": "AI の回答の根拠として、レコードやナレッジなどの実データをプロンプトに与えること。", "certs": ["platform-admin", "agentforce-specialist", "data-360-consultant"], "tags": ["AI"] },
-  { "term": "Einstein Trust Layer", "reading": "アインシュタイン トラストレイヤー", "description": "データマスキング、ゼロデータリテンション、有害性の検出、監査などで生成 AI を安全に使う仕組み。", "certs": ["platform-admin", "agentforce-specialist"], "tags": ["AI"] },
-  { "term": "ユーザーストーリー", "reading": "User Story", "description": "「（誰）として、（目的）のために、（何）がしたい」の形で要件を表したもの。受け入れ基準とセットで書く。", "certs": ["business-analyst"], "tags": ["要件"] },
-  { "term": "ID 解決", "reading": "Identity Resolution", "description": "複数のデータソースにある同一人物のデータを、一致ルールと調整ルールで 1 つの統合プロファイルにまとめる処理。", "certs": ["data-360-consultant"], "tags": ["データ"] }
+  {
+    "term": "組織の共有設定（OWD）",
+    "reading": "Organization-Wide Defaults",
+    "description": "オブジェクトごとのレコードアクセスのベースライン。最も制限された状態をここで決め、他の仕組みで広げる。",
+    "certs": [
+      "platform-admin",
+      "sharing-visibility-architect"
+    ],
+    "tags": [
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "ロール階層",
+    "reading": "Role Hierarchy",
+    "description": "組織の上下関係。上位ロールのユーザーは下位ロールのユーザーが所有するレコードにアクセスできる。",
+    "certs": [
+      "platform-admin",
+      "sharing-visibility-architect"
+    ],
+    "tags": [
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "共有ルール",
+    "reading": "Sharing Rule",
+    "description": "所有者または条件に基づき、公開グループ・ロールなどにレコードアクセスを例外的に広げる仕組み。",
+    "certs": [
+      "platform-admin",
+      "sharing-visibility-architect"
+    ],
+    "tags": [
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "制限ルール",
+    "reading": "Restriction Rule",
+    "description": "条件に合うレコードだけを見えるようにし、アクセスを狭める仕組み。",
+    "certs": [
+      "platform-admin",
+      "sharing-visibility-architect"
+    ],
+    "tags": [
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "プロファイル",
+    "reading": "Profile",
+    "description": "ユーザーに 1 つ必ず付く基本の権限設定。ログイン時間・IP 範囲・ページレイアウトの割り当てなども持つ。",
+    "certs": [
+      "platform-admin"
+    ],
+    "tags": [
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "権限セット",
+    "reading": "Permission Set",
+    "description": "プロファイルに追加で権限を足す仕組み。複数割り当てられ、権限を取り上げることはできない。",
+    "certs": [
+      "platform-admin"
+    ],
+    "tags": [
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "権限セットグループ",
+    "reading": "Permission Set Group",
+    "description": "複数の権限セットを束ねたもの。ミュート権限セットで一部の権限を打ち消せる。",
+    "certs": [
+      "platform-admin"
+    ],
+    "tags": [
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "項目レベルセキュリティ",
+    "reading": "Field-Level Security",
+    "description": "項目ごとに参照可能・参照のみを制御する設定。プロファイルや権限セットで付与する。",
+    "certs": [
+      "platform-admin"
+    ],
+    "tags": [
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "凍結",
+    "reading": "Freeze",
+    "description": "ユーザーのログインだけを一時的に止める操作。すぐに無効化できない事情があるときに使う。",
+    "certs": [
+      "platform-admin"
+    ],
+    "tags": [
+      "ユーザー"
+    ]
+  },
+  {
+    "term": "主従関係",
+    "reading": "Master-Detail Relationship",
+    "description": "強い親子関係。親を削除すると子も削除され、子は親の共有設定を継承する。積み上げ集計が使える。",
+    "certs": [
+      "platform-admin",
+      "data-architect"
+    ],
+    "tags": [
+      "データモデル"
+    ]
+  },
+  {
+    "term": "参照関係",
+    "reading": "Lookup Relationship",
+    "description": "弱い関連付け。子は独自の所有者と共有設定を持つ。",
+    "certs": [
+      "platform-admin",
+      "data-architect"
+    ],
+    "tags": [
+      "データモデル"
+    ]
+  },
+  {
+    "term": "連結オブジェクト",
+    "reading": "Junction Object",
+    "description": "2 つの主従関係を持ち、多対多の関係を表すカスタムオブジェクト。",
+    "certs": [
+      "platform-admin",
+      "data-architect"
+    ],
+    "tags": [
+      "データモデル"
+    ]
+  },
+  {
+    "term": "積み上げ集計項目",
+    "reading": "Roll-Up Summary Field",
+    "description": "主従関係の主側で、子レコードの件数・合計・最小・最大を表示する項目。",
+    "certs": [
+      "platform-admin"
+    ],
+    "tags": [
+      "データモデル"
+    ]
+  },
+  {
+    "term": "外部 ID",
+    "reading": "External ID",
+    "description": "外部システムのキーを保持する項目。データローダーの upsert や連携で一致判定に使う。",
+    "certs": [
+      "platform-admin",
+      "integration-architect",
+      "data-architect"
+    ],
+    "tags": [
+      "データ"
+    ]
+  },
+  {
+    "term": "入力規則",
+    "reading": "Validation Rule",
+    "description": "数式が TRUE になったときに保存をエラーにする規則。画面・API の両方に効く。",
+    "certs": [
+      "platform-admin"
+    ],
+    "tags": [
+      "データ品質"
+    ]
+  },
+  {
+    "term": "レコードタイプ",
+    "reading": "Record Type",
+    "description": "業務ごとに選択リストの値・ページレイアウト・ビジネスプロセスを切り替える仕組み。",
+    "certs": [
+      "platform-admin"
+    ],
+    "tags": [
+      "UI"
+    ]
+  },
+  {
+    "term": "動的フォーム",
+    "reading": "Dynamic Forms",
+    "description": "Lightning レコードページで項目単位に配置し、条件に応じて表示・非表示を切り替える機能。",
+    "certs": [
+      "platform-admin"
+    ],
+    "tags": [
+      "UI"
+    ]
+  },
+  {
+    "term": "コンパクトレイアウト",
+    "reading": "Compact Layout",
+    "description": "レコードページ上部のハイライトやモバイルのレコード表示に使われる主要項目の設定。",
+    "certs": [
+      "platform-admin"
+    ],
+    "tags": [
+      "UI"
+    ]
+  },
+  {
+    "term": "取引開始（リードのコンバート）",
+    "reading": "Lead Conversion",
+    "description": "リードから取引先・取引先責任者・（任意で）商談を作成する操作。",
+    "certs": [
+      "platform-admin",
+      "agentforce-sales-consultant"
+    ],
+    "tags": [
+      "営業"
+    ]
+  },
+  {
+    "term": "セールスプロセス",
+    "reading": "Sales Process",
+    "description": "商談のレコードタイプごとに使うフェーズの値を選ぶ設定。",
+    "certs": [
+      "platform-admin",
+      "agentforce-sales-consultant"
+    ],
+    "tags": [
+      "営業"
+    ]
+  },
+  {
+    "term": "パス",
+    "reading": "Path",
+    "description": "フェーズごとに重要な項目と成功へのガイダンスを表示する機能。",
+    "certs": [
+      "platform-admin",
+      "agentforce-sales-consultant"
+    ],
+    "tags": [
+      "営業"
+    ]
+  },
+  {
+    "term": "価格表",
+    "reading": "Price Book",
+    "description": "商品の価格を管理する表。商品は標準価格表に登録してからカスタム価格表に登録する。",
+    "certs": [
+      "platform-admin",
+      "agentforce-sales-consultant"
+    ],
+    "tags": [
+      "営業"
+    ]
+  },
+  {
+    "term": "キャンペーンメンバー",
+    "reading": "Campaign Member",
+    "description": "キャンペーンに登録されたリードまたは取引先責任者と、その反応状況。",
+    "certs": [
+      "platform-admin"
+    ],
+    "tags": [
+      "マーケティング"
+    ]
+  },
+  {
+    "term": "エスカレーションルール",
+    "reading": "Escalation Rule",
+    "description": "一定時間内に解決しないケースを再割り当てや通知でエスカレーションする規則。",
+    "certs": [
+      "platform-admin",
+      "agentforce-service-consultant"
+    ],
+    "tags": [
+      "サービス"
+    ]
+  },
+  {
+    "term": "自動レスポンスルール",
+    "reading": "Auto-Response Rule",
+    "description": "Web-to-ケース／リードやメール-to-ケースで作成されたレコードに自動返信する規則。",
+    "certs": [
+      "platform-admin",
+      "agentforce-service-consultant"
+    ],
+    "tags": [
+      "サービス"
+    ]
+  },
+  {
+    "term": "オムニチャネル",
+    "reading": "Omni-Channel",
+    "description": "キューやスキルに基づき、対応可能なエージェントに作業をプッシュ型で配信する機能。",
+    "certs": [
+      "platform-admin",
+      "agentforce-service-consultant"
+    ],
+    "tags": [
+      "サービス"
+    ]
+  },
+  {
+    "term": "エンタイトルメント",
+    "reading": "Entitlement",
+    "description": "顧客が受けられるサポート内容。マイルストンで初回応答などの時間目標を管理する。",
+    "certs": [
+      "platform-admin",
+      "agentforce-service-consultant"
+    ],
+    "tags": [
+      "サービス"
+    ]
+  },
+  {
+    "term": "データカテゴリ",
+    "reading": "Data Category",
+    "description": "ナレッジ記事を分類し、誰がどの記事を見られるかを制御する仕組み。",
+    "certs": [
+      "platform-admin",
+      "agentforce-service-consultant"
+    ],
+    "tags": [
+      "サービス"
+    ]
+  },
+  {
+    "term": "upsert",
+    "reading": "アップサート",
+    "description": "キー（外部 ID など）で一致すれば更新、一致しなければ新規作成する操作。",
+    "certs": [
+      "platform-admin",
+      "integration-architect",
+      "data-architect"
+    ],
+    "tags": [
+      "データ"
+    ]
+  },
+  {
+    "term": "データローダー",
+    "reading": "Data Loader",
+    "description": "最大 500 万件のデータを取り込み・更新・削除・エクスポートできるクライアントツール。コマンドラインで定期実行できる。",
+    "certs": [
+      "platform-admin",
+      "data-architect"
+    ],
+    "tags": [
+      "データ"
+    ]
+  },
+  {
+    "term": "Sandbox",
+    "reading": "サンドボックス",
+    "description": "本番から作る検証用の環境。Developer・Developer Pro・Partial Copy・Full の 4 種類。",
+    "certs": [
+      "platform-admin"
+    ],
+    "tags": [
+      "環境"
+    ]
+  },
+  {
+    "term": "バケット項目",
+    "reading": "Bucket Field",
+    "description": "レポート内で値を範囲やカテゴリに分類して集計する項目。オブジェクトに項目を作る必要がない。",
+    "certs": [
+      "platform-admin"
+    ],
+    "tags": [
+      "分析"
+    ]
+  },
+  {
+    "term": "動的ダッシュボード",
+    "reading": "Dynamic Dashboard",
+    "description": "表示ユーザーを閲覧者にしたダッシュボード。閲覧者の権限で見えるデータだけを表示する。",
+    "certs": [
+      "platform-admin"
+    ],
+    "tags": [
+      "分析"
+    ]
+  },
+  {
+    "term": "カスタムレポートタイプ",
+    "reading": "Custom Report Type",
+    "description": "レポートできるオブジェクトの組み合わせと、関連レコードがない場合を含めるかを定義したもの。",
+    "certs": [
+      "platform-admin"
+    ],
+    "tags": [
+      "分析"
+    ]
+  },
+  {
+    "term": "レコードトリガーフロー",
+    "reading": "Record-Triggered Flow",
+    "description": "レコードの作成・更新・削除で起動する Flow。保存前は同じレコードの更新、保存後は関連処理に使う。",
+    "certs": [
+      "platform-admin"
+    ],
+    "tags": [
+      "自動化"
+    ]
+  },
+  {
+    "term": "スケジュール済みパス",
+    "reading": "Scheduled Path",
+    "description": "レコードトリガーフローで、日付項目などを基準に後のタイミングで処理を実行する機能。",
+    "certs": [
+      "platform-admin"
+    ],
+    "tags": [
+      "自動化"
+    ]
+  },
+  {
+    "term": "承認プロセス",
+    "reading": "Approval Process",
+    "description": "レコードを承認者に回して承認・却下させる仕組み。申請時にレコードをロックできる。",
+    "certs": [
+      "platform-admin"
+    ],
+    "tags": [
+      "自動化"
+    ]
+  },
+  {
+    "term": "ガバナ制限",
+    "reading": "Governor Limits",
+    "description": "マルチテナント環境を守るための実行上の制限。Flow や Apex のループ内 DML は制限超過の原因になる。",
+    "certs": [
+      "platform-admin",
+      "integration-architect",
+      "data-architect"
+    ],
+    "tags": [
+      "自動化"
+    ]
+  },
+  {
+    "term": "トピック（Agentforce）",
+    "reading": "Topic",
+    "description": "エージェントが扱う仕事の単位。分類の説明と範囲で、どの依頼を扱うかを決める。",
+    "certs": [
+      "platform-admin",
+      "agentforce-specialist"
+    ],
+    "tags": [
+      "AI"
+    ]
+  },
+  {
+    "term": "アクション（Agentforce）",
+    "reading": "Agent Action",
+    "description": "エージェントが実行する処理。Flow・Apex・プロンプトテンプレートなどを呼び出す。",
+    "certs": [
+      "platform-admin",
+      "agentforce-specialist"
+    ],
+    "tags": [
+      "AI"
+    ]
+  },
+  {
+    "term": "グラウンディング",
+    "reading": "Grounding",
+    "description": "AI の回答の根拠として、レコードやナレッジなどの実データをプロンプトに与えること。",
+    "certs": [
+      "platform-admin",
+      "agentforce-specialist",
+      "data-360-consultant"
+    ],
+    "tags": [
+      "AI"
+    ]
+  },
+  {
+    "term": "Einstein Trust Layer",
+    "reading": "アインシュタイン トラストレイヤー",
+    "description": "データマスキング、ゼロデータリテンション、有害性の検出、監査などで生成 AI を安全に使う仕組み。",
+    "certs": [
+      "platform-admin",
+      "agentforce-specialist"
+    ],
+    "tags": [
+      "AI"
+    ]
+  },
+  {
+    "term": "ユーザーストーリー",
+    "reading": "User Story",
+    "description": "「（誰）として、（目的）のために、（何）がしたい」の形で要件を表したもの。受け入れ基準とセットで書く。",
+    "certs": [
+      "business-analyst"
+    ],
+    "tags": [
+      "要件"
+    ]
+  },
+  {
+    "term": "ID 解決",
+    "reading": "Identity Resolution",
+    "description": "複数のデータソースにある同一人物のデータを、一致ルールと調整ルールで 1 つの統合プロファイルにまとめる処理。",
+    "certs": [
+      "data-360-consultant"
+    ],
+    "tags": [
+      "データ"
+    ]
+  },
+  {
+    "term": "MoSCoW",
+    "reading": "モスコウ",
+    "description": "要件を Must（必須）・Should（重要）・Could（あれば良い）・Won't（今回はやらない）に分けて優先順位を付ける手法。",
+    "certs": [
+      "business-analyst",
+      "platform-strategy-designer"
+    ],
+    "tags": [
+      "要件"
+    ]
+  },
+  {
+    "term": "RACI",
+    "reading": "レイシー",
+    "description": "タスクごとに Responsible（実行）・Accountable（説明責任）・Consulted（相談）・Informed（報告）の役割を決める表。",
+    "certs": [
+      "business-analyst"
+    ],
+    "tags": [
+      "ステークホルダー"
+    ]
+  },
+  {
+    "term": "INVEST",
+    "reading": "インベスト",
+    "description": "良いユーザーストーリーの条件。Independent・Negotiable・Valuable・Estimable・Small・Testable。",
+    "certs": [
+      "business-analyst"
+    ],
+    "tags": [
+      "要件"
+    ]
+  },
+  {
+    "term": "受け入れ基準",
+    "reading": "Acceptance Criteria",
+    "description": "ユーザーストーリーが完了したと言える条件。Given / When / Then 形式で書くことが多い。",
+    "certs": [
+      "business-analyst"
+    ],
+    "tags": [
+      "要件"
+    ]
+  },
+  {
+    "term": "ユーザー受け入れテスト（UAT）",
+    "reading": "User Acceptance Testing",
+    "description": "実際の利用者が本番に近い環境で、業務で使えるかを確認するテスト。",
+    "certs": [
+      "business-analyst"
+    ],
+    "tags": [
+      "テスト"
+    ]
+  },
+  {
+    "term": "As-Is / To-Be",
+    "reading": "アズイズ / トゥービー",
+    "description": "現状の業務プロセスと、目指す将来の業務プロセス。差をギャップ分析で洗い出す。",
+    "certs": [
+      "business-analyst",
+      "platform-strategy-designer"
+    ],
+    "tags": [
+      "プロセス"
+    ]
+  },
+  {
+    "term": "スイムレーン図",
+    "reading": "Swimlane Diagram",
+    "description": "役割ごとにレーンを分けて、誰がどの作業をするかを表す業務フロー図。",
+    "certs": [
+      "business-analyst"
+    ],
+    "tags": [
+      "プロセス"
+    ]
+  },
+  {
+    "term": "エピック",
+    "reading": "Epic",
+    "description": "1 スプリントで終わらない大きなユーザーストーリーの集まり。価値の単位で小さなストーリーに分割する。",
+    "certs": [
+      "business-analyst"
+    ],
+    "tags": [
+      "要件"
+    ]
+  },
+  {
+    "term": "トレーサビリティ",
+    "reading": "Traceability",
+    "description": "ビジネス目標・要件・ストーリー・テストをつなげ、由来や影響を追えるようにすること。",
+    "certs": [
+      "business-analyst"
+    ],
+    "tags": [
+      "要件"
+    ]
+  },
+  {
+    "term": "スコープクリープ",
+    "reading": "Scope Creep",
+    "description": "プロジェクトの範囲がなし崩しに広がること。変更は影響評価と承認を経て行う。",
+    "certs": [
+      "business-analyst"
+    ],
+    "tags": [
+      "プロジェクト"
+    ]
+  }
 ]
