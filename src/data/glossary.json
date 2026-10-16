@@ -622,5 +622,347 @@
     "tags": [
       "プロジェクト"
     ]
+  },
+  {
+    "term": "テリトリー管理",
+    "reading": "Enterprise Territory Management",
+    "description": "ルールで取引先をテリトリーに割り当て、メンバーにアクセスと売上予測を与える仕組み。有効なモデルは 1 つ。",
+    "certs": [
+      "agentforce-sales-consultant",
+      "sharing-visibility-architect"
+    ],
+    "tags": [
+      "営業"
+    ]
+  },
+  {
+    "term": "Pipeline Inspection",
+    "reading": "パイプラインインスペクション",
+    "description": "期間内のパイプラインの変化や AI のインサイトを一覧で確認する機能。",
+    "certs": [
+      "agentforce-sales-consultant"
+    ],
+    "tags": [
+      "営業"
+    ]
+  },
+  {
+    "term": "オムニチャネルスーパーバイザー",
+    "reading": "Omni-Channel Supervisor",
+    "description": "キューの待ち状況やエージェントの状態をリアルタイムで監視する画面。",
+    "certs": [
+      "agentforce-service-consultant"
+    ],
+    "tags": [
+      "サービス"
+    ]
+  },
+  {
+    "term": "スキルベースルーティング",
+    "reading": "Skills-Based Routing",
+    "description": "言語・製品などのスキルを持つエージェントに作業を配信するオムニチャネルの方式。",
+    "certs": [
+      "agentforce-service-consultant"
+    ],
+    "tags": [
+      "サービス"
+    ]
+  },
+  {
+    "term": "初回解決率（FCR）",
+    "reading": "First Contact Resolution",
+    "description": "最初の対応で問い合わせを解決できた割合。",
+    "certs": [
+      "agentforce-service-consultant"
+    ],
+    "tags": [
+      "KPI"
+    ]
+  },
+  {
+    "term": "KCS",
+    "reading": "Knowledge-Centered Service",
+    "description": "ナレッジを対応の中で作り、使いながら改善する考え方。",
+    "certs": [
+      "agentforce-service-consultant"
+    ],
+    "tags": [
+      "サービス"
+    ]
+  },
+  {
+    "term": "How Might We",
+    "reading": "どうすれば〜できるか",
+    "description": "課題を前向きで解決可能な問いにする、チャレンジステートメントの形式。",
+    "certs": [
+      "platform-strategy-designer"
+    ],
+    "tags": [
+      "デザイン思考"
+    ]
+  },
+  {
+    "term": "カスタマージャーニーマップ",
+    "reading": "Customer Journey Map",
+    "description": "顧客がサービスと関わる流れを段階ごとに描き、行動・感情・接点・課題を可視化する図。",
+    "certs": [
+      "platform-strategy-designer"
+    ],
+    "tags": [
+      "デザイン思考"
+    ]
+  },
+  {
+    "term": "ペルソナ",
+    "reading": "Persona",
+    "description": "調査に基づく代表的な利用者像。目的・行動・不満を表す。",
+    "certs": [
+      "platform-strategy-designer"
+    ],
+    "tags": [
+      "デザイン思考"
+    ]
+  },
+  {
+    "term": "プラットフォームイベント",
+    "reading": "Platform Event",
+    "description": "業務上の出来事を発行・購読する仕組み。システム間を疎結合につなぐ。",
+    "certs": [
+      "integration-architect",
+      "data-360-consultant"
+    ],
+    "tags": [
+      "連携"
+    ]
+  },
+  {
+    "term": "変更データキャプチャ（CDC）",
+    "reading": "Change Data Capture",
+    "description": "レコードの作成・更新・削除を自動でイベントとして配信する機能。",
+    "certs": [
+      "integration-architect"
+    ],
+    "tags": [
+      "連携"
+    ]
+  },
+  {
+    "term": "Bulk API 2.0",
+    "reading": "バルク API",
+    "description": "大量データを非同期でバッチ処理する API。",
+    "certs": [
+      "integration-architect",
+      "data-architect"
+    ],
+    "tags": [
+      "連携"
+    ]
+  },
+  {
+    "term": "Salesforce Connect",
+    "reading": "セールスフォースコネクト",
+    "description": "外部のデータをコピーせずに外部オブジェクトとして参照する機能。",
+    "certs": [
+      "integration-architect",
+      "data-architect",
+      "agentforce-service-consultant"
+    ],
+    "tags": [
+      "連携"
+    ]
+  },
+  {
+    "term": "指定ログイン情報",
+    "reading": "Named Credential",
+    "description": "外部 API のエンドポイントと認証情報を安全に管理する設定。",
+    "certs": [
+      "integration-architect"
+    ],
+    "tags": [
+      "連携"
+    ]
+  },
+  {
+    "term": "冪等性",
+    "reading": "Idempotency",
+    "description": "同じ処理を何度実行しても結果が変わらない性質。外部 ID での upsert などで実現する。",
+    "certs": [
+      "integration-architect"
+    ],
+    "tags": [
+      "連携"
+    ]
+  },
+  {
+    "term": "データスキュー",
+    "reading": "Data Skew",
+    "description": "1 件の親・1 人の所有者などにレコードが集中し、ロックや共有の再計算で性能が落ちる状態。",
+    "certs": [
+      "data-architect",
+      "sharing-visibility-architect"
+    ],
+    "tags": [
+      "性能"
+    ]
+  },
+  {
+    "term": "スキニーテーブル",
+    "reading": "Skinny Table",
+    "description": "よく使う項目だけを持つ別テーブル。サポートに依頼して作成し、読み取りを速くする。",
+    "certs": [
+      "data-architect"
+    ],
+    "tags": [
+      "性能"
+    ]
+  },
+  {
+    "term": "ビッグオブジェクト",
+    "reading": "Big Object",
+    "description": "数十億件のデータを保持できるオブジェクト。インデックスで絞った参照のみ。",
+    "certs": [
+      "data-architect"
+    ],
+    "tags": [
+      "データモデル"
+    ]
+  },
+  {
+    "term": "ゴールデンレコード",
+    "reading": "Golden Record",
+    "description": "複数のソースから最も信頼できる値を選んでまとめた 1 件のマスターレコード。",
+    "certs": [
+      "data-architect",
+      "data-360-consultant"
+    ],
+    "tags": [
+      "データ"
+    ]
+  },
+  {
+    "term": "Apex 管理共有",
+    "reading": "Apex Managed Sharing",
+    "description": "Apex で共有レコードを作る仕組み。カスタムの共有理由なら所有者が変わっても残る。",
+    "certs": [
+      "sharing-visibility-architect"
+    ],
+    "tags": [
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "暗黙の共有",
+    "reading": "Implicit Sharing",
+    "description": "子レコードへのアクセスがあると親の取引先を参照できる、など Salesforce が自動で付与する共有。",
+    "certs": [
+      "sharing-visibility-architect"
+    ],
+    "tags": [
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "共有セット",
+    "reading": "Sharing Set",
+    "description": "ロールを持たない高ボリュームの顧客ユーザーに、取引先などを基準にアクセスを付与する仕組み。",
+    "certs": [
+      "sharing-visibility-architect",
+      "data-architect"
+    ],
+    "tags": [
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "データレイクオブジェクト（DLO）",
+    "reading": "Data Lake Object",
+    "description": "Data 360 に取り込んだデータをソースの形のまま保存するオブジェクト。",
+    "certs": [
+      "data-360-consultant"
+    ],
+    "tags": [
+      "Data 360"
+    ]
+  },
+  {
+    "term": "データモデルオブジェクト（DMO）",
+    "reading": "Data Model Object",
+    "description": "Data 360 の共通データモデル。DLO をマッピングしてそろえる。",
+    "certs": [
+      "data-360-consultant"
+    ],
+    "tags": [
+      "Data 360"
+    ]
+  },
+  {
+    "term": "計算済みインサイト",
+    "reading": "Calculated Insight",
+    "description": "Data 360 で SQL により集計した指標。セグメントやプロファイルで使う。",
+    "certs": [
+      "data-360-consultant",
+      "agentforce-specialist"
+    ],
+    "tags": [
+      "Data 360"
+    ]
+  },
+  {
+    "term": "アクティベーション",
+    "reading": "Activation",
+    "description": "Data 360 のセグメントを配信先（Marketing Cloud・広告など）に送ること。",
+    "certs": [
+      "data-360-consultant"
+    ],
+    "tags": [
+      "Data 360"
+    ]
+  },
+  {
+    "term": "RAG",
+    "reading": "検索拡張生成",
+    "description": "質問に関連する情報を検索で取り出し、プロンプトに入れて回答を生成する手法。",
+    "certs": [
+      "agentforce-specialist",
+      "data-360-consultant"
+    ],
+    "tags": [
+      "AI"
+    ]
+  },
+  {
+    "term": "プロンプトビルダー",
+    "reading": "Prompt Builder",
+    "description": "レコードのデータなどを差し込んだプロンプトテンプレートを作成・管理するツール。",
+    "certs": [
+      "agentforce-specialist",
+      "platform-admin"
+    ],
+    "tags": [
+      "AI"
+    ]
+  },
+  {
+    "term": "Testing Center",
+    "reading": "テストセンター",
+    "description": "エージェントのテストケースを一括実行し、トピック・アクション・回答を評価する機能。",
+    "certs": [
+      "agentforce-specialist",
+      "platform-admin"
+    ],
+    "tags": [
+      "AI"
+    ]
+  },
+  {
+    "term": "MCP",
+    "reading": "Model Context Protocol",
+    "description": "AI エージェントが外部のツールやデータにアクセスするための標準プロトコル。",
+    "certs": [
+      "agentforce-specialist"
+    ],
+    "tags": [
+      "AI"
+    ]
   }
 ]
