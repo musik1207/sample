@@ -1,0 +1,66 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { certs, getQuestions, url } from '../../../lib/data';
+import type { Cert } from '../../../lib/types';
+import '../../../styles/quiz.css';
+
+export function getStaticPaths() {
+  return certs.filter((c) => getQuestions(c.id).length > 0).map((cert) => ({ params: { id: cert.id }, props: { cert } }));
+}
+
+const { cert } = Astro.props as { cert: Cert };
+const shortName = cert.name.replace('Salesforce Certified ', '');
+const payload = {
+  certId: cert.id,
+  shortName,
+  questions: getQuestions(cert.id),
+  domains: cert.domains.map((d) => ({ id: d.id, name: d.name, weight: d.weight })),
+  exam: cert.exam,
+  backHref: url(`certs/${cert.id}/`),
+};
+---
+
+<Base title={`演習 - ${shortName}`}>
+  <nav class="breadcrumb">
+    <a href={url()}>ロードマップ</a> › <a href={url(`certs/${cert.id}/`)}>{shortName}</a> › 演習
+  </nav>
+  <div id="quiz"><p class="muted">読み込み中…</p></div>
+  <script type="application/json" id="quiz-data" set:html={JSON.stringify(payload)} />
+  <script>
+    import type { QuizQuestion, ExamInfo } from '../../../lib/types';
+    import { readJson } from '../../../lib/progress';
+    import { pickMockQuestions, runQuiz, type DomainInfo } from '../../../lib/quiz-runner';
+
+    const data = readJson<{
+      certId: string;
+      shortName: string;
+      questions: QuizQuestion[];
+      domains: DomainInfo[];
+      exam: ExamInfo;
+      backHref: string;
+    }>('quiz-data');
+    const params = new URLSearchParams(location.search);
+    const mode = params.get('mode');
+    const domainId = params.get('domain');
+    const root = document.getElementById('quiz')!;
+    const common = { root, domains: data.domains, backHref: data.backHref, backLabel: '資格ページに戻る' };
+
+    if (mode === 'mock') {
+      const examCount = data.exam.questions ?? 60;
+      const count = Math.min(examCount, data.questions.length);
+      const minutes = Math.round(((data.exam.minutes ?? 105) * count) / examCount);
+      runQuiz({
+        ...common,
+        mode: 'mock',
+        questions: pickMockQuestions(data.questions, data.domains, count),
+        title: `模擬試験（${count} 問・${minutes} 分）`,
+        mock: { certId: data.certId, minutes, passingScore: data.exam.passingScore },
+      });
+    } else if (domainId) {
+      const name = data.domains.find((d) => d.id === domainId)?.name ?? domainId;
+      runQuiz({ ...common, mode: 'practice', questions: data.questions.filter((q) => q.domain === domainId), title: `練習問題: ${name}` });
+    } else {
+      runQuiz({ ...common, mode: 'practice', questions: data.questions, title: `全範囲から演習: ${data.shortName}` });
+    }
+  </script>
+</Base>

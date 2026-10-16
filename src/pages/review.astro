@@ -1,0 +1,46 @@
+---
+import Base from '../layouts/Base.astro';
+import { certs, getAllQuestions } from '../lib/data';
+import '../styles/quiz.css';
+
+// 範囲 ID は資格をまたぐと重複しうるので、資格 ID を付けて一意にする
+const payload = {
+  questions: getAllQuestions().map((q) => ({ ...q, domain: `${q.certId}:${q.domain}` })),
+  domains: certs.flatMap((c) => c.domains.map((d) => ({ id: `${c.id}:${d.id}`, name: d.name, weight: d.weight }))),
+};
+---
+
+<Base title="復習" nav="review">
+  <h1>復習</h1>
+  <p class="muted">
+    間違えた問題がここに集まります。<strong>2 回続けて正解</strong>すると復習リストから外れます。
+  </p>
+  <div id="quiz"></div>
+  <script type="application/json" id="quiz-data" set:html={JSON.stringify(payload)} />
+  <script>
+    import type { QuizQuestion } from '../lib/types';
+    import { loadProgress } from '../lib/storage';
+    import { readJson } from '../lib/progress';
+    import { runQuiz, type DomainInfo } from '../lib/quiz-runner';
+
+    const data = readJson<{ questions: QuizQuestion[]; domains: DomainInfo[] }>('quiz-data');
+    const progress = loadProgress();
+    const targets = data.questions.filter((q) => progress.questions[q.id]?.inReview);
+    const root = document.getElementById('quiz')!;
+    const home = import.meta.env.BASE_URL;
+
+    if (!targets.length) {
+      root.innerHTML = `<div class="card"><p>復習待ちの問題はありません。</p><a class="btn" href="${home}">ロードマップへ</a></div>`;
+    } else {
+      runQuiz({
+        root,
+        mode: 'practice',
+        questions: targets,
+        domains: data.domains,
+        title: `復習（${targets.length} 問）`,
+        backHref: home,
+        backLabel: 'ロードマップへ',
+      });
+    }
+  </script>
+</Base>

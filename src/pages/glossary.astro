@@ -1,0 +1,111 @@
+---
+import Base from '../layouts/Base.astro';
+import { certs, glossary } from '../lib/data';
+
+const terms = glossary.slice().sort((a, b) => a.term.localeCompare(b.term, 'ja'));
+const certName = (id: string) => certs.find((c) => c.id === id)?.name.replace('Salesforce Certified ', '') ?? id;
+const usedCerts = certs.filter((c) => terms.some((t) => t.certs.includes(c.id)));
+---
+
+<Base title="用語集" nav="glossary">
+  <h1>用語集</h1>
+  <div class="filters">
+    <label class="visually-hidden" for="q">用語を検索</label>
+    <input type="search" id="q" placeholder="用語・説明を検索（例: 共有、Flow）" />
+    <label class="visually-hidden" for="cert">資格で絞り込み</label>
+    <select id="cert">
+      <option value="">すべての資格</option>
+      {usedCerts.map((c) => <option value={c.id}>{c.name.replace('Salesforce Certified ', '')}</option>)}
+    </select>
+  </div>
+  <p class="small muted" id="count"></p>
+  <dl class="terms">
+    {
+      terms.map((t) => (
+        <div class="card term" data-certs={t.certs.join(' ')} data-text={`${t.term} ${t.reading ?? ''} ${t.description} ${(t.tags ?? []).join(' ')}`.toLowerCase()}>
+          <dt>
+            {t.term}
+            {t.reading && <span class="muted small reading">{t.reading}</span>}
+          </dt>
+          <dd>
+            <p>{t.description}</p>
+            <div class="tags">
+              {t.tags?.map((tag) => <span class="tag">{tag}</span>)}
+              {t.certs.map((c) => <span class="tag">{certName(c)}</span>)}
+            </div>
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
+  <script>
+    const q = document.getElementById('q') as HTMLInputElement;
+    const cert = document.getElementById('cert') as HTMLSelectElement;
+    const items = [...document.querySelectorAll<HTMLElement>('.term')];
+    const count = document.getElementById('count')!;
+    function filter() {
+      const word = q.value.trim().toLowerCase();
+      let shown = 0;
+      for (const el of items) {
+        const ok = (!word || el.dataset.text!.includes(word)) && (!cert.value || el.dataset.certs!.split(' ').includes(cert.value));
+        el.hidden = !ok;
+        if (ok) shown++;
+      }
+      count.textContent = `${shown} 件`;
+    }
+    q.addEventListener('input', filter);
+    cert.addEventListener('change', filter);
+    filter();
+  </script>
+</Base>
+
+<style>
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 16px 0 4px;
+  }
+  .filters input {
+    flex: 1 1 240px;
+  }
+  select {
+    font: inherit;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    min-height: 44px;
+    max-width: 100%;
+  }
+  .terms {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+  }
+  .term {
+    padding: 14px 18px;
+  }
+  .term[hidden] {
+    display: none;
+  }
+  dt {
+    font-weight: 700;
+  }
+  .reading {
+    margin-left: 8px;
+    font-weight: 400;
+  }
+  dd {
+    margin: 0;
+  }
+  dd p {
+    margin: 4px 0 8px;
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+</style>

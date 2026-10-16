@@ -1,0 +1,208 @@
+---
+import Base from '../layouts/Base.astro';
+import { certs, steps, url, certSummaries, getLessonKeys } from '../lib/data';
+
+const summaries = certSummaries(await getLessonKeys());
+---
+
+<Base title="SF 資格ロードマップ" nav="home">
+  <section class="hero">
+    <h1>Salesforce 資格ロードマップ</h1>
+    <p class="muted">STEP 1 から順に、10 個の認定資格を取得するための学習サイトです。</p>
+  </section>
+
+  <section class="card next-card" aria-labelledby="next-title">
+    <h2 id="next-title" class="next-title">次にやること</h2>
+    <div id="next-body" class="next-body"><p class="muted">読み込み中…</p></div>
+  </section>
+
+  <ol class="steps">
+    {
+      steps.map((step) => (
+        <li class="step" style={`--step-color: var(--step-${step.id})`}>
+          <div class="step-head">
+            <span class="step-no">STEP {step.id}</span>
+            <div>
+              <h2>{step.title}</h2>
+              <p class="muted small">{step.subtitle}</p>
+            </div>
+          </div>
+          <div class="grid grid-2">
+            {certs
+              .filter((c) => c.step === step.id)
+              .map((c) => (
+                <a class="card cert-card" href={url(`certs/${c.id}/`)} data-cert={c.id}>
+                  <div class="cert-tags">
+                    {c.status === 'ready' ? (
+                      <span class="tag tag-ready">教材あり</span>
+                    ) : (
+                      <span class="tag">試験概要のみ</span>
+                    )}
+                    <span class="tag tag-passed" data-passed hidden>
+                      合格済み
+                    </span>
+                  </div>
+                  <h3>{c.name.replace('Salesforce Certified ', '')}</h3>
+                  {c.formerName && <p class="muted small former">旧: {c.formerName.replace('Salesforce Certified ', '')}</p>}
+                  <div class="progress" aria-hidden="true">
+                    <span data-bar />
+                  </div>
+                  <p class="small muted meta">
+                    <span data-percent>0%</span>
+                    <span data-target />
+                  </p>
+                </a>
+              ))}
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+
+  <script type="application/json" id="cert-data" set:html={JSON.stringify(summaries)} />
+  <script>
+    import type { CertSummary } from '../lib/data';
+    import { loadProgress } from '../lib/storage';
+    import { certProgress, daysUntil, readJson } from '../lib/progress';
+
+    const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+    const summaries = readJson<CertSummary[]>('cert-data');
+    const data = loadProgress();
+
+    const targetOf = (c: CertSummary) => data.plans[c.id]?.targetDate ?? c.suggestedTarget ?? null;
+
+    for (const c of summaries) {
+      const card = document.querySelector<HTMLElement>(`[data-cert="${c.id}"]`);
+      if (!card) continue;
+      const p = certProgress(c, data);
+      const passed = data.plans[c.id]?.passedDate;
+      card.querySelector<HTMLElement>('[data-bar]')!.style.width = `${passed ? 100 : p.percent}%`;
+      card.querySelector('[data-percent]')!.textContent = passed ? '100%' : `${p.percent}%`;
+      card.querySelector<HTMLElement>('[data-passed]')!.hidden = !passed;
+      const target = targetOf(c);
+      if (target && !passed) {
+        const d = daysUntil(target);
+        card.querySelector('[data-target]')!.textContent = ` ・ 受験目標 ${target}（${d >= 0 ? `あと ${d} 日` : `${-d} 日超過`}）`;
+      }
+    }
+
+    // 次にやること: 合格していない最初の資格
+    const current = summaries.find((c) => !data.plans[c.id]?.passedDate);
+    const body = document.getElementById('next-body')!;
+    if (!current) {
+      body.innerHTML = '<p>すべての資格に合格しました。おめでとうございます！</p>';
+    } else {
+      const p = certProgress(current, data);
+      const nextLesson = current.lessonDomains.find((d) => !data.lessons[`${current.id}/${d}`]);
+      const domainName = (id: string) => current.domains.find((d) => d.id === id)?.name ?? id;
+      const target = targetOf(current);
+      const items: string[] = [];
+      if (nextLesson) {
+        items.push(
+          `<a class="btn btn-primary" href="${base}/certs/${current.id}/${nextLesson}/">レッスンを読む: ${domainName(nextLesson)}</a>`,
+        );
+      } else if (p.mastered < p.questionsTotal) {
+        items.push(`<a class="btn btn-primary" href="${base}/certs/${current.id}/quiz/?mode=all">練習問題を解く</a>`);
+      } else if (p.questionsTotal > 0) {
+        items.push(`<a class="btn btn-primary" href="${base}/certs/${current.id}/quiz/?mode=mock">模擬試験に挑戦</a>`);
+      }
+      if (p.reviewCount > 0) {
+        items.push(`<a class="btn" href="${base}/review/">復習する（${p.reviewCount} 問）</a>`);
+      }
+      items.push(`<a class="btn" href="${base}/certs/${current.id}/">資格ページへ</a>`);
+      const countdown = target
+        ? `<p class="countdown">受験目標 <strong>${target}</strong>（${daysUntil(target) >= 0 ? `あと <strong>${daysUntil(target)}</strong> 日` : `${-daysUntil(target)} 日超過`}）</p>`
+        : '';
+      body.innerHTML = `
+        <p class="next-cert">${current.name.replace('Salesforce Certified ', '')}</p>
+        ${countdown}
+        <p class="small muted">レッスン ${p.lessonsDone}/${p.lessonsTotal} ・ 正解済みの問題 ${p.mastered}/${p.questionsTotal}</p>
+        <div class="btn-row">${items.join('')}</div>`;
+    }
+  </script>
+</Base>
+
+<style>
+  .hero {
+    margin-bottom: 20px;
+  }
+  .next-card {
+    margin-bottom: 32px;
+    border-left: 4px solid var(--accent);
+  }
+  .next-title {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin: 0 0 4px;
+    font-weight: 600;
+  }
+  .next-body :global(.next-cert) {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0;
+  }
+  .next-body :global(.countdown) {
+    margin: 4px 0;
+  }
+  .steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 32px;
+  }
+  .step-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .step-head h2 {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+  .step-head p {
+    margin: 0;
+  }
+  .step-no {
+    background: var(--step-color);
+    color: var(--bg);
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 4px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+  .cert-card {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    border-top: 3px solid var(--step-color);
+    transition: transform 0.15s ease;
+  }
+  .cert-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--step-color);
+  }
+  .cert-card h3 {
+    font-size: 1rem;
+    margin: 8px 0 0;
+  }
+  .cert-card .former {
+    margin: 0;
+  }
+  .cert-card .progress {
+    margin-top: 12px;
+  }
+  .cert-card .progress > span {
+    background: var(--step-color);
+  }
+  .cert-tags {
+    display: flex;
+    gap: 6px;
+  }
+  .meta {
+    margin: 6px 0 0;
+  }
+</style>

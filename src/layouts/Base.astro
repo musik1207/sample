@@ -1,0 +1,65 @@
+---
+import '../styles/global.css';
+import { url } from '../lib/data';
+
+interface Props {
+  title: string;
+  description?: string;
+  nav?: 'home' | 'review' | 'glossary' | 'settings';
+}
+
+const { title, description = 'Salesforce 認定資格の学習サイト', nav } = Astro.props;
+const navItems = [
+  { key: 'home', label: 'ロードマップ', href: url() },
+  { key: 'review', label: '復習', href: url('review/') },
+  { key: 'glossary', label: '用語集', href: url('glossary/') },
+  { key: 'settings', label: '記録と設定', href: url('settings/') },
+] as const;
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href={url('favicon.svg')} />
+    <title>{title === 'SF 資格ロードマップ' ? title : `${title} | SF 資格ロードマップ`}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container">
+        <a class="brand" href={url()}>
+          <img src={url('favicon.svg')} alt="" width="24" height="24" />
+          SF 資格ロードマップ
+        </a>
+        <nav class="site-nav" aria-label="メインメニュー">
+          {
+            navItems.map((item) => (
+              <a href={item.href} aria-current={nav === item.key ? 'page' : undefined}>
+                {item.label}
+                {item.key === 'review' && <span class="badge-count" data-review-count />}
+              </a>
+            ))
+          }
+        </nav>
+      </div>
+    </header>
+    <main class="container">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="container">
+        個人の学習用サイトです。練習問題はすべてオリジナルで、実際の試験問題ではありません。試験の最新情報は必ず Trailhead の公式試験ガイドで確認してください。
+      </div>
+    </footer>
+    <script>
+      import { loadProgress } from '../lib/storage';
+      const count = Object.values(loadProgress().questions).filter((q) => q.inReview).length;
+      document.querySelectorAll<HTMLElement>('[data-review-count]').forEach((el) => {
+        el.textContent = count > 0 ? String(count) : '';
+      });
+    </script>
+  </body>
+</html>

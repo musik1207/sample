@@ -1,0 +1,277 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { certs, steps, url, certSummaries, getLessonKeys } from '../../../lib/data';
+import type { Cert } from '../../../lib/types';
+
+export function getStaticPaths() {
+  return certs.map((cert) => ({ params: { id: cert.id }, props: { cert } }));
+}
+
+const { cert } = Astro.props as { cert: Cert };
+const step = steps.find((s) => s.id === cert.step)!;
+const lessonKeys = await getLessonKeys();
+const summary = certSummaries(lessonKeys).find((s) => s.id === cert.id)!;
+const hasQuestions = summary.questions.length > 0;
+const show = (v: string | number | null, suffix = '') => (v === null ? '要確認' : `${v}${suffix}`);
+---
+
+<Base title={cert.name.replace('Salesforce Certified ', '')}>
+  <nav class="breadcrumb"><a href={url()}>ロードマップ</a> › STEP {step.id} {step.title}</nav>
+  <h1>{cert.name}</h1>
+  {cert.formerName && <p class="muted small">旧名称: {cert.formerName}</p>}
+  <p>{cert.summary}</p>
+
+  {
+    cert.status === 'outline' && (
+      <p class="notice">
+        この資格は<strong>試験概要のみ</strong>です。教材と練習問題は順次追加します。出題範囲・配点は公式試験ガイドで確定させる前の想定です。
+      </p>
+    )
+  }
+
+  <section class="grid grid-2 top">
+    <div class="card">
+      <h2>試験の概要</h2>
+      <div class="table-wrap">
+        <table>
+          <tbody>
+            <tr><th scope="row">問題数</th><td>{show(cert.exam.questions, ' 問')}</td></tr>
+            <tr><th scope="row">試験時間</th><td>{show(cert.exam.minutes, ' 分')}</td></tr>
+            <tr><th scope="row">合格ライン</th><td>{show(cert.exam.passingScore, '%')}</td></tr>
+            <tr><th scope="row">受験料</th><td>{show(cert.exam.fee)}</td></tr>
+            <tr><th scope="row">再受験料</th><td>{show(cert.exam.retakeFee)}</td></tr>
+            <tr><th scope="row">前提条件</th><td>{cert.exam.prerequisite}</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <ul class="small notes">
+        {cert.exam.notes.map((n) => <li>{n}</li>)}
+      </ul>
+      <p class="small muted">
+        情報の確認日: {cert.exam.checkedAt}（{cert.exam.verified ? '公式情報と照合済み' : '未確定'}）
+      </p>
+      {
+        cert.links.length > 0 && (
+          <ul class="small links">
+            {cert.links.map((l) => (
+              <li>
+                <a href={l.url} target="_blank" rel="noopener noreferrer">
+                  {l.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+
+    <div class="card" id="plan">
+      <h2>受験計画</h2>
+      <label class="field">
+        <span>受験目標日</span>
+        <input type="date" id="target-date" />
+      </label>
+      <p class="small muted" id="countdown"></p>
+      <label class="field">
+        <span>合格日</span>
+        <input type="date" id="passed-date" />
+      </label>
+      <div class="progress-block">
+        <p class="small"><strong id="overall-percent">0%</strong> 完了</p>
+        <div class="progress"><span id="overall-bar"></span></div>
+        <p class="small muted" id="overall-detail"></p>
+      </div>
+      {
+        hasQuestions && (
+          <div class="btn-row">
+            <a class="btn btn-primary" href={url(`certs/${cert.id}/quiz/?mode=mock`)}>
+              模擬試験
+            </a>
+            <a class="btn" href={url(`certs/${cert.id}/quiz/?mode=all`)}>
+              全範囲から演習
+            </a>
+          </div>
+        )
+      }
+      <div id="mock-history"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>出題範囲</h2>
+    <ol class="domains">
+      {
+        cert.domains.map((d) => {
+          const hasLesson = lessonKeys.has(`${cert.id}/${d.id}`);
+          const qCount = summary.questions.filter((q) => q.domain === d.id).length;
+          return (
+            <li class="card domain" data-domain={d.id}>
+              <div class="domain-head">
+                <div>
+                  <h3>{d.name}</h3>
+                  <p class="muted small en">{d.nameEn}</p>
+                </div>
+                <span class="weight">{d.weight === null ? '配点 要確認' : `${d.weight}%`}</span>
+              </div>
+              {d.weight !== null && (
+                <div class="weight-bar" aria-hidden="true">
+                  <span style={`width: ${d.weight * 4}%`} />
+                </div>
+              )}
+              {(hasLesson || qCount > 0) && (
+                <>
+                  <p class="small muted status" data-status />
+                  <div class="btn-row">
+                    {hasLesson && (
+                      <a class="btn" href={url(`certs/${cert.id}/${d.id}/`)}>
+                        レッスン<span class="done-mark" data-done hidden> ✓</span>
+                      </a>
+                    )}
+                    {qCount > 0 && (
+                      <a class="btn" href={url(`certs/${cert.id}/quiz/?domain=${d.id}`)}>
+                        練習問題（{qCount} 問）
+                      </a>
+                    )}
+                  </div>
+                </>
+              )}
+            </li>
+          );
+        })
+      }
+    </ol>
+  </section>
+
+  <script type="application/json" id="cert-data" set:html={JSON.stringify(summary)} />
+  <script>
+    import type { CertSummary } from '../../../lib/data';
+    import { loadProgress, setPlan } from '../../../lib/storage';
+    import { certProgress, daysUntil, readJson } from '../../../lib/progress';
+
+    const cert = readJson<CertSummary>('cert-data');
+    const targetInput = document.getElementById('target-date') as HTMLInputElement;
+    const passedInput = document.getElementById('passed-date') as HTMLInputElement;
+
+    function render() {
+      const data = loadProgress();
+      const plan = data.plans[cert.id] ?? {};
+      targetInput.value = plan.targetDate ?? cert.suggestedTarget ?? '';
+      passedInput.value = plan.passedDate ?? '';
+
+      const countdown = document.getElementById('countdown')!;
+      if (plan.passedDate) countdown.textContent = '合格おめでとうございます！';
+      else if (targetInput.value) {
+        const d = daysUntil(targetInput.value);
+        countdown.textContent = d >= 0 ? `あと ${d} 日` : `目標日を ${-d} 日過ぎています`;
+      } else countdown.textContent = '';
+
+      const p = certProgress(cert, data);
+      document.getElementById('overall-percent')!.textContent = `${p.percent}%`;
+      document.getElementById('overall-bar')!.style.width = `${p.percent}%`;
+      document.getElementById('overall-detail')!.textContent =
+        `レッスン ${p.lessonsDone}/${p.lessonsTotal} ・ 正解済みの問題 ${p.mastered}/${p.questionsTotal} ・ 復習待ち ${p.reviewCount} 問`;
+
+      for (const d of cert.domains) {
+        const el = document.querySelector<HTMLElement>(`[data-domain="${d.id}"]`);
+        if (!el) continue;
+        const dp = certProgress(cert, data, d.id);
+        const status = el.querySelector('[data-status]');
+        if (status) {
+          const parts = [];
+          if (dp.lessonsTotal) parts.push(dp.lessonsDone ? 'レッスン読了' : 'レッスン未読');
+          if (dp.questionsTotal) parts.push(`正解済み ${dp.mastered}/${dp.questionsTotal}`);
+          status.textContent = parts.join(' ・ ');
+        }
+        const done = el.querySelector<HTMLElement>('[data-done]');
+        if (done) done.hidden = !dp.lessonsDone;
+      }
+
+      const mocks = data.mocks.filter((m) => m.certId === cert.id).slice(-5).reverse();
+      const history = document.getElementById('mock-history')!;
+      history.innerHTML = mocks.length
+        ? `<h3 class="small">模擬試験の結果（直近 5 回）</h3><ul class="small">${mocks
+            .map((m) => `<li>${m.date.slice(0, 10)}: ${Math.round((m.score / m.total) * 100)}%（${m.score}/${m.total}）</li>`)
+            .join('')}</ul>`
+        : '';
+    }
+
+    targetInput.addEventListener('change', () => {
+      setPlan(cert.id, { targetDate: targetInput.value });
+      render();
+    });
+    passedInput.addEventListener('change', () => {
+      setPlan(cert.id, { passedDate: passedInput.value });
+      render();
+    });
+    render();
+  </script>
+</Base>
+
+<style>
+  .top {
+    margin: 24px 0 32px;
+  }
+  .card h2 {
+    font-size: 1.1rem;
+    margin-top: 0;
+  }
+  .notes,
+  .links {
+    padding-left: 1.2em;
+  }
+  .field {
+    display: grid;
+    gap: 4px;
+    margin-bottom: 12px;
+    font-size: 0.9rem;
+  }
+  .progress-block {
+    margin: 16px 0;
+  }
+  .progress-block p {
+    margin: 4px 0;
+  }
+  .domains {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 12px;
+  }
+  .domain-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .domain h3 {
+    margin: 0;
+    font-size: 1rem;
+  }
+  .domain .en {
+    margin: 0;
+  }
+  .weight {
+    font-weight: 700;
+    white-space: nowrap;
+    color: var(--accent);
+  }
+  .weight-bar {
+    height: 4px;
+    background: var(--surface-2);
+    border-radius: 999px;
+    margin: 8px 0;
+    overflow: hidden;
+  }
+  .weight-bar span {
+    display: block;
+    height: 100%;
+    background: var(--accent);
+    max-width: 100%;
+  }
+  .status {
+    margin: 4px 0 8px;
+  }
+  .done-mark {
+    color: var(--success);
+  }
+</style>

@@ -1,0 +1,305 @@
+{
+  "steps": [
+    { "id": 1, "title": "基礎知識", "subtitle": "Salesforce の土台と、業務を要件に落とす力" },
+    { "id": 2, "title": "業務改革・導入コンサル", "subtitle": "営業・サービス領域の導入設計" },
+    { "id": 3, "title": "戦略・構想策定", "subtitle": "ビジョンからロードマップを描く" },
+    { "id": 4, "title": "ITアーキテクチャ", "subtitle": "連携・データ・共有の設計" },
+    { "id": 5, "title": "AI・データ変革", "subtitle": "Data 360 と Agentforce の活用" }
+  ],
+  "certs": [
+    {
+      "id": "platform-admin",
+      "step": 1,
+      "order": 1,
+      "name": "Salesforce Certified Platform Administrator",
+      "formerName": "Salesforce Certified Administrator",
+      "summary": "組織の設定、ユーザーとセキュリティ、データ、レポート、Flow による自動化、Agentforce の基本までを扱う、すべての土台になる資格。",
+      "status": "ready",
+      "suggestedTarget": "2026-11-30",
+      "exam": {
+        "questions": 60,
+        "minutes": 105,
+        "passingScore": 65,
+        "fee": "US$200（税別）",
+        "retakeFee": "US$100（税別）",
+        "prerequisite": "なし",
+        "verified": true,
+        "checkedAt": "2026-10-16",
+        "notes": [
+          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます。",
+          "2025年12月15日の改定で「Agentforce AI」(8%) が追加され、名称も Platform Administrator に変わりました。",
+          "日本語で受験できます。テストセンターかオンライン監視のどちらかを選べます。"
+        ]
+      },
+      "domains": [
+        { "id": "config-setup", "name": "構成と設定", "nameEn": "Configuration and Setup", "weight": 15 },
+        { "id": "object-manager", "name": "オブジェクトマネージャーと Lightning アプリケーションビルダー", "nameEn": "Object Manager and Lightning App Builder", "weight": 15 },
+        { "id": "sales-marketing", "name": "営業・マーケティングアプリケーション", "nameEn": "Sales and Marketing Applications", "weight": 10 },
+        { "id": "service-support", "name": "サービス・サポートアプリケーション", "nameEn": "Service and Support Applications", "weight": 10 },
+        { "id": "productivity", "name": "生産性とコラボレーション", "nameEn": "Productivity and Collaboration", "weight": 10 },
+        { "id": "data-analytics", "name": "データと分析の管理", "nameEn": "Data and Analytics Management", "weight": 17 },
+        { "id": "automation", "name": "自動化", "nameEn": "Automation", "weight": 15 },
+        { "id": "agentforce", "name": "Agentforce AI", "nameEn": "Agentforce AI", "weight": 8 }
+      ],
+      "links": [
+        { "label": "Trailhead 認定資格ページ", "url": "https://trailhead.salesforce.com/credentials/administrator" },
+        { "label": "Salesforce Admins ブログ（2026 年改定の解説）", "url": "https://admin.salesforce.com/blog/2026/what-the-salesforce-certified-platform-administrator-exam-update-means-for-admins" }
+      ]
+    },
+    {
+      "id": "business-analyst",
+      "step": 1,
+      "order": 2,
+      "name": "Salesforce Certified Business Analyst",
+      "summary": "業務の現状把握、ステークホルダーとの協働、業務プロセスの可視化、要件定義とユーザーストーリー作成、受け入れテストまでを扱う。",
+      "status": "outline",
+      "exam": {
+        "questions": 60,
+        "minutes": 105,
+        "passingScore": null,
+        "fee": "US$200（税別）",
+        "retakeFee": "US$100（税別）",
+        "prerequisite": "なし（2023 年に Administrator 必須が撤廃）",
+        "verified": false,
+        "checkedAt": "2026-10-16",
+        "notes": ["合格ラインと配点は情報源によって差があるため、教材を作るときに公式ガイドで確定します。"]
+      },
+      "domains": [
+        { "id": "customer-discovery", "name": "顧客の現状把握", "nameEn": "Customer Discovery", "weight": null },
+        { "id": "collaboration", "name": "ステークホルダーとの協働", "nameEn": "Collaboration with Stakeholders", "weight": null },
+        { "id": "process-mapping", "name": "業務プロセスの可視化", "nameEn": "Business Process Mapping", "weight": null },
+        { "id": "requirements", "name": "要件定義", "nameEn": "Requirements", "weight": null },
+        { "id": "user-stories", "name": "ユーザーストーリー", "nameEn": "User Stories", "weight": null },
+        { "id": "uat", "name": "ユーザー受け入れテスト", "nameEn": "User Acceptance", "weight": null }
+      ],
+      "links": [{ "label": "Trailhead 認定資格ページ", "url": "https://trailhead.salesforce.com/credentials/businessanalyst" }]
+    },
+    {
+      "id": "agentforce-sales-consultant",
+      "step": 2,
+      "order": 1,
+      "name": "Salesforce Certified Agentforce Sales Consultant",
+      "formerName": "Salesforce Certified Sales Cloud Consultant",
+      "summary": "営業プロセスの設計、リード・商談・売上予測・テリトリー管理、営業向け Agentforce の導入を提案・設計する資格。",
+      "status": "outline",
+      "exam": {
+        "questions": null,
+        "minutes": null,
+        "passingScore": null,
+        "fee": null,
+        "retakeFee": null,
+        "prerequisite": "公式ガイドで確認",
+        "verified": false,
+        "checkedAt": "2026-10-16",
+        "notes": ["出題範囲は想定トピックです。教材を作るときに公式ガイドで確定します。"]
+      },
+      "domains": [
+        { "id": "sales-process", "name": "営業プロセスと要件整理", "nameEn": "Sales Process Design", "weight": null },
+        { "id": "accounts-leads", "name": "取引先・取引先責任者・リード管理", "nameEn": "Account, Contact and Lead Management", "weight": null },
+        { "id": "opportunity-forecast", "name": "商談・売上予測・テリトリー", "nameEn": "Opportunities, Forecasting and Territories", "weight": null },
+        { "id": "sales-productivity", "name": "営業生産性とエンゲージメント", "nameEn": "Sales Productivity", "weight": null },
+        { "id": "agentforce-sales", "name": "営業向け Agentforce", "nameEn": "Agentforce for Sales", "weight": null },
+        { "id": "sales-analytics", "name": "データ移行と分析", "nameEn": "Data and Analytics", "weight": null }
+      ],
+      "links": []
+    },
+    {
+      "id": "agentforce-service-consultant",
+      "step": 2,
+      "order": 2,
+      "name": "Salesforce Certified Agentforce Service Consultant",
+      "formerName": "Salesforce Certified Service Cloud Consultant",
+      "summary": "ケース管理、サービスコンソール、オムニチャネル、ナレッジ、各種チャネル、サービス向け Agentforce を設計する資格。",
+      "status": "outline",
+      "exam": {
+        "questions": null,
+        "minutes": null,
+        "passingScore": null,
+        "fee": null,
+        "retakeFee": null,
+        "prerequisite": "公式ガイドで確認",
+        "verified": false,
+        "checkedAt": "2026-10-16",
+        "notes": ["出題範囲は想定トピックです。教材を作るときに公式ガイドで確定します。"]
+      },
+      "domains": [
+        { "id": "case-management", "name": "ケース管理とエスカレーション", "nameEn": "Case Management", "weight": null },
+        { "id": "service-console", "name": "サービスコンソール", "nameEn": "Service Console", "weight": null },
+        { "id": "omni-channel", "name": "オムニチャネルとルーティング", "nameEn": "Omni-Channel and Routing", "weight": null },
+        { "id": "knowledge", "name": "ナレッジ", "nameEn": "Knowledge", "weight": null },
+        { "id": "channels", "name": "チャネル（メール・Web・メッセージング・音声）", "nameEn": "Contact Channels", "weight": null },
+        { "id": "agentforce-service", "name": "サービス向け Agentforce", "nameEn": "Agentforce for Service", "weight": null },
+        { "id": "service-analytics", "name": "サービス分析と継続改善", "nameEn": "Service Analytics", "weight": null }
+      ],
+      "links": []
+    },
+    {
+      "id": "platform-strategy-designer",
+      "step": 3,
+      "order": 1,
+      "name": "Salesforce Certified Platform Strategy Designer",
+      "summary": "顧客理解とデザイン思考をもとに、ソリューションのビジョンとロードマップを描く資格。",
+      "status": "outline",
+      "exam": {
+        "questions": null,
+        "minutes": null,
+        "passingScore": null,
+        "fee": null,
+        "retakeFee": null,
+        "prerequisite": "公式ガイドで確認",
+        "verified": false,
+        "checkedAt": "2026-10-16",
+        "notes": ["出題範囲は想定トピックです。教材を作るときに公式ガイドで確定します。"]
+      },
+      "domains": [
+        { "id": "discovery", "name": "顧客理解とデザインリサーチ", "nameEn": "Discovery and Research", "weight": null },
+        { "id": "alignment", "name": "ステークホルダーの合意形成", "nameEn": "Stakeholder Alignment", "weight": null },
+        { "id": "vision", "name": "ソリューションのビジョン策定", "nameEn": "Solution Vision", "weight": null },
+        { "id": "roadmap", "name": "ロードマップと価値の実現", "nameEn": "Roadmap and Value Realization", "weight": null }
+      ],
+      "links": []
+    },
+    {
+      "id": "integration-architect",
+      "step": 4,
+      "order": 1,
+      "name": "Salesforce Certified Platform Integration Architect",
+      "formerName": "Salesforce Certified Integration Architect",
+      "summary": "既存システムの把握から、連携パターンの選択、API の使い分け、エラー処理と監視までを設計する資格。",
+      "status": "outline",
+      "exam": {
+        "questions": null,
+        "minutes": null,
+        "passingScore": null,
+        "fee": null,
+        "retakeFee": null,
+        "prerequisite": "公式ガイドで確認",
+        "verified": false,
+        "checkedAt": "2026-10-16",
+        "notes": ["配点は教材を作るときに公式ガイドで確定します。"]
+      },
+      "domains": [
+        { "id": "landscape", "name": "現行システム環境の評価", "nameEn": "Evaluate the Current System Landscape", "weight": null },
+        { "id": "business-needs", "name": "ビジネスニーズの評価", "nameEn": "Evaluate Business Needs", "weight": null },
+        { "id": "requirements", "name": "連携要件への落とし込み", "nameEn": "Translate Needs to Integration Requirements", "weight": null },
+        { "id": "design", "name": "連携ソリューションの設計", "nameEn": "Design Integration Solutions", "weight": null },
+        { "id": "build", "name": "ソリューションの構築", "nameEn": "Build Solution", "weight": null },
+        { "id": "maintain", "name": "連携の保守", "nameEn": "Maintain Integration", "weight": null }
+      ],
+      "links": []
+    },
+    {
+      "id": "data-architect",
+      "step": 4,
+      "order": 2,
+      "name": "Salesforce Certified Platform Data Architect",
+      "formerName": "Salesforce Certified Data Architect",
+      "summary": "データモデル設計、マスターデータ管理、大量データ（LDV）、データガバナンス、データ移行を設計する資格。",
+      "status": "outline",
+      "exam": {
+        "questions": null,
+        "minutes": null,
+        "passingScore": null,
+        "fee": null,
+        "retakeFee": null,
+        "prerequisite": "公式ガイドで確認",
+        "verified": false,
+        "checkedAt": "2026-10-16",
+        "notes": ["配点は教材を作るときに公式ガイドで確定します。"]
+      },
+      "domains": [
+        { "id": "data-modeling", "name": "データモデリングとデータベース設計", "nameEn": "Data Modeling / Database Design", "weight": null },
+        { "id": "mdm", "name": "マスターデータ管理", "nameEn": "Master Data Management", "weight": null },
+        { "id": "data-management", "name": "Salesforce のデータ管理", "nameEn": "Salesforce Data Management", "weight": null },
+        { "id": "governance", "name": "データガバナンス", "nameEn": "Data Governance", "weight": null },
+        { "id": "ldv", "name": "大量データへの配慮", "nameEn": "Large Data Volume Considerations", "weight": null },
+        { "id": "migration", "name": "データ移行", "nameEn": "Data Migration", "weight": null }
+      ],
+      "links": []
+    },
+    {
+      "id": "sharing-visibility-architect",
+      "step": 4,
+      "order": 3,
+      "name": "Salesforce Certified Platform Sharing and Visibility Architect",
+      "formerName": "Salesforce Certified Sharing and Visibility Architect",
+      "summary": "組織の共有設定、ロール階層、共有ルール、Apex 共有、大規模組織でのパフォーマンスを踏まえて可視性を設計する資格。",
+      "status": "outline",
+      "exam": {
+        "questions": null,
+        "minutes": null,
+        "passingScore": null,
+        "fee": null,
+        "retakeFee": null,
+        "prerequisite": "公式ガイドで確認",
+        "verified": false,
+        "checkedAt": "2026-10-16",
+        "notes": ["出題範囲と配点は教材を作るときに公式ガイドで確定します。"]
+      },
+      "domains": [
+        { "id": "declarative", "name": "宣言的な共有", "nameEn": "Declarative Sharing", "weight": null },
+        { "id": "programmatic", "name": "プログラムによる共有", "nameEn": "Programmatic Sharing", "weight": null },
+        { "id": "performance", "name": "パフォーマンスとスケーラビリティ", "nameEn": "Performance and Scalability", "weight": null }
+      ],
+      "links": []
+    },
+    {
+      "id": "data-360-consultant",
+      "step": 5,
+      "order": 1,
+      "name": "Salesforce Certified Data 360 Consultant",
+      "formerName": "Salesforce Certified Data Cloud Consultant",
+      "summary": "データの取り込みとモデリング、ID 解決、セグメント、インサイト、アクティベーションで顧客データを活用する設計を扱う資格。",
+      "status": "outline",
+      "exam": {
+        "questions": null,
+        "minutes": null,
+        "passingScore": null,
+        "fee": null,
+        "retakeFee": null,
+        "prerequisite": "公式ガイドで確認",
+        "verified": false,
+        "checkedAt": "2026-10-16",
+        "notes": ["出題範囲と配点は教材を作るときに公式ガイドで確定します。"]
+      },
+      "domains": [
+        { "id": "overview", "name": "Data 360 の全体像", "nameEn": "Overview", "weight": null },
+        { "id": "setup", "name": "セットアップと管理", "nameEn": "Setup and Administration", "weight": null },
+        { "id": "ingestion-modeling", "name": "データの取り込みとモデリング", "nameEn": "Data Ingestion and Modeling", "weight": null },
+        { "id": "identity-resolution", "name": "ID 解決", "nameEn": "Identity Resolution", "weight": null },
+        { "id": "segmentation-insights", "name": "セグメントとインサイト", "nameEn": "Segmentation and Insights", "weight": null },
+        { "id": "act-on-data", "name": "データの活用（アクティベーション）", "nameEn": "Act on Data", "weight": null }
+      ],
+      "links": []
+    },
+    {
+      "id": "agentforce-specialist",
+      "step": 5,
+      "order": 2,
+      "name": "Salesforce Certified Agentforce Specialist",
+      "formerName": "Salesforce Certified AI Specialist",
+      "summary": "エージェントの設計（トピック・アクション・指示）、プロンプトビルダー、データによるグラウンディング、テストと運用を扱う資格。",
+      "status": "outline",
+      "exam": {
+        "questions": 60,
+        "minutes": 105,
+        "passingScore": null,
+        "fee": "US$200（税別）",
+        "retakeFee": "US$100（税別）",
+        "prerequisite": "なし",
+        "verified": false,
+        "checkedAt": "2026-10-16",
+        "notes": ["合格ラインと配点は情報源によって差があるため、教材を作るときに公式ガイドで確定します。"]
+      },
+      "domains": [
+        { "id": "concepts", "name": "Agentforce の概念", "nameEn": "Agentforce Concepts", "weight": null },
+        { "id": "agent-design", "name": "エージェント設計（トピック・アクション・指示）", "nameEn": "Agent Design", "weight": null },
+        { "id": "prompt-builder", "name": "プロンプトビルダー", "nameEn": "Prompt Builder", "weight": null },
+        { "id": "grounding", "name": "データとグラウンディング", "nameEn": "Data and Grounding", "weight": null },
+        { "id": "test-deploy", "name": "テスト・リリース・監視", "nameEn": "Testing, Deployment and Monitoring", "weight": null },
+        { "id": "trust", "name": "信頼性とセキュリティ", "nameEn": "Trust and Security", "weight": null }
+      ],
+      "links": []
+    }
+  ]
+}

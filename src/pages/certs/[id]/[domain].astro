@@ -1,0 +1,146 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import { getCert, getQuestions, url } from '../../../lib/data';
+
+export async function getStaticPaths() {
+  const lessons = await getCollection('lessons');
+  return lessons.map((lesson) => ({
+    params: { id: lesson.data.cert, domain: lesson.data.domain },
+    props: { lesson },
+  }));
+}
+
+const { lesson } = Astro.props;
+const cert = getCert(lesson.data.cert)!;
+const domainIndex = cert.domains.findIndex((d) => d.id === lesson.data.domain);
+const domain = cert.domains[domainIndex];
+const lessons = await getCollection('lessons', (l) => l.data.cert === cert.id);
+const hasLesson = (id: string) => lessons.some((l) => l.data.domain === id);
+const prev = cert.domains.slice(0, domainIndex).reverse().find((d) => hasLesson(d.id));
+const next = cert.domains.slice(domainIndex + 1).find((d) => hasLesson(d.id));
+const qCount = getQuestions(cert.id).filter((q) => q.domain === domain.id).length;
+const { Content } = await render(lesson);
+const shortName = cert.name.replace('Salesforce Certified ', '');
+---
+
+<Base title={`${domain.name} - ${shortName}`}>
+  <nav class="breadcrumb">
+    <a href={url()}>ロードマップ</a> › <a href={url(`certs/${cert.id}/`)}>{shortName}</a>
+  </nav>
+  <header class="lesson-head">
+    <p class="muted small">{domain.nameEn}{domain.weight !== null && ` ・ 配点 ${domain.weight}%`}</p>
+    <h1>{domain.name}</h1>
+    <p class="lead">{lesson.data.summary}</p>
+  </header>
+
+  <article class="card lesson">
+    <Content />
+  </article>
+
+  <div class="card actions" data-cert={cert.id} data-domain={domain.id}>
+    <label class="done-toggle">
+      <input type="checkbox" id="done" />
+      <span>このレッスンを読み終えた</span>
+    </label>
+    <div class="btn-row">
+      {
+        qCount > 0 && (
+          <a class="btn btn-primary" href={url(`certs/${cert.id}/quiz/?domain=${domain.id}`)}>
+            この範囲の練習問題（{qCount} 問）
+          </a>
+        )
+      }
+    </div>
+  </div>
+
+  <nav class="pager" aria-label="レッスン">
+    {prev ? <a class="btn" href={url(`certs/${cert.id}/${prev.id}/`)}>← {prev.name}</a> : <span />}
+    {next && <a class="btn" href={url(`certs/${cert.id}/${next.id}/`)}>{next.name} →</a>}
+  </nav>
+
+  <script>
+    import { isLessonDone, loadProgress, setLessonDone } from '../../../lib/storage';
+    const box = document.querySelector<HTMLElement>('[data-cert]')!;
+    const certId = box.dataset.cert!;
+    const domainId = box.dataset.domain!;
+    const input = document.getElementById('done') as HTMLInputElement;
+    input.checked = isLessonDone(loadProgress(), certId, domainId);
+    input.addEventListener('change', () => setLessonDone(certId, domainId, input.checked));
+  </script>
+</Base>
+
+<style>
+  .lesson-head .lead {
+    font-size: 1.05rem;
+  }
+  .lesson-head p {
+    margin: 0 0 8px;
+  }
+  .lesson {
+    margin: 16px 0;
+    overflow-wrap: anywhere;
+  }
+  .lesson :global(h2) {
+    font-size: 1.2rem;
+    margin-top: 2rem;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border);
+  }
+  .lesson :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .lesson :global(h3) {
+    font-size: 1.05rem;
+  }
+  .lesson :global(table) {
+    display: block;
+    overflow-x: auto;
+    margin: 12px 0;
+  }
+  .lesson :global(blockquote) {
+    margin: 16px 0;
+    padding: 12px 16px;
+    background: var(--accent-soft);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+  }
+  .lesson :global(blockquote p) {
+    margin: 0;
+  }
+  .lesson :global(code) {
+    background: var(--surface-2);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+  .lesson :global(ul.contains-task-list) {
+    list-style: none;
+    padding-left: 0;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .done-toggle {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .done-toggle input {
+    width: 20px;
+    height: 20px;
+  }
+  .pager {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+</style>

@@ -1,0 +1,117 @@
+---
+import Base from '../layouts/Base.astro';
+import { certs } from '../lib/data';
+
+const names = Object.fromEntries(certs.map((c) => [c.id, c.name.replace('Salesforce Certified ', '')]));
+---
+
+<Base title="記録と設定" nav="settings">
+  <h1>記録と設定</h1>
+  <p class="muted">学習記録はこのブラウザの中だけに保存されています。別の端末やブラウザで続けるときは、書き出したファイルを読み込んでください。</p>
+
+  <section class="card">
+    <h2>学習記録の概要</h2>
+    <ul id="summary" class="small"></ul>
+    <p class="small muted" id="updated"></p>
+  </section>
+
+  <section class="card">
+    <h2>書き出し・読み込み</h2>
+    <div class="btn-row">
+      <button class="btn btn-primary" type="button" id="export">ファイルに書き出す</button>
+      <label class="btn" for="import">ファイルを読み込む</label>
+      <input type="file" id="import" accept="application/json,.json" class="visually-hidden" />
+    </div>
+    <p class="small" id="message" role="status"></p>
+  </section>
+
+  <section class="card">
+    <h2>模擬試験の履歴</h2>
+    <div id="mocks"></div>
+  </section>
+
+  <section class="card danger-zone">
+    <h2>記録の削除</h2>
+    <p class="small muted">すべての学習記録を消します。元に戻せないので、先に書き出しておくことをおすすめします。</p>
+    <button class="btn btn-danger" type="button" id="reset">すべての記録を削除</button>
+  </section>
+
+  <script type="application/json" id="names" set:html={JSON.stringify(names)} />
+  <script>
+    import { exportProgress, importProgress, loadProgress, resetProgress } from '../lib/storage';
+    import { readJson } from '../lib/progress';
+
+    const names = readJson<Record<string, string>>('names');
+    const message = document.getElementById('message')!;
+
+    function render() {
+      const d = loadProgress();
+      const stats = Object.values(d.questions);
+      document.getElementById('summary')!.innerHTML = `
+        <li>読み終えたレッスン: ${Object.keys(d.lessons).length}</li>
+        <li>解いた問題: ${stats.length} 問（のべ ${stats.reduce((s, q) => s + q.attempts, 0)} 回）</li>
+        <li>復習待ち: ${stats.filter((q) => q.inReview).length} 問</li>
+        <li>模擬試験: ${d.mocks.length} 回</li>`;
+      document.getElementById('updated')!.textContent = `最終更新: ${new Date(d.updatedAt).toLocaleString('ja-JP')}`;
+      const mocks = d.mocks.slice().reverse();
+      document.getElementById('mocks')!.innerHTML = mocks.length
+        ? `<div class="table-wrap"><table><thead><tr><th>日時</th><th>資格</th><th>結果</th><th>時間</th></tr></thead><tbody>${mocks
+            .map(
+              (m) =>
+                `<tr><td>${new Date(m.date).toLocaleString('ja-JP')}</td><td>${names[m.certId] ?? m.certId}</td><td>${Math.round((m.score / m.total) * 100)}%（${m.score}/${m.total}）</td><td>${Math.floor(m.durationSec / 60)} 分</td></tr>`,
+            )
+            .join('')}</tbody></table></div>`
+        : '<p class="small muted">まだありません。</p>';
+    }
+
+    document.getElementById('export')!.addEventListener('click', () => {
+      const blob = new Blob([exportProgress()], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `sf-study-progress-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      message.textContent = '書き出しました。';
+    });
+
+    document.getElementById('import')!.addEventListener('change', async (e) => {
+      const input = e.target as HTMLInputElement;
+      const file = input.files?.[0];
+      if (!file) return;
+      if (!window.confirm('今の記録を、読み込むファイルの内容で置き換えます。よろしいですか？')) {
+        input.value = '';
+        return;
+      }
+      try {
+        importProgress(await file.text());
+        message.textContent = '読み込みました。';
+        render();
+      } catch (err) {
+        message.textContent = `読み込めませんでした: ${err instanceof Error ? err.message : String(err)}`;
+      }
+      input.value = '';
+    });
+
+    document.getElementById('reset')!.addEventListener('click', () => {
+      if (!window.confirm('すべての学習記録を削除します。元に戻せません。よろしいですか？')) return;
+      resetProgress();
+      message.textContent = '';
+      render();
+    });
+
+    render();
+  </script>
+</Base>
+
+<style>
+  section.card {
+    margin-top: 16px;
+  }
+  section.card h2 {
+    font-size: 1.05rem;
+    margin-top: 0;
+  }
+  .danger-zone {
+    border-color: color-mix(in srgb, var(--danger) 40%, var(--border));
+  }
+</style>
