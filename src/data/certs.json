@@ -184,57 +184,52 @@
       "order": 1,
       "name": "Salesforce Certified Agentforce Sales Consultant",
       "formerName": "Salesforce Certified Sales Cloud Consultant",
-      "summary": "営業プロセスの設計、リード・商談・売上予測・テリトリー管理、営業向け Agentforce の導入を提案・設計する資格。",
-      "status": "outline",
+      "summary": "営業プロセスの設計、リード・商談・売上予測・テリトリー、データ管理、営業向けの予測 AI と生成 AI（Agentforce）を、顧客に提案・導入する力を問う資格。",
+      "status": "ready",
       "exam": {
-        "questions": null,
-        "minutes": null,
-        "passingScore": null,
-        "fee": null,
-        "retakeFee": null,
-        "prerequisite": "公式ガイドで確認",
+        "questions": 60,
+        "minutes": 105,
+        "passingScore": 73,
+        "fee": "US$200（税別）",
+        "retakeFee": "US$100（税別）",
+        "prerequisite": "Platform Administrator（公式ガイドで確認）",
         "verified": false,
         "checkedAt": "2026-10-16",
         "notes": [
-          "出題範囲は想定トピックです。教材を作るときに公式ガイドで確定します。"
+          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます。",
+          "出題範囲・配点・合格ラインは講座提供会社（K2U）の公開情報に基づきます。情報源によって差があるため、公式試験ガイドで最終確認してください。"
         ]
       },
       "domains": [
         {
-          "id": "sales-process",
-          "name": "営業プロセスと要件整理",
-          "nameEn": "Sales Process Design",
-          "weight": null
+          "id": "consulting",
+          "name": "コンサルティングと導入戦略",
+          "nameEn": "Consulting and Implementation Strategies",
+          "weight": 25
         },
         {
-          "id": "accounts-leads",
-          "name": "取引先・取引先責任者・リード管理",
-          "nameEn": "Account, Contact and Lead Management",
-          "weight": null
+          "id": "sales-expertise",
+          "name": "営業領域の実践的な設計",
+          "nameEn": "Practical Application of Agentforce Sales Expertise",
+          "weight": 24
         },
         {
-          "id": "opportunity-forecast",
-          "name": "商談・売上予測・テリトリー",
-          "nameEn": "Opportunities, Forecasting and Territories",
-          "weight": null
+          "id": "sales-lifecycle",
+          "name": "営業ライフサイクル",
+          "nameEn": "Sales Lifecycle",
+          "weight": 20
         },
         {
-          "id": "sales-productivity",
-          "name": "営業生産性とエンゲージメント",
-          "nameEn": "Sales Productivity",
-          "weight": null
+          "id": "data-management",
+          "name": "データ管理",
+          "nameEn": "Data Management",
+          "weight": 18
         },
         {
-          "id": "agentforce-sales",
-          "name": "営業向け Agentforce",
-          "nameEn": "Agentforce for Sales",
-          "weight": null
-        },
-        {
-          "id": "sales-analytics",
-          "name": "データ移行と分析",
-          "nameEn": "Data and Analytics",
-          "weight": null
+          "id": "ai",
+          "name": "予測 AI と生成 AI",
+          "nameEn": "Predictive and Generative AI",
+          "weight": 13
         }
       ],
       "links": []
@@ -245,63 +240,70 @@
       "order": 2,
       "name": "Salesforce Certified Agentforce Service Consultant",
       "formerName": "Salesforce Certified Service Cloud Consultant",
-      "summary": "ケース管理、サービスコンソール、オムニチャネル、ナレッジ、各種チャネル、サービス向け Agentforce を設計する資格。",
-      "status": "outline",
+      "summary": "ケース管理、受付チャネル、ナレッジ、コンタクトセンター分析、連携、サービス向け Agentforce を、顧客のコンタクトセンターに合わせて設計する力を問う資格。",
+      "status": "ready",
       "exam": {
-        "questions": null,
-        "minutes": null,
+        "questions": 60,
+        "minutes": 105,
         "passingScore": null,
-        "fee": null,
-        "retakeFee": null,
-        "prerequisite": "公式ガイドで確認",
+        "fee": "US$200（税別）",
+        "retakeFee": "US$100（税別）",
+        "prerequisite": "Platform Administrator（公式ガイドで確認）",
         "verified": false,
         "checkedAt": "2026-10-16",
         "notes": [
-          "出題範囲は想定トピックです。教材を作るときに公式ガイドで確定します。"
+          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます。",
+          "出題範囲と配点は講座提供会社（K2U）の公開情報に基づきます。合格ラインは情報源によって 67%〜78% と差があるため、公式試験ガイドで確認してください。"
         ]
       },
       "domains": [
         {
-          "id": "case-management",
-          "name": "ケース管理とエスカレーション",
-          "nameEn": "Case Management",
-          "weight": null
+          "id": "industry",
+          "name": "業界知識",
+          "nameEn": "Industry Knowledge",
+          "weight": 12
         },
         {
-          "id": "service-console",
-          "name": "サービスコンソール",
-          "nameEn": "Service Console",
-          "weight": null
-        },
-        {
-          "id": "omni-channel",
-          "name": "オムニチャネルとルーティング",
-          "nameEn": "Omni-Channel and Routing",
-          "weight": null
-        },
-        {
-          "id": "knowledge",
-          "name": "ナレッジ",
-          "nameEn": "Knowledge",
-          "weight": null
-        },
-        {
-          "id": "channels",
-          "name": "チャネル（メール・Web・メッセージング・音声）",
-          "nameEn": "Contact Channels",
-          "weight": null
+          "id": "implementation",
+          "name": "導入戦略",
+          "nameEn": "Implementation Strategies",
+          "weight": 12
         },
         {
           "id": "agentforce-service",
-          "name": "サービス向け Agentforce",
-          "nameEn": "Agentforce for Service",
-          "weight": null
+          "name": "Agentforce Service のソリューション設計",
+          "nameEn": "Agentforce Service Solution Design",
+          "weight": 15
         },
         {
-          "id": "service-analytics",
-          "name": "サービス分析と継続改善",
-          "nameEn": "Service Analytics",
-          "weight": null
+          "id": "knowledge",
+          "name": "ナレッジ管理",
+          "nameEn": "Knowledge Management",
+          "weight": 12
+        },
+        {
+          "id": "channels",
+          "name": "受付とインタラクションのチャネル",
+          "nameEn": "Intake and Interaction Channels",
+          "weight": 13
+        },
+        {
+          "id": "case-management",
+          "name": "ケース管理",
+          "nameEn": "Case Management",
+          "weight": 13
+        },
+        {
+          "id": "integrations",
+          "name": "連携",
+          "nameEn": "Integrations",
+          "weight": 10
+        },
+        {
+          "id": "analytics",
+          "name": "コンタクトセンター分析",
+          "nameEn": "Contact Center Analytics",
+          "weight": 13
         }
       ],
       "links": []

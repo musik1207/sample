@@ -23,7 +23,9 @@ Salesforce 認定資格（STEP 1〜5 の 10 資格）を順番に取得するた
 
 - **Platform Administrator**: レッスン 8 範囲 ＋ オリジナル問題 150 問（2025 年 12 月改定の出題範囲に対応）
 - **Business Analyst**: レッスン 6 範囲 ＋ オリジナル問題 60 問
-- そのほか 8 資格: 試験概要と出題範囲のみ（順次追加）
+- **Agentforce Sales Consultant**: レッスン 5 範囲 ＋ オリジナル問題 60 問
+- **Agentforce Service Consultant**: レッスン 8 範囲 ＋ オリジナル問題 60 問
+- そのほか 6 資格: 試験概要と出題範囲のみ（順次追加）
 
 ## 開発
 
