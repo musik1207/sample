@@ -12,6 +12,8 @@ export interface Domain {
   nameEn: string;
   /** 配点（%）。未確定の場合は null */
   weight: number | null;
+  /** 公式試験ガイドの出題目標（日本語訳） */
+  objectives?: string[];
 }
 
 export interface ExamInfo {

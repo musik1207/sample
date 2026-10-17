@@ -118,6 +118,16 @@ const show = (v: string | number | null, suffix = '') => (v === null ? '要確�
                   <span style={`width: ${d.weight * 4}%`} />
                 </div>
               )}
+              {d.objectives && d.objectives.length > 0 && (
+                <details class="objectives small">
+                  <summary>公式の出題目標（{d.objectives.length}）</summary>
+                  <ul>
+                    {d.objectives.map((o) => (
+                      <li>{o}</li>
+                    ))}
+                  </ul>
+                </details>
+              )}
               {(hasLesson || qCount > 0) && (
                 <>
                   <p class="small muted status" data-status />
@@ -254,6 +264,20 @@ const show = (v: string | number | null, suffix = '') => (v === null ? '要確�
     font-weight: 700;
     white-space: nowrap;
     color: var(--accent);
+  }
+  .objectives {
+    margin: 10px 0 4px;
+  }
+  .objectives summary {
+    cursor: pointer;
+    color: var(--text-muted);
+  }
+  .objectives ul {
+    margin: 6px 0 0;
+    padding-left: 1.2em;
+  }
+  .objectives li + li {
+    margin-top: 4px;
   }
   .weight-bar {
     height: 4px;
