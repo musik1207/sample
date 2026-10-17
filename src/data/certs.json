@@ -139,7 +139,7 @@
         },
         {
           "id": "agentforce",
-          "name": "Agentforce AI",
+          "name": "Agentforce",
           "nameEn": "Agentforce",
           "weight": 8,
           "objectives": [
