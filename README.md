@@ -21,8 +21,20 @@ Salesforce 認定資格（STEP 1〜5 の 10 資格）を順番に取得するた
 
 ## 教材の状況
 
-- **Platform Administrator**: レッスン 8 範囲 ＋ オリジナル問題 64 問（2025 年 12 月改定の出題範囲に対応）
-- そのほか 9 資格: 試験概要と出題範囲のみ（順次追加）
+| 資格 | レッスン | 問題 |
+|---|---|---|
+| Platform Administrator | 8 範囲 | 251 問 |
+| Business Analyst | 6 範囲 | 151 問 |
+| Agentforce Sales Consultant | 5 範囲 | 150 問 |
+| Agentforce Service Consultant | 8 範囲 | 150 問 |
+| Platform Strategy Designer | 4 範囲 | 60 問 |
+| Platform Integration Architect | 6 範囲 | 60 問 |
+| Platform Data Architect | 6 範囲 | 60 問 |
+| Platform Sharing and Visibility Architect | 4 範囲 | 60 問 |
+| Data 360 Consultant | 6 範囲 | 60 問 |
+| Agentforce Specialist | 6 範囲 | 60 問 |
+
+Platform Administrator 以外の出題範囲・配点は、講座提供会社などの公開情報に基づく値です（各資格ページに「未確定」と表示）。公式試験ガイドで確認できたら `src/data/certs.json` の `verified` を `true` にします。
 
 ## 開発
 
@@ -47,6 +59,7 @@ src/
   lib/quiz-runner.ts         演習・模擬試験・復習の画面
   pages/                     各ページ
 scripts/validate-content.mjs 教材データのチェック
+scripts/merge-questions.py  追加の問題を ID を振って統合
 ```
 
 ### 教材を追加するには
@@ -64,4 +77,4 @@ scripts/validate-content.mjs 教材データのチェック
 
 ## 注意
 
-練習問題はすべてオリジナルで、実際の試験問題ではありません。試験の最新情報は Trailhead の公式試験ガイドで確認してください。
+練習問題はすべてオリジナルで、実際の試験問題ではありません。STEP 1〜2 の資格には、本番の出題形式（Trailhead のサンプル企業を使った状況設定、5 択の「2 つ選択」など）に寄せた問題を追加しています。試験の最新情報は Trailhead の公式試験ガイドで確認してください。

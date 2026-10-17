@@ -220,12 +220,8 @@ export function runQuiz(opts: QuizOptions): void {
         index++;
         renderQuestion();
       });
-      const finish = el('button', { class: 'btn btn-primary', type: 'button' }, '採点する');
-      finish.addEventListener('click', () => {
-        const left = items.filter((i) => i.selected.size === 0).length;
-        const msg = left ? `未回答が ${left} 問あります。採点しますか？` : '採点しますか？';
-        if (window.confirm(msg)) finishMock(false);
-      });
+      const finish = el('button', { class: 'btn btn-primary', type: 'button' }, '見直し画面へ');
+      finish.addEventListener('click', renderReviewScreen);
       actions.append(prevBtn, flag, nextBtn, finish);
     }
 
@@ -235,6 +231,68 @@ export function runQuiz(opts: QuizOptions): void {
       renderPalette();
     }
     updateButtons();
+  }
+
+  /** 本番の試験と同じく、採点前に全問の回答状況を一覧で確認する画面 */
+  function renderReviewScreen() {
+    const unanswered = items.filter((i) => i.selected.size === 0).length;
+    const flagged = items.filter((i) => i.flagged).length;
+    const jumpTo = (pred: (i: Item) => boolean) => {
+      const i = items.findIndex(pred);
+      if (i >= 0) {
+        index = i;
+        renderQuestion();
+      }
+    };
+    const list = el(
+      'div',
+      { class: 'palette review-palette' },
+      ...items.map((it, i) => {
+        const b = el(
+          'button',
+          {
+            type: 'button',
+            class: `pal${it.selected.size ? ' answered' : ''}${it.flagged ? ' flagged' : ''}`,
+            'aria-label': `問題 ${i + 1}${it.selected.size ? '' : '（未回答）'}${it.flagged ? '（見直し）' : ''}`,
+          },
+          String(i + 1),
+        );
+        b.addEventListener('click', () => {
+          index = i;
+          renderQuestion();
+        });
+        return b;
+      }),
+    );
+    const actions = el('div', { class: 'quiz-actions' });
+    if (unanswered) {
+      const b = el('button', { class: 'btn', type: 'button' }, `未回答の問題へ（${unanswered}）`);
+      b.addEventListener('click', () => jumpTo((i) => i.selected.size === 0));
+      actions.append(b);
+    }
+    if (flagged) {
+      const b = el('button', { class: 'btn', type: 'button' }, `見直しの問題へ（${flagged}）`);
+      b.addEventListener('click', () => jumpTo((i) => i.flagged));
+      actions.append(b);
+    }
+    const back = el('button', { class: 'btn', type: 'button' }, '問題に戻る');
+    back.addEventListener('click', renderQuestion);
+    const submit = el('button', { class: 'btn btn-primary', type: 'button' }, '試験を終了して採点する');
+    submit.addEventListener('click', () => {
+      if (window.confirm('採点すると回答は変更できません。採点しますか？')) finishMock(false);
+    });
+    actions.append(back, submit);
+    root.replaceChildren(
+      header(),
+      el(
+        'div',
+        { class: 'card' },
+        el('h2', { class: 'review-title' }, '見直し'),
+        el('p', { class: 'small muted' }, `回答済み ${items.length - unanswered} / ${items.length} ・ 見直しマーク ${flagged} 問。番号を押すとその問題に戻れます。`),
+        list,
+      ),
+      actions,
+    );
   }
 
   function updateButtons() {
