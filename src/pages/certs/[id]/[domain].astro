@@ -20,7 +20,10 @@ const hasLesson = (id: string) => lessons.some((l) => l.data.domain === id);
 const prev = cert.domains.slice(0, domainIndex).reverse().find((d) => hasLesson(d.id));
 const next = cert.domains.slice(domainIndex + 1).find((d) => hasLesson(d.id));
 const qCount = getQuestions(cert.id).filter((q) => q.domain === domain.id).length;
-const { Content } = await render(lesson);
+const { Content, headings } = await render(lesson);
+const toc = headings.filter((h) => h.depth === 2);
+// 日本語はおよそ 1 分 500 文字で読める想定
+const minutes = Math.max(1, Math.round(lesson.body!.replace(/```mermaid[\s\S]*?```/g, '').length / 500));
 const shortName = cert.name.replace('Salesforce Certified ', '');
 ---
 
@@ -32,7 +35,23 @@ const shortName = cert.name.replace('Salesforce Certified ', '');
     <p class="muted small">{domain.nameEn}{domain.weight !== null && ` ・ 配点 ${domain.weight}%`}</p>
     <h1>{domain.name}</h1>
     <p class="lead">{lesson.data.summary}</p>
+    <p class="muted small">読む目安: 約 {minutes} 分</p>
   </header>
+
+  {
+    toc.length > 2 && (
+      <details class="card toc" open>
+        <summary>このレッスンの内容</summary>
+        <ol>
+          {toc.map((h) => (
+            <li>
+              <a href={`#${h.slug}`}>{h.text}</a>
+            </li>
+          ))}
+        </ol>
+      </details>
+    )
+  }
 
   <article class="card lesson">
     <Content />
@@ -67,6 +86,10 @@ const shortName = cert.name.replace('Salesforce Certified ', '');
     const input = document.getElementById('done') as HTMLInputElement;
     input.checked = isLessonDone(loadProgress(), certId, domainId);
     input.addEventListener('change', () => setLessonDone(certId, domainId, input.checked));
+  </script>
+  <script>
+    import { renderDiagrams } from '../../../lib/diagrams';
+    renderDiagrams(document.querySelector('.lesson') ?? document);
   </script>
 </Base>
 
@@ -117,6 +140,92 @@ const shortName = cert.name.replace('Salesforce Certified ', '');
   .lesson :global(ul.contains-task-list) {
     list-style: none;
     padding-left: 0;
+  }
+  .lesson :global(h2) {
+    scroll-margin-top: 72px;
+  }
+  .lesson :global(h3) {
+    margin-top: 1.6rem;
+  }
+  .lesson :global(h4) {
+    font-size: 1rem;
+    margin: 1.2rem 0 0.4rem;
+  }
+  .lesson :global(li + li) {
+    margin-top: 4px;
+  }
+  .lesson :global(figure.diagram) {
+    margin: 20px 0;
+    padding: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow-x: auto;
+    text-align: center;
+  }
+  .lesson :global(figure.diagram svg) {
+    height: auto;
+  }
+  .lesson :global(.diagram-hint) {
+    position: sticky;
+    left: 0;
+    margin-top: 8px;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  .lesson :global(pre:has(> code.language-mermaid)) {
+    min-height: 120px;
+    color: transparent;
+    background: var(--surface-2);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .lesson :global(.callout) {
+    margin: 20px 0;
+    padding: 14px 16px 14px 18px;
+    border-radius: 10px;
+    border-left: 5px solid var(--accent);
+    background: var(--accent-soft);
+  }
+  .lesson :global(.callout > :first-child) {
+    margin-top: 0;
+  }
+  .lesson :global(.callout > :last-child) {
+    margin-bottom: 0;
+  }
+  .lesson :global(.callout-title) {
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .lesson :global(.callout.tip) {
+    border-color: var(--success);
+    background: var(--success-soft);
+  }
+  .lesson :global(.callout.trap) {
+    border-color: var(--danger);
+    background: var(--danger-soft);
+  }
+  .lesson :global(.callout.why) {
+    border-color: var(--warning);
+    background: var(--warning-soft);
+  }
+  .lesson :global(.callout.handson) {
+    border-color: var(--step-3);
+    background: var(--surface-2);
+  }
+  .lesson :global(.callout.example) {
+    border-color: var(--step-2);
+    background: var(--surface-2);
+  }
+  .toc summary {
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .toc ol {
+    margin: 8px 0 0;
+    padding-left: 1.4em;
+    columns: 2 240px;
+    font-size: 0.92rem;
   }
   .actions {
     display: flex;
