@@ -53,6 +53,20 @@ const shortName = cert.name.replace('Salesforce Certified ', '');
     )
   }
 
+  {
+    domain.objectives && domain.objectives.length > 0 && (
+      <details class="card objectives">
+        <summary>公式試験ガイドの出題目標（{domain.objectives.length} 項目）</summary>
+        <ol>
+          {domain.objectives.map((o) => (
+            <li>{o}</li>
+          ))}
+        </ol>
+        <p class="small muted">試験ガイドの英文を日本語に訳したものです。レッスンはこの目標に沿って構成しています。</p>
+      </details>
+    )
+  }
+
   <article class="card lesson">
     <Content />
   </article>
@@ -216,6 +230,21 @@ const shortName = cert.name.replace('Salesforce Certified ', '');
   .lesson :global(.callout.example) {
     border-color: var(--step-2);
     background: var(--surface-2);
+  }
+  .objectives {
+    margin-top: 12px;
+  }
+  .objectives summary {
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .objectives ol {
+    margin: 8px 0;
+    padding-left: 1.4em;
+    font-size: 0.92rem;
+  }
+  .objectives li + li {
+    margin-top: 6px;
   }
   .toc summary {
     font-weight: 700;

@@ -441,9 +441,9 @@
     ]
   },
   {
-    "term": "トピック（Agentforce）",
+    "term": "トピック／サブエージェント（Agentforce）",
     "reading": "Topic",
-    "description": "エージェントが扱う仕事の単位。分類の説明と範囲で、どの依頼を扱うかを決める。",
+    "description": "エージェントの仕事の単位。どんな依頼を扱うかの説明と、指示・アクションを持つ。2026 年 4 月から「サブエージェント」と呼ばれるようになった（機能は同じ）。",
     "certs": [
       "platform-admin",
       "agentforce-specialist"
@@ -959,6 +959,942 @@
     "reading": "Model Context Protocol",
     "description": "AI エージェントが外部のツールやデータにアクセスするための標準プロトコル。",
     "certs": [
+      "agentforce-specialist"
+    ],
+    "tags": [
+      "AI"
+    ]
+  },
+  {
+    "term": "Agent Script",
+    "reading": "Agent Script",
+    "description": "新しい Agentforce Builder でエージェントを定義する言語。自然言語の指示（パイプ記号）と、条件分岐・アクション実行・変数設定などのロジック（->）を組み合わせて書ける。",
+    "certs": [
+      "agentforce-specialist"
+    ],
+    "tags": [
+      "AI"
+    ]
+  },
+  {
+    "term": "ハイブリッド推論",
+    "reading": "Hybrid Reasoning",
+    "description": "決定的なロジックと LLM の柔軟な推論を 1 つのエージェントの中で組み合わせる考え方。毎回同じにしたい部分はロジックで、柔軟さが必要な部分は自然言語で書く。",
+    "certs": [
+      "agentforce-specialist"
+    ],
+    "tags": [
+      "AI"
+    ]
+  },
+  {
+    "term": "Canvas ビュー／Script ビュー",
+    "reading": "Canvas View / Script View",
+    "description": "Agentforce Builder の 2 つの編集画面。Canvas はスクリプトをブロックで表示し、Script はスクリプトを直接編集する。どちらも同じ Agent Script を編集している。",
+    "certs": [
+      "agentforce-specialist"
+    ],
+    "tags": [
+      "AI"
+    ]
+  },
+  {
+    "term": "エージェントルーター（start_agent）",
+    "reading": "Agent Router",
+    "description": "Agent Script で、すべての発話が最初に処理されるブロック。変数の初期化と、どのサブエージェントに進むかの分類を行う。",
+    "certs": [
+      "agentforce-specialist"
+    ],
+    "tags": [
+      "AI"
+    ]
+  },
+  {
+    "term": "available when（フィルター）",
+    "reading": "available when",
+    "description": "条件を満たすときだけ、サブエージェントやツール（推論アクション）を LLM に見せる仕組み。業務上重要な制限を、プロンプトの指示ではなく仕組みで守る。",
+    "certs": [
+      "agentforce-specialist"
+    ],
+    "tags": [
+      "AI",
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "リンク変数",
+    "reading": "Linked Variable",
+    "description": "メッセージングセッション ID など、実行時のコンテキストに結び付いた読み取り専用の変数。初期値を持たず、エージェントは値を変えられない。",
+    "certs": [
+      "agentforce-specialist"
+    ],
+    "tags": [
+      "AI"
+    ]
+  },
+  {
+    "term": "エージェントユーザー",
+    "reading": "Agent User",
+    "description": "サービスエージェント（顧客向け）が動くときの専用のユーザー。アクションはこのユーザーの権限で実行されるため、最小限の権限セットを付ける。",
+    "certs": [
+      "agentforce-specialist",
+      "platform-admin"
+    ],
+    "tags": [
+      "AI",
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "Agent API",
+    "reading": "Agent API",
+    "description": "エージェントを REST API で呼び出す仕組み。セッションの開始・メッセージの送受信・終了を行う。外部クライアントアプリケーションで認証し、Agentforce（Default）型には使えない。",
+    "certs": [
+      "agentforce-specialist"
+    ],
+    "tags": [
+      "AI",
+      "連携"
+    ]
+  },
+  {
+    "term": "Agentforce データライブラリ",
+    "reading": "Agentforce Data Library",
+    "description": "ナレッジ・ファイル・Web などから、データストリーム・検索インデックス・リトリーバーなど RAG に必要な部品一式を自動で作る機能。",
+    "certs": [
+      "agentforce-specialist",
+      "data-360-consultant"
+    ],
+    "tags": [
+      "AI",
+      "Data 360"
+    ]
+  },
+  {
+    "term": "チャンキング",
+    "reading": "Chunking",
+    "description": "長い文書を、検索しやすい小さな塊（チャンク）に分けること。小さいと的確だが文脈が欠け、大きいと文脈はあるがノイズが増える。",
+    "certs": [
+      "agentforce-specialist",
+      "data-360-consultant"
+    ],
+    "tags": [
+      "AI",
+      "Data 360"
+    ]
+  },
+  {
+    "term": "検索インデックス",
+    "reading": "Search Index",
+    "description": "チャンクとベクトルを保存して速く検索できるようにしたもの。ベクトル検索（意味）とハイブリッド検索（意味＋キーワード）がある。",
+    "certs": [
+      "agentforce-specialist",
+      "data-360-consultant"
+    ],
+    "tags": [
+      "AI",
+      "Data 360"
+    ]
+  },
+  {
+    "term": "リトリーバー",
+    "reading": "Retriever",
+    "description": "質問を受けて、検索インデックスから関連するチャンクを取り出す部品。対象のインデックス、フィルター、返す件数や項目を設定できる。",
+    "certs": [
+      "agentforce-specialist",
+      "data-360-consultant"
+    ],
+    "tags": [
+      "AI",
+      "Data 360"
+    ]
+  },
+  {
+    "term": "ハイブリッド検索",
+    "reading": "Hybrid Search",
+    "description": "ベクトル検索（意味の近さ）とキーワード検索（単語の一致）を組み合わせた検索。型番や固有名詞が重要なときに有効。",
+    "certs": [
+      "agentforce-specialist",
+      "data-360-consultant"
+    ],
+    "tags": [
+      "AI",
+      "Data 360"
+    ]
+  },
+  {
+    "term": "ハルシネーション",
+    "reading": "Hallucination",
+    "description": "生成 AI が、根拠のない、もっともらしい誤りを答えること。グラウンディングや「データにないことは推測しない」という制約で減らす。",
+    "certs": [
+      "agentforce-specialist",
+      "agentforce-sales-consultant"
+    ],
+    "tags": [
+      "AI"
+    ]
+  },
+  {
+    "term": "項目生成テンプレート",
+    "reading": "Field Generation Template",
+    "description": "特定のオブジェクトの特定の項目に結び付くプロンプトテンプレート。Dynamic Forms の項目横のボタンで生成し、利用者が確認・編集してから保存する。",
+    "certs": [
+      "agentforce-specialist"
+    ],
+    "tags": [
+      "AI"
+    ]
+  },
+  {
+    "term": "フレックステンプレート",
+    "reading": "Flex Template",
+    "description": "入力の種類と数を自由に定義できる、最も汎用的なプロンプトテンプレート。Flow・Apex・エージェントのアクションから呼び出す。",
+    "certs": [
+      "agentforce-specialist"
+    ],
+    "tags": [
+      "AI"
+    ]
+  },
+  {
+    "term": "BYOLLM",
+    "reading": "Bring Your Own LLM",
+    "description": "自社で契約している LLM を Einstein Studio で接続し、設定済みモデルとしてプロンプトテンプレートなどで使うこと。",
+    "certs": [
+      "agentforce-specialist"
+    ],
+    "tags": [
+      "AI"
+    ]
+  },
+  {
+    "term": "データマスキング（Trust Layer）",
+    "reading": "Data Masking",
+    "description": "LLM に送る前に、氏名・電話番号・カード番号などの機微なデータを伏せ、応答が戻ってきたら元に戻す Einstein Trust Layer の機能。",
+    "certs": [
+      "agentforce-specialist"
+    ],
+    "tags": [
+      "AI",
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "ゼロデータリテンション",
+    "reading": "Zero Data Retention",
+    "description": "外部の LLM プロバイダーが、プロンプトや応答を保存も学習もしない契約。",
+    "certs": [
+      "agentforce-specialist"
+    ],
+    "tags": [
+      "AI",
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "セッショントレース",
+    "reading": "Session Tracing",
+    "description": "エージェントの各ターンの入力・選ばれたサブエージェント・アクション・LLM の呼び出しなどを Data 360 に記録する仕組み。有効にした後の会話からしか記録されない。",
+    "certs": [
+      "agentforce-specialist"
+    ],
+    "tags": [
+      "AI"
+    ]
+  },
+  {
+    "term": "A2A（Agent2Agent）",
+    "reading": "Agent2Agent Protocol",
+    "description": "異なるベンダーや基盤のエージェント同士が、仕事を依頼し合い協力するためのオープンな標準。",
+    "certs": [
+      "agentforce-specialist"
+    ],
+    "tags": [
+      "AI",
+      "連携"
+    ]
+  },
+  {
+    "term": "オーケストレーター",
+    "reading": "Orchestrator",
+    "description": "マルチエージェント構成で、依頼をどの専門エージェントに任せるかを決め、結果をまとめる調整役のエージェント。",
+    "certs": [
+      "agentforce-specialist"
+    ],
+    "tags": [
+      "AI"
+    ]
+  },
+  {
+    "term": "データストリーム",
+    "reading": "Data Stream",
+    "description": "データソースから Data 360 にデータを取り込む流れの設定。カテゴリ、主キー、更新方式、スケジュールを決める。",
+    "certs": [
+      "data-360-consultant"
+    ],
+    "tags": [
+      "Data 360"
+    ]
+  },
+  {
+    "term": "プロファイル・エンゲージメント・その他（カテゴリ）",
+    "reading": "Data Stream Category",
+    "description": "データストリームのカテゴリ。プロファイル＝属性、エンゲージメント＝時系列の行動（イベント日時が必須）、その他＝それ以外（商品マスターなど）。",
+    "certs": [
+      "data-360-consultant"
+    ],
+    "tags": [
+      "Data 360"
+    ]
+  },
+  {
+    "term": "データスペース",
+    "reading": "Data Space",
+    "description": "Data 360 で、ブランド・地域・事業部ごとにデータ・メタデータ・処理を論理的に分ける区画。フィルターで同じ DLO のデータを振り分けられる。",
+    "certs": [
+      "data-360-consultant"
+    ],
+    "tags": [
+      "Data 360",
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "データキット",
+    "reading": "Data Kit",
+    "description": "Data 360 の設定（データストリーム、マッピング、インサイトなど）をまとめて別の組織に運ぶ入れ物。顧客データそのものは含まない。",
+    "certs": [
+      "data-360-consultant"
+    ],
+    "tags": [
+      "Data 360"
+    ]
+  },
+  {
+    "term": "ゼロコピー",
+    "reading": "Zero Copy",
+    "description": "DWH などのデータをコピーせずに参照・共有する仕組み。外部から Data 360 への参照（フェデレーション）と、Data 360 から外部への共有の 2 つの向きがある。",
+    "certs": [
+      "data-360-consultant",
+      "agentforce-specialist"
+    ],
+    "tags": [
+      "Data 360",
+      "連携"
+    ]
+  },
+  {
+    "term": "一致ルール／調整ルール",
+    "reading": "Match Rules / Reconciliation Rules",
+    "description": "ID 解決のルール。一致ルールは同じ人とみなす条件（完全・正規化・あいまい・パーティ識別）、調整ルールは統合プロファイルにどの値を採用するか（最終更新・最も頻繁・ソースの優先順位）。",
+    "certs": [
+      "data-360-consultant"
+    ],
+    "tags": [
+      "Data 360"
+    ]
+  },
+  {
+    "term": "統合プロファイル（統合個人）",
+    "reading": "Unified Individual",
+    "description": "ID 解決で複数ソースの同じ人をまとめた 1 人分のプロファイル。統合リンクで元のレコードとの対応を追跡できる。",
+    "certs": [
+      "data-360-consultant",
+      "data-architect"
+    ],
+    "tags": [
+      "Data 360"
+    ]
+  },
+  {
+    "term": "ストリーミングインサイト",
+    "reading": "Streaming Insight",
+    "description": "直近数分などの短い時間の枠（ウィンドウ）で、ほぼリアルタイムに集計する指標。データアクションと組み合わせて即時の対応に使う。",
+    "certs": [
+      "data-360-consultant"
+    ],
+    "tags": [
+      "Data 360"
+    ]
+  },
+  {
+    "term": "データアクション",
+    "reading": "Data Action",
+    "description": "データの変化をきっかけに、プラットフォームイベント・Webhook・Marketing Cloud などへすぐに処理を起こす仕組み。",
+    "certs": [
+      "data-360-consultant"
+    ],
+    "tags": [
+      "Data 360",
+      "自動化"
+    ]
+  },
+  {
+    "term": "セグメント",
+    "reading": "Segment",
+    "description": "条件に合う顧客のグループ。属性・関連する行動・計算済みインサイト・予測スコアを条件にし、公開のスケジュールで更新する。",
+    "certs": [
+      "data-360-consultant"
+    ],
+    "tags": [
+      "Data 360",
+      "マーケティング"
+    ]
+  },
+  {
+    "term": "ウォーターフォールセグメント",
+    "reading": "Waterfall Segment",
+    "description": "優先順位をつけて、顧客を重複なく複数のグループに振り分けるセグメント。1 人は 1 つのグループにだけ入る。",
+    "certs": [
+      "data-360-consultant"
+    ],
+    "tags": [
+      "Data 360",
+      "マーケティング"
+    ]
+  },
+  {
+    "term": "コピー項目",
+    "reading": "Copy Field",
+    "description": "Data 360 の値（LTV など）を CRM のレコードの項目に反映する機能。既存のレポートや自動化でそのまま使える。",
+    "certs": [
+      "data-360-consultant"
+    ],
+    "tags": [
+      "Data 360"
+    ]
+  },
+  {
+    "term": "データグラフ",
+    "reading": "Data Graph",
+    "description": "関連するデータをまとめた形で素早く取り出せるようにしたもの。リアルタイムの体験や AI に向いている。",
+    "certs": [
+      "data-360-consultant"
+    ],
+    "tags": [
+      "Data 360"
+    ]
+  },
+  {
+    "term": "Einstein Studio（Model Builder）",
+    "reading": "Einstein Studio",
+    "description": "Data 360 のデータで予測モデルを作る、外部のモデル（BYOM）や LLM（BYOLLM）をつなぐための機能。",
+    "certs": [
+      "data-360-consultant",
+      "agentforce-specialist"
+    ],
+    "tags": [
+      "AI",
+      "Data 360"
+    ]
+  },
+  {
+    "term": "Ingestion API",
+    "reading": "Ingestion API",
+    "description": "自社システムから Data 360 にデータを送る API。ストリーミング（発生のたび）とバルク（まとめて）がある。",
+    "certs": [
+      "data-360-consultant"
+    ],
+    "tags": [
+      "Data 360",
+      "連携"
+    ]
+  },
+  {
+    "term": "リモートプロセス呼び出し",
+    "reading": "Remote Process Invocation",
+    "description": "Salesforce から外部を呼ぶ連携パターン。結果を待つ「要求と応答」と、待たない「Fire and Forget」がある。",
+    "certs": [
+      "integration-architect"
+    ],
+    "tags": [
+      "連携"
+    ]
+  },
+  {
+    "term": "リモート呼び出し（Remote Call-In）",
+    "reading": "Remote Call-In",
+    "description": "外部システムが Salesforce のデータを作成・更新・参照する連携パターン。REST・SOAP・Bulk API や Apex REST を使う。",
+    "certs": [
+      "integration-architect"
+    ],
+    "tags": [
+      "連携"
+    ]
+  },
+  {
+    "term": "Composite API",
+    "reading": "Composite API",
+    "description": "最大 25 の操作を 1 回の呼び出しにまとめ、前の操作の結果を後の操作で参照できる REST API。往復の回数と API 呼び出し数を減らす。",
+    "certs": [
+      "integration-architect"
+    ],
+    "tags": [
+      "連携"
+    ]
+  },
+  {
+    "term": "Pub/Sub API",
+    "reading": "Pub/Sub API",
+    "description": "gRPC でプラットフォームイベントや変更データキャプチャを効率よく発行・購読する API。新しい開発で推奨される。",
+    "certs": [
+      "integration-architect"
+    ],
+    "tags": [
+      "連携"
+    ]
+  },
+  {
+    "term": "リプレイ ID",
+    "reading": "Replay ID",
+    "description": "イベントの位置を表す ID。購読側は保存したリプレイ ID から、保持期間（72 時間）内のイベントを続きから受け取れる。",
+    "certs": [
+      "integration-architect"
+    ],
+    "tags": [
+      "連携"
+    ]
+  },
+  {
+    "term": "外部ログイン情報",
+    "reading": "External Credential",
+    "description": "Salesforce から外部を呼ぶときの認証方式と、プリンシパル（共通の 1 アカウントか利用者ごとか）を定義する設定。指定ログイン情報と組み合わせ、権限セットで使える人を制御する。",
+    "certs": [
+      "integration-architect"
+    ],
+    "tags": [
+      "連携",
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "外部クライアントアプリケーション",
+    "reading": "External Client App",
+    "description": "外部のアプリが OAuth で Salesforce の API にアクセスするための設定。スコープ、許可するユーザー、IP 制限、トークンのポリシーを管理する（接続アプリケーションの新しい方式）。",
+    "certs": [
+      "integration-architect",
+      "agentforce-specialist"
+    ],
+    "tags": [
+      "連携",
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "JWT ベアラーフロー",
+    "reading": "JWT Bearer Flow",
+    "description": "証明書で署名した JWT を使って、人が介在しないサーバー間の連携でアクセストークンを取得する OAuth 2.0 のフロー。",
+    "certs": [
+      "integration-architect"
+    ],
+    "tags": [
+      "連携",
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "クライアントクレデンシャルフロー",
+    "reading": "Client Credentials Flow",
+    "description": "クライアント ID と秘密鍵でアクセストークンを取得する、サーバー間の連携向けの OAuth 2.0 のフロー。トークンは指定した実行ユーザーの権限で動く。",
+    "certs": [
+      "integration-architect",
+      "agentforce-specialist"
+    ],
+    "tags": [
+      "連携",
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "アウトバウンドメッセージ",
+    "reading": "Outbound Message",
+    "description": "指定した項目を SOAP メッセージで外部に送る宣言的な仕組み。受信確認がないと一定期間自動で再送する。",
+    "certs": [
+      "integration-architect"
+    ],
+    "tags": [
+      "連携",
+      "自動化"
+    ]
+  },
+  {
+    "term": "Continuation",
+    "reading": "Continuation",
+    "description": "画面（LWC など）から時間のかかる外部呼び出しを、サーバーのスレッドを占有せずに待つ仕組み。",
+    "certs": [
+      "integration-architect"
+    ],
+    "tags": [
+      "連携"
+    ]
+  },
+  {
+    "term": "トランザクションファイナライザー",
+    "reading": "Transaction Finalizer",
+    "description": "Queueable ジョブの成功・失敗の後に、ログの記録や再試行の登録などの後処理を行う仕組み。",
+    "certs": [
+      "integration-architect"
+    ],
+    "tags": [
+      "連携"
+    ]
+  },
+  {
+    "term": "API 主導の連携",
+    "reading": "API-led Connectivity",
+    "description": "連携をシステム API・プロセス API・エクスペリエンス API の 3 層に分けて作る考え方。システムが変わっても影響を 1 か所に閉じ込められる。",
+    "certs": [
+      "integration-architect"
+    ],
+    "tags": [
+      "連携"
+    ]
+  },
+  {
+    "term": "正規（カノニカル）データモデル",
+    "reading": "Canonical Data Model",
+    "description": "システムをまたいで使う共通のデータの形。各システムは自分の形との変換だけを持てばよい。",
+    "certs": [
+      "integration-architect",
+      "data-architect"
+    ],
+    "tags": [
+      "連携",
+      "データモデル"
+    ]
+  },
+  {
+    "term": "選択的なクエリ",
+    "reading": "Selective Query",
+    "description": "インデックスのある項目の条件で、対象を全体のごく一部に絞り込めるクエリ。標準インデックスは 30%・15%、カスタムインデックスは 10%・5% が目安。",
+    "certs": [
+      "data-architect"
+    ],
+    "tags": [
+      "性能"
+    ]
+  },
+  {
+    "term": "クエリプラン",
+    "reading": "Query Plan",
+    "description": "クエリでインデックスが使われるか、コスト（1 未満なら選択的）を確認できる開発者コンソールのツール。",
+    "certs": [
+      "data-architect"
+    ],
+    "tags": [
+      "性能"
+    ]
+  },
+  {
+    "term": "共有計算の延期",
+    "reading": "Defer Sharing Calculations",
+    "description": "大量の共有の変更の間は計算を止め、業務時間外にまとめて実行する機能（有効化が必要）。",
+    "certs": [
+      "data-architect",
+      "sharing-visibility-architect"
+    ],
+    "tags": [
+      "性能",
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "Field Audit Trail",
+    "reading": "Field Audit Trail",
+    "description": "項目の変更履歴を長期間（最大 10 年）保管する Shield の機能。標準の項目履歴の保管期間は 18 か月。",
+    "certs": [
+      "data-architect",
+      "sharing-visibility-architect"
+    ],
+    "tags": [
+      "データ",
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "Shield Platform Encryption",
+    "reading": "Shield Platform Encryption",
+    "description": "項目やファイルを保存時に暗号化する機能。権限のあるユーザーには通常どおり表示されるため、誰に見せるかは項目レベルセキュリティで制御する。",
+    "certs": [
+      "data-architect",
+      "sharing-visibility-architect",
+      "integration-architect"
+    ],
+    "tags": [
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "個人（Individual）オブジェクト",
+    "reading": "Individual",
+    "description": "1 人の人に対して、プライバシーの設定（追跡しない、処理しないなど）を持つオブジェクト。リード・取引先責任者・個人取引先から参照する。",
+    "certs": [
+      "data-architect"
+    ],
+    "tags": [
+      "データ",
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "MDM の実装スタイル",
+    "reading": "MDM Implementation Styles",
+    "description": "マスターデータ管理の方式。レジストリ型（ID の対応表だけ）、統合型（中央で作り戻さない）、共存型（中央で作り配る）、集中型（中央でだけ更新）。",
+    "certs": [
+      "data-architect"
+    ],
+    "tags": [
+      "データ"
+    ]
+  },
+  {
+    "term": "残存ルール",
+    "reading": "Survivorship Rules",
+    "description": "複数のソースを統合するとき、項目ごとにどの値を残すかのルール。信頼できるソース、最新、最も完全、最も頻繁など。",
+    "certs": [
+      "data-architect"
+    ],
+    "tags": [
+      "データ"
+    ]
+  },
+  {
+    "term": "PK チャンキング",
+    "reading": "PK Chunking",
+    "description": "大量データを Bulk API で出力するとき、主キー（ID）の範囲で分割して並列に取り出す方法。",
+    "certs": [
+      "data-architect"
+    ],
+    "tags": [
+      "データ",
+      "性能"
+    ]
+  },
+  {
+    "term": "監査項目の設定",
+    "reading": "Set Audit Fields",
+    "description": "データ移行で、作成日・作成者などの監査項目を旧システムの値で設定できるようにする機能。",
+    "certs": [
+      "data-architect",
+      "agentforce-service-consultant"
+    ],
+    "tags": [
+      "データ"
+    ]
+  },
+  {
+    "term": "データの機密度／コンプライアンス分類",
+    "reading": "Data Classification",
+    "description": "項目に記録できるデータ分類のメタデータ。機密度（公開・社内・機密・制限など）とコンプライアンス分類（個人情報、GDPR、PCI など）。",
+    "certs": [
+      "data-architect",
+      "integration-architect"
+    ],
+    "tags": [
+      "データ",
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "ミュート権限セット",
+    "reading": "Muting Permission Set",
+    "description": "権限セットグループの中の特定の権限だけを打ち消すための権限セット。",
+    "certs": [
+      "sharing-visibility-architect",
+      "platform-admin"
+    ],
+    "tags": [
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "セッションベースの権限セット",
+    "reading": "Session-Based Permission Set",
+    "description": "多要素認証でログインしたときなど、特定の条件のセッションでだけ有効になる権限セット。",
+    "certs": [
+      "sharing-visibility-architect"
+    ],
+    "tags": [
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "すべて参照／すべて変更",
+    "reading": "View All / Modify All",
+    "description": "オブジェクト単位で、共有に関係なく全レコードを参照（または編集・削除）できる権限。組織全体の View All Data より範囲が狭い。",
+    "certs": [
+      "sharing-visibility-architect",
+      "platform-admin"
+    ],
+    "tags": [
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "共有グループ",
+    "reading": "Share Group",
+    "description": "Customer Community などの大量の顧客ユーザーが所有するレコードを、内部ユーザーに共有する仕組み。",
+    "certs": [
+      "sharing-visibility-architect"
+    ],
+    "tags": [
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "UserRecordAccess",
+    "reading": "UserRecordAccess",
+    "description": "特定のユーザーが特定のレコードにどのアクセス（参照・編集など）を持つかを SOQL で確認できるオブジェクト。共有モデルのテストに使う。",
+    "certs": [
+      "sharing-visibility-architect"
+    ],
+    "tags": [
+      "セキュリティ",
+      "テスト"
+    ]
+  },
+  {
+    "term": "WITH USER_MODE",
+    "reading": "User Mode",
+    "description": "Apex のクエリや DML を実行ユーザーのモードで動かし、共有・オブジェクト権限・項目レベルセキュリティをまとめて適用する書き方。",
+    "certs": [
+      "sharing-visibility-architect",
+      "integration-architect"
+    ],
+    "tags": [
+      "セキュリティ"
+    ]
+  },
+  {
+    "term": "セキュリティ述語",
+    "reading": "Security Predicate",
+    "description": "CRM Analytics のデータセットで、ユーザーごとに見られる行を絞る条件（行レベルのセキュリティ）。",
+    "certs": [
+      "sharing-visibility-architect"
+    ],
+    "tags": [
+      "セキュリティ",
+      "分析"
+    ]
+  },
+  {
+    "term": "課題定義文（チャレンジステートメント）",
+    "reading": "Challenge Statement",
+    "description": "事業目標とユーザーの課題を組み合わせて、プロジェクトが解くべき問いを 1 文で表したもの。高すぎず低すぎない「高さ」が大事。",
+    "certs": [
+      "platform-strategy-designer"
+    ],
+    "tags": [
+      "デザイン思考"
+    ]
+  },
+  {
+    "term": "高さ（アルティチュード）",
+    "reading": "Altitude",
+    "description": "課題定義文の抽象度。高すぎると抽象的で測れず、低すぎると解決策を決めつける。",
+    "certs": [
+      "platform-strategy-designer"
+    ],
+    "tags": [
+      "デザイン思考"
+    ]
+  },
+  {
+    "term": "望ましさ・実現可能性・事業性",
+    "reading": "Desirability / Feasibility / Viability",
+    "description": "良いソリューションの 3 つの観点。ユーザーが求めているか、技術・組織で実現できるか、事業として成り立つか。3 つが重なるところを狙う。",
+    "certs": [
+      "platform-strategy-designer"
+    ],
+    "tags": [
+      "デザイン思考"
+    ]
+  },
+  {
+    "term": "サービスブループリント",
+    "reading": "Service Blueprint",
+    "description": "顧客から見える体験（表側）と、それを支える社内の担当者・システム・プロセス（裏側）を描いた図。",
+    "certs": [
+      "platform-strategy-designer"
+    ],
+    "tags": [
+      "デザイン思考"
+    ]
+  },
+  {
+    "term": "共創（コ・クリエーション）",
+    "reading": "Co-creation",
+    "description": "顧客やステークホルダーと一緒に考えて作ること。ジャーニーマップづくり、アイデア出し、ペーパープロトタイピング、デザインスプリントなど。",
+    "certs": [
+      "platform-strategy-designer"
+    ],
+    "tags": [
+      "デザイン思考"
+    ]
+  },
+  {
+    "term": "MVP／MLP",
+    "reading": "Minimum Viable / Lovable Product",
+    "description": "MVP は学ぶために最小限の機能で早く出す考え方。MLP は最小限でもユーザーに愛される体験の質を重視する考え方。",
+    "certs": [
+      "platform-strategy-designer"
+    ],
+    "tags": [
+      "プロジェクト"
+    ]
+  },
+  {
+    "term": "関係者マップ",
+    "reading": "Stakeholder Map",
+    "description": "関係者を影響力と関心の大きさで分類し、関わり方（密に連携・満足を保つ・情報を共有・見守る）を決める図。",
+    "certs": [
+      "platform-strategy-designer",
+      "business-analyst"
+    ],
+    "tags": [
+      "ステークホルダー"
+    ]
+  },
+  {
+    "term": "導入ライフサイクル",
+    "reading": "Implementation Lifecycle",
+    "description": "発見 → 分析・設計 → 構築 → テスト → リリース → 定着・改善の流れ。BA は各フェーズで役割を持つ。",
+    "certs": [
+      "business-analyst"
+    ],
+    "tags": [
+      "プロジェクト"
+    ]
+  },
+  {
+    "term": "複数通貨",
+    "reading": "Multiple Currencies",
+    "description": "商談や価格表を複数の通貨で扱う機能。一度有効にすると無効にできない。日付の入った換算レートで時期ごとのレートを使える。",
+    "certs": [
+      "agentforce-sales-consultant",
+      "platform-admin"
+    ],
+    "tags": [
+      "営業"
+    ]
+  },
+  {
+    "term": "実行順序",
+    "reading": "Order of Execution",
+    "description": "レコード保存時の処理の順番。保存前フロー → 入力規則 → 保存 → 保存後トリガー → 割り当てルール → 保存後フロー → 確定 → メールなど。",
+    "certs": [
+      "platform-admin"
+    ],
+    "tags": [
+      "自動化"
+    ]
+  },
+  {
+    "term": "AgentExchange",
+    "reading": "AgentExchange",
+    "description": "Agentforce 向けのエージェントのテンプレート、アクション、トピック、プロンプトテンプレートなどを探せるマーケットプレイス。",
+    "certs": [
+      "platform-admin",
       "agentforce-specialist"
     ],
     "tags": [

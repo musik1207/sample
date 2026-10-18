@@ -21,20 +21,22 @@ Salesforce 認定資格（STEP 1〜5 の 10 資格）を順番に取得するた
 
 ## 教材の状況
 
-| 資格 | レッスン | 問題 |
-|---|---|---|
-| Platform Administrator | 8 範囲 | 251 問 |
-| Business Analyst | 6 範囲 | 151 問 |
-| Agentforce Sales Consultant | 5 範囲 | 150 問 |
-| Agentforce Service Consultant | 8 範囲 | 150 問 |
-| Platform Strategy Designer | 4 範囲 | 60 問 |
-| Platform Integration Architect | 6 範囲 | 60 問 |
-| Platform Data Architect | 6 範囲 | 60 問 |
-| Platform Sharing and Visibility Architect | 4 範囲 | 60 問 |
-| Data 360 Consultant | 6 範囲 | 60 問 |
-| Agentforce Specialist | 6 範囲 | 60 問 |
+| 資格 | レッスン | 問題 | 合格ライン |
+|---|---|---|---|
+| Platform Administrator | 8 範囲 | 260 問 | 65% |
+| Business Analyst | 6 範囲 | 159 問 | 72% |
+| Agentforce Sales Consultant | 5 範囲 | 158 問 | 69% |
+| Agentforce Service Consultant | 8 範囲 | 158 問 | 78% |
+| Platform Strategy Designer | 4 範囲 | 149 問 | 70% |
+| Platform Integration Architect | 6 範囲 | 150 問 | 67% |
+| Platform Data Architect | 6 範囲 | 148 問 | 58% |
+| Platform Sharing and Visibility Architect | 4 範囲 | 152 問 | 58% |
+| Data 360 Consultant | 6 範囲 | 151 問 | 70% |
+| Agentforce Specialist | 6 範囲 | 152 問 | 72% |
 
-Platform Administrator 以外の出題範囲・配点は、講座提供会社などの公開情報に基づく値です（各資格ページに「未確定」と表示）。公式試験ガイドで確認できたら `src/data/certs.json` の `verified` を `true` にします。
+- 出題範囲・配点・合格ライン・受験料は、10 資格すべて Salesforce の公式試験ガイド（2026 年 10 月 17 日に確認）と照合済みです。合格ラインは日本語版がある資格は日本語版の値です。
+- 各範囲のレッスンの冒頭に、公式試験ガイドの出題目標（日本語訳）を表示しています。
+- 用語集は 164 語です。
 
 ## 開発
 

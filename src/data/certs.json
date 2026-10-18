@@ -40,15 +40,18 @@
         "questions": 60,
         "minutes": 105,
         "passingScore": 65,
-        "fee": "US$200（税別）",
-        "retakeFee": "US$100（税別）",
+        "fee": "US$200 / 30,000 円（税別）",
+        "retakeFee": "US$100 / 15,000 円（税別）",
         "prerequisite": "なし",
         "verified": true,
-        "checkedAt": "2026-10-16",
+        "checkedAt": "2026-10-17",
         "notes": [
-          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます。",
-          "2025年12月15日の改定で「Agentforce AI」(8%) が追加され、名称も Platform Administrator に変わりました。",
-          "日本語で受験できます。テストセンターかオンライン監視のどちらかを選べます。"
+          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます（結果には影響しません）。",
+          "合格ラインは日本語版 65%、英語版 68% です（ここでは日本語版の値を表示）。",
+          "出題は Summer '25 リリースの内容に基づきます。2025 年の改定で「Agentforce」(8%) が加わり、名称も Platform Administrator に変わりました。",
+          "受験できる言語: 英語・日本語・フランス語・スペイン語。",
+          "試験中は資料を参照できません。テストセンターかオンライン監視（自宅など）のどちらかで受験します。",
+          "合格後は毎年 1 回、Trailhead のメンテナンスバッジを取得しないと資格が失効します。"
         ]
       },
       "domains": [
@@ -56,59 +59,103 @@
           "id": "config-setup",
           "name": "構成と設定",
           "nameEn": "Configuration and Setup",
-          "weight": 15
+          "weight": 15,
+          "objectives": [
+            "会社の設定で管理する情報を説明できる（会計年度、営業時間、通貨の管理、デフォルト設定など）。",
+            "ユーザーインターフェースの宣言的な設定（UI/UX 設定、アプリケーションメニュー、リストビュー、グローバルアクション、Lightning アプリケーションビルダー）を理解し区別できる。",
+            "シナリオに沿ってユーザーを正しく設定・保守できる（ユーザー名の一意性、ロケール、勤務時間、ライセンスの種類と配分、ユーザーは削除できないこと、無効化の影響、機能ライセンス、ログイン方法の違いなど）。",
+            "組織のセキュリティ管理（ID 検証、設定変更履歴、ログイン時間、セッション設定、エージェントのアクセスなど）を説明できる。",
+            "ユーザーからの依頼に対し、共有モデルの機能（チーム、共有階層、公開グループ、組織の共有設定、ロールと下位ロール、レポート・ダッシュボードのフォルダー）を使って適切なセキュリティを設定できる。",
+            "シナリオに応じて、カスタムプロファイルと権限セット（権限セットグループ、ミュート権限セットを含む）を使い分けられる。"
+          ]
         },
         {
           "id": "object-manager",
           "name": "オブジェクトマネージャーと Lightning アプリケーションビルダー",
           "nameEn": "Object Manager and Lightning App Builder",
-          "weight": 15
+          "weight": 15,
+          "objectives": [
+            "標準オブジェクトの構造とリレーションのモデル（親子、主従・参照・連結、レコードタイプ、スキーマビルダー）を説明できる。",
+            "標準・カスタムオブジェクトの項目とページレイアウトの作成・削除・カスタマイズ方法と、項目を削除したときの影響（積み上げ集計、オブジェクト間数式、連動選択リスト、リレーション項目）を説明できる。",
+            "シナリオに応じて、ページレイアウト、Lightning ページでの表示制御、レコードタイプ、ビジネスプロセス（クイックアクションとグローバルアクションを含む）を作成・割り当てできる。"
+          ]
         },
         {
           "id": "sales-marketing",
           "name": "営業・マーケティングアプリケーション",
           "nameEn": "Sales and Marketing Applications",
-          "weight": 10
+          "weight": 10,
+          "objectives": [
+            "営業プロセス（リード、商談、パス）の機能と影響を判断できる。",
+            "商談まわりの生産性機能（ダッシュボード、リードスコアリング、Einstein for Sales、商談スコア、ホームのアシスタント、売上予測、テリトリー管理）を使い分けられる。",
+            "リードの自動化とキャンペーン管理（リードの取引開始、リード割り当てルール、キャンペーン、キャンペーンメンバー）を説明できる。"
+          ]
         },
         {
           "id": "service-support",
           "name": "サービス・サポートアプリケーション",
           "nameEn": "Service and Support Applications",
-          "weight": 10
+          "weight": 10,
+          "objectives": [
+            "ケース管理の機能（ケース、ケース割り当てルール、キュー）を説明できる。",
+            "ケース管理の自動化（サポートプロセス、自動レスポンスルール、エスカレーションルール、Einstein for Service）を判断できる。"
+          ]
         },
         {
           "id": "productivity",
           "name": "生産性とコラボレーション",
           "nameEn": "Productivity and Collaboration",
-          "weight": 10
+          "weight": 10,
+          "objectives": [
+            "活動管理（ToDo、行動）の機能を説明できる。",
+            "Chatter の機能（グループ、グループへのアクセス、社内・社外ユーザー）を説明できる。",
+            "Salesforce モバイルアプリの機能（Lightning ページ、アプリの変更、ナビゲーション、表示制御、ブランド設定）を説明できる。",
+            "AppExchange アプリの使いどころ（管理パッケージと非管理パッケージ、公開できる人、AgentExchange のプロンプト、フロー）を判断できる。"
+          ]
         },
         {
           "id": "data-analytics",
           "name": "データと分析の管理",
           "nameEn": "Data and Analytics Management",
-          "weight": 17
+          "weight": 17,
+          "objectives": [
+            "データのインポート・更新・移行・一括削除・エクスポート・バックアップの考慮点（アーカイブ、データローダー、インポートウィザード）を説明できる。",
+            "データ検証ツール（重複ルールと一致ルール、入力規則）の機能と影響を説明できる。",
+            "レポートとレポートタイプの作成・カスタマイズの選択肢（オブジェクトの結合、関連レコードの有無、項目名の変更、数式、バケット、結合レポート、グラフ、詳細の非表示、グループ集計、項目のトラブルシュート）を説明できる。",
+            "共有モデルがレポートに与える影響（表示範囲、フォルダー構成、フォルダーの共有）を説明できる。",
+            "ダッシュボードの作成・変更の選択肢（コンポーネント、データソース、グラフの種類、登録、動的ダッシュボード、ライセンスごとの上限、表示ユーザー、更新のスケジュール、フィルター）を説明できる。"
+          ]
         },
         {
           "id": "automation",
           "name": "自動化",
           "nameEn": "Automation",
-          "weight": 15
+          "weight": 15,
+          "objectives": [
+            "ツールの機能を踏まえて、適切な自動化（エスカレーションルール、ケース・リード割り当てルール、デフォルトの自動化ユーザー、AI）を選べる。",
+            "Flow（画面フロー、レコードトリガーフロー、自動起動フロー、実行順序）の機能・用途・設定を説明できる。",
+            "承認プロセス（承認者の条件、却下、承認）の機能・用途・設定を説明できる。"
+          ]
         },
         {
           "id": "agentforce",
-          "name": "Agentforce AI",
-          "nameEn": "Agentforce AI",
-          "weight": 8
+          "name": "Agentforce",
+          "nameEn": "Agentforce",
+          "weight": 8,
+          "objectives": [
+            "Agentforce の機能と用途（ユースケース、AI を使うのが適切な場面、セキュリティ、エージェントの権限のトラブルシュート）を説明できる。",
+            "Agent Builder でプロンプトと指示を保守・更新・導入する方法（簡単なテスト、会話プレビュー）を説明できる。"
+          ]
         }
       ],
       "links": [
         {
           "label": "Trailhead 認定資格ページ",
-          "url": "https://trailhead.salesforce.com/credentials/administrator"
+          "url": "https://trailhead.salesforce.com/credentials/platformadministrator"
         },
         {
-          "label": "Salesforce Admins ブログ（2026 年改定の解説）",
-          "url": "https://admin.salesforce.com/blog/2026/what-the-salesforce-certified-platform-administrator-exam-update-means-for-admins"
+          "label": "公式試験ガイド",
+          "url": "https://help.salesforce.com/s/articleView?type=1&language=ja&id=005298966"
         }
       ]
     },
@@ -123,14 +170,17 @@
         "questions": 60,
         "minutes": 105,
         "passingScore": 72,
-        "fee": "US$200（税別）",
-        "retakeFee": "US$100（税別）",
-        "prerequisite": "なし（2023 年に Administrator 必須が撤廃）",
-        "verified": false,
-        "checkedAt": "2026-10-16",
+        "fee": "US$200 / 30,000 円（税別）",
+        "retakeFee": "US$100 / 15,000 円（税別）",
+        "prerequisite": "なし",
+        "verified": true,
+        "checkedAt": "2026-10-17",
         "notes": [
-          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます。",
-          "配点と合格ラインは 2026 年の複数の解説記事で一致した値です。公式試験ガイドで最終確認してください。"
+          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます（結果には影響しません）。",
+          "出題は Winter '25 リリースの内容に基づきます。",
+          "受験できる言語: 英語・フランス語・スペイン語。日本語版はありません（2026 年 10 月時点）。英語で受験する場合、非ネイティブ向けの延長申請ができるか確認しておきましょう。",
+          "試験中は資料を参照できません。テストセンターかオンライン監視（自宅など）のどちらかで受験します。",
+          "合格後は毎年 1 回、Trailhead のメンテナンスバッジを取得します。"
         ]
       },
       "domains": [
@@ -138,43 +188,81 @@
           "id": "customer-discovery",
           "name": "顧客の現状把握",
           "nameEn": "Customer Discovery",
-          "weight": 17
+          "weight": 17,
+          "objectives": [
+            "ビジネス戦略・目標・施策・課題を把握し、Salesforce プロジェクトや施策のスコープを定義できる。",
+            "顧客が既存の製品をどう使っているかを調べ、現状（As-Is）を明らかにできる。",
+            "導入ライフサイクルの各フェーズにおけるビジネスアナリストの役割と責任を説明できる。",
+            "導入ライフサイクルに沿ってビジネス分析の活動を計画できる。",
+            "顧客の Salesforce 組織を分析し、機会と制約を見つけられる。",
+            "Salesforce の機能を業務ニーズと結び付け、解決策を提案できる。"
+          ]
         },
         {
           "id": "collaboration",
           "name": "ステークホルダーとの協働",
           "nameEn": "Collaboration with Stakeholders",
-          "weight": 23
+          "weight": 23,
+          "objectives": [
+            "対象のステークホルダーに合わせてディスカバリー活動を計画し、業務ニーズを徹底的に分析できる。",
+            "主要なステークホルダーを特定し、信頼されるアドバイザーとして業務チームと技術チームの橋渡しができる。",
+            "シナリオに応じて、業務ニーズを引き出す最も効果的な手法を選べる。",
+            "現状分析から、合意された将来像（To-Be）の設計へ進める方法を説明できる。",
+            "競合する優先度を調整し、ステークホルダーの合意を得られる。"
+          ]
         },
         {
           "id": "process-mapping",
           "name": "業務プロセスの可視化",
           "nameEn": "Business Process Mapping",
-          "weight": 12
+          "weight": 12,
+          "objectives": [
+            "複雑な業務プロセスのスコープを定め、扱いやすいステップに分解できる。",
+            "業務プロセスを分析・文書化して要件を引き出し、ステークホルダーと将来像を可視化できる。",
+            "業務プロセスをバージョン管理されたリポジトリに記録し、スコープを管理できる。"
+          ]
         },
         {
           "id": "requirements",
           "name": "要件定義",
           "nameEn": "Requirements",
-          "weight": 18
+          "weight": 18,
+          "objectives": [
+            "スコープ・要件・ユーザーストーリーの違いを理解している。",
+            "ステークホルダーと一緒に要件を特定・検証・優先順位付けできる。",
+            "要件をバージョン管理されたリポジトリに記録し、スコープを管理できる。"
+          ]
         },
         {
           "id": "user-stories",
           "name": "ユーザーストーリー",
           "nameEn": "User Stories",
-          "weight": 18
+          "weight": 18,
+          "objectives": [
+            "ユーザーストーリーの構成要素を理解し、十分な分析ができる。",
+            "要件を伝え、開発に着手できる受け入れ基準を書ける。",
+            "ユーザーストーリーをバージョン管理されたリポジトリに記録し、スコープを管理できる。"
+          ]
         },
         {
           "id": "uat",
           "name": "開発支援とユーザー受け入れ",
           "nameEn": "Development Support and User Acceptance",
-          "weight": 12
+          "weight": 12,
+          "objectives": [
+            "プロジェクトの開発・リリースを支援し、ソリューションが要件を満たすことを確認できる。",
+            "ユーザー受け入れテスト（UAT）を支援し、ソリューションが要件を満たすことを確認できる。"
+          ]
         }
       ],
       "links": [
         {
           "label": "Trailhead 認定資格ページ",
           "url": "https://trailhead.salesforce.com/credentials/businessanalyst"
+        },
+        {
+          "label": "公式試験ガイド",
+          "url": "https://help.salesforce.com/s/articleView?type=1&language=ja&id=005298939"
         }
       ]
     },
@@ -189,15 +277,19 @@
       "exam": {
         "questions": 60,
         "minutes": 105,
-        "passingScore": 73,
-        "fee": "US$200（税別）",
-        "retakeFee": "US$100（税別）",
-        "prerequisite": "Platform Administrator（公式ガイドで確認）",
-        "verified": false,
-        "checkedAt": "2026-10-16",
+        "passingScore": 69,
+        "fee": "US$200 / 30,000 円（税別）",
+        "retakeFee": "US$100 / 15,000 円（税別）",
+        "prerequisite": "Platform Administrator の取得が必須",
+        "verified": true,
+        "checkedAt": "2026-10-17",
         "notes": [
-          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます。",
-          "出題範囲・配点・合格ラインは講座提供会社（K2U）の公開情報に基づきます。情報源によって差があるため、公式試験ガイドで最終確認してください。"
+          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます（結果には影響しません）。",
+          "合格ラインは日本語版 69%、英語版 73% です（ここでは日本語版の値を表示）。",
+          "出題は Summer '25 リリースの内容に基づきます。",
+          "受験できる言語: 英語・日本語・フランス語・スペイン語。",
+          "試験中は資料を参照できません。テストセンターかオンライン監視（自宅など）のどちらかで受験します。",
+          "合格後は毎年 1 回、Trailhead のメンテナンスバッジを取得します。"
         ]
       },
       "domains": [
@@ -205,34 +297,73 @@
           "id": "consulting",
           "name": "コンサルティングと導入戦略",
           "nameEn": "Consulting and Implementation Strategies",
-          "weight": 25
+          "weight": 25,
+          "objectives": [
+            "導入前に、ユーザー体験・コミュニケーション計画・トレーニング・チェンジマネジメントを評価し、成功を測る指標を決められる。",
+            "導入中に、適切なリリース（デプロイ）の考慮点を示し適用できる。",
+            "導入後に、定着の低さや業務要件の変化、ユーザーアクセスに対応し、継続的な改善を計画できる。",
+            "プロジェクト管理のライフサイクルを使い、スコープ内・期限内に成果を出せる。",
+            "ディスカバリーワークショップを行い、要件を分析し、解決策を定義し、ユースケースに優先順位を付けられる。"
+          ]
         },
         {
           "id": "sales-expertise",
           "name": "営業領域の実践的な設計",
           "nameEn": "Practical Application of Agentforce Sales Expertise",
-          "weight": 24
+          "weight": 24,
+          "objectives": [
+            "要件に沿って、リード → 商談 → 見積 → 成立までの営業プロセスを Salesforce 上に構築できる。",
+            "宣言的な開発を、カスタム開発・サードパーティアプリ・他の Salesforce 製品・生産性ツール（メール連携、Slack、モバイル）で拡張すべき場面を判断できる。",
+            "要件に合ったセキュリティモデル（共有ルール、ロール階層、取引先チーム、商談チーム、権限セット、権限セットグループ）を選べる。",
+            "商談商品・商品・価格表・見積の機能と設計上の考慮点、複数通貨の影響を説明できる。",
+            "キャンペーン・リード・商談で、異なる業務・営業プロセスに対応する方法を判断できる。"
+          ]
         },
         {
           "id": "sales-lifecycle",
           "name": "営業ライフサイクル",
           "nameEn": "Sales Lifecycle",
-          "weight": 20
+          "weight": 20,
+          "objectives": [
+            "業務要件・指標・KPI・課題から、Agentforce Sales での最適な解決策を判断できる。",
+            "一般的な営業・マーケティングプロセスを踏まえ、導入時の主な考慮点を予測できる。",
+            "Agentforce Sales の機能と関連製品（Sales Engagement、Salesforce Inbox、Enterprise Territory Management、売上予測、Einstein、生成・予測 AI）の使いどころを判断できる。",
+            "事業成果と営業 KPI を、レポートとダッシュボードに落とし込む方法を判断できる。"
+          ]
         },
         {
           "id": "data-management",
           "name": "データ管理",
           "nameEn": "Data Management",
-          "weight": 18
+          "weight": 18,
+          "objectives": [
+            "データ移行と連携の用途と考慮点を説明できる。",
+            "ソリューションのスケーラビリティへの影響を説明できる。",
+            "営業データの品質を管理する方法を説明できる。"
+          ]
         },
         {
           "id": "ai",
           "name": "予測 AI と生成 AI",
           "nameEn": "Predictive and Generative AI",
-          "weight": 13
+          "weight": 13,
+          "objectives": [
+            "Agentforce Sales で使える生成 AI ツールを理解している。",
+            "Agentforce Sales で使える予測 AI ツールを理解している。",
+            "AI の倫理的な課題を特定し、Salesforce の「信頼できる AI の原則」を営業の場面に当てはめられる。"
+          ]
         }
       ],
-      "links": []
+      "links": [
+        {
+          "label": "Trailhead 認定資格ページ",
+          "url": "https://trailhead.salesforce.com/credentials/agfsalesconsultant"
+        },
+        {
+          "label": "公式試験ガイド",
+          "url": "https://help.salesforce.com/s/articleView?type=1&language=ja&id=005298976"
+        }
+      ]
     },
     {
       "id": "agentforce-service-consultant",
@@ -245,15 +376,19 @@
       "exam": {
         "questions": 60,
         "minutes": 105,
-        "passingScore": null,
-        "fee": "US$200（税別）",
-        "retakeFee": "US$100（税別）",
-        "prerequisite": "Platform Administrator（公式ガイドで確認）",
-        "verified": false,
-        "checkedAt": "2026-10-16",
+        "passingScore": 78,
+        "fee": "US$200 / 30,000 円（税別）",
+        "retakeFee": "US$100 / 15,000 円（税別）",
+        "prerequisite": "Platform Administrator の取得が必須",
+        "verified": true,
+        "checkedAt": "2026-10-17",
         "notes": [
-          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます。",
-          "出題範囲と配点は講座提供会社（K2U）の公開情報に基づきます。合格ラインは情報源によって 67%〜78% と差があるため、公式試験ガイドで確認してください。"
+          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます（結果には影響しません）。",
+          "合格ラインは日本語版・英語版ともに 78% と高めです。取りこぼしを減らす学習が必要です。",
+          "出題は Summer '25 リリースの内容に基づきます。",
+          "受験できる言語: 英語・日本語・フランス語・スペイン語。",
+          "試験中は資料を参照できません。テストセンターかオンライン監視（自宅など）のどちらかで受験します。",
+          "合格後は毎年 1 回、Trailhead のメンテナンスバッジを取得します。"
         ]
       },
       "domains": [
@@ -261,52 +396,98 @@
           "id": "industry",
           "name": "業界知識",
           "nameEn": "Industry Knowledge",
-          "weight": 12
+          "weight": 12,
+          "objectives": [
+            "コンタクトセンターの主要な指標と KPI に影響する要因を説明できる。",
+            "顧客が望む成果を実現するうえでのリスク・メリット・業務上の課題を判断できる。"
+          ]
         },
         {
           "id": "implementation",
           "name": "導入戦略",
           "nameEn": "Implementation Strategies",
-          "weight": 12
+          "weight": 12,
+          "objectives": [
+            "シナリオに応じて、コンサルティング案件を成功させる関わり方を判断できる。",
+            "シナリオに応じて、適切なリリース戦略とトレーニング戦略を提案できる。",
+            "データ移行・データ品質・データガバナンス・大量データの考慮点と影響を説明できる。"
+          ]
         },
         {
           "id": "agentforce-service",
           "name": "Agentforce Service のソリューション設計",
           "nameEn": "Agentforce Service Solution Design",
-          "weight": 15
+          "weight": 15,
+          "objectives": [
+            "顧客要件を分析し、サービス担当者（エージェント）の体験について、機能・制約・トレードオフを踏まえた設計を決められる。",
+            "顧客要件を分析し、顧客体験について、機能・制約・トレードオフを踏まえた設計を決められる。",
+            "顧客データのセキュリティ・コンプライアンス要件から、データを守る設計を決められる。"
+          ]
         },
         {
           "id": "knowledge",
           "name": "ナレッジ管理",
           "nameEn": "Knowledge Management",
-          "weight": 12
+          "weight": 12,
+          "objectives": [
+            "ナレッジ記事のライフサイクル、KCS（Knowledge-Centered Service）、Salesforce ナレッジの設定を説明できる。",
+            "要件に応じて、サポート対応とセルフサービスに使えるようナレッジを設定する方法を判断できる。"
+          ]
         },
         {
           "id": "channels",
           "name": "受付とインタラクションのチャネル",
           "nameEn": "Intake and Interaction Channels",
-          "weight": 13
+          "weight": 13,
+          "objectives": [
+            "業務プロセスの要件から、受付チャネルの方針と設計を提案できる。",
+            "事業目標に照らして、提案するチャネルの用途と機能を説明できる。",
+            "チャネルを設定するときの設計上の考慮点とベストプラクティスを評価できる。",
+            "カスタマーサービスのプロセスで AI エージェントをどう使うべきかを提案できる。",
+            "エージェント型サービスの機能・用途・設定手順を説明できる。"
+          ]
         },
         {
           "id": "case-management",
           "name": "ケース管理",
           "nameEn": "Case Management",
-          "weight": 13
+          "weight": 13,
+          "objectives": [
+            "要件や KPI から、作成からクローズまでのケース管理を設計できる。",
+            "Experience Cloud サイト・Agentforce・ナレッジでケースを未然に防ぐ（ケースデフレクション）方法を説明できる。",
+            "エンタイトルメント、マイルストーン、納入商品（資産）、営業時間、SLA の機能・用途・設定方法を説明できる。",
+            "Agentforce Service の自動化機能の用途と違いを区別できる。"
+          ]
         },
         {
           "id": "integrations",
           "name": "連携",
           "nameEn": "Integrations",
-          "weight": 10
+          "weight": 10,
+          "objectives": [
+            "Agentforce Service の主な連携（サードパーティ製品、外部データへの接続を含む）の用途と考慮点を説明できる。"
+          ]
         },
         {
           "id": "analytics",
           "name": "コンタクトセンター分析",
           "nameEn": "Contact Center Analytics",
-          "weight": 13
+          "weight": 13,
+          "objectives": [
+            "シナリオに応じて、ステークホルダーごとに必要な情報を示すレポートとダッシュボードを作れる。"
+          ]
         }
       ],
-      "links": []
+      "links": [
+        {
+          "label": "Trailhead 認定資格ページ",
+          "url": "https://trailhead.salesforce.com/credentials/agfserviceconsultant"
+        },
+        {
+          "label": "公式試験ガイド",
+          "url": "https://help.salesforce.com/s/articleView?type=1&language=ja&id=005298989"
+        }
+      ]
     },
     {
       "id": "platform-strategy-designer",
@@ -319,14 +500,17 @@
         "questions": 60,
         "minutes": 105,
         "passingScore": 70,
-        "fee": "US$200（税別）",
-        "retakeFee": "US$100（税別）",
+        "fee": "US$200 / 30,000 円（税別）",
+        "retakeFee": "US$100 / 15,000 円（税別）",
         "prerequisite": "なし",
-        "verified": false,
-        "checkedAt": "2026-10-16",
+        "verified": true,
+        "checkedAt": "2026-10-17",
         "notes": [
-          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます。",
-          "出題範囲と配点は複数の解説サイトで一致した値です。公式試験ガイドで最終確認してください。"
+          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます（結果には影響しません）。",
+          "出題は Spring '23 リリースの内容に基づきます（製品機能より、考え方と進め方が中心）。",
+          "受験できる言語: 英語のみ（2026 年 10 月時点）。英語の問題文に慣れておきましょう。",
+          "試験中は資料を参照できません。テストセンターかオンライン監視（自宅など）のどちらかで受験します。",
+          "合格後は毎年 1 回、Trailhead のメンテナンスモジュールを完了します。"
         ]
       },
       "domains": [
@@ -334,28 +518,62 @@
           "id": "value-design",
           "name": "価値のデザイン",
           "nameEn": "Value Design",
-          "weight": 32
+          "weight": 32,
+          "objectives": [
+            "顧客のシナリオから、事業目標とユーザーの課題を組み合わせた効果的な「課題定義文（チャレンジステートメント）」を作り、プロジェクトの高さ（抽象度）とスコープを決められる。",
+            "課題定義文に対して、成功を判断する指標とシグナルを決められる。",
+            "組織内の力学が、課題解決のアプローチの提案にどう影響するかを評価できる。",
+            "外部環境（イノベーションの文脈）が組織の戦略にどう影響するかを説明できる。",
+            "戦略の方向性が事業とユーザーのニーズをどう満たすか、将来どう影響するかを根拠をもって説明できる。",
+            "ユーザーと組織の両方の立場から、倫理と価値観を擁護できる。"
+          ]
         },
         {
           "id": "tools-artifacts",
           "name": "ツールと成果物",
           "nameEn": "Tools and Artifacts",
-          "weight": 23
+          "weight": 23,
+          "objectives": [
+            "業務ニーズから、ユーザーのニーズを Salesforce の大まかな機能に結び付けられる。",
+            "顧客のシナリオから、ユーザー体験における実現可能性・有用性（望ましさ）・事業性の判断基準を決められる。",
+            "顧客やステークホルダーと行う共創の手法から、最適なものを選べる。"
+          ]
         },
         {
           "id": "intangible",
           "name": "目に見えない成果物（合意形成）",
           "nameEn": "Intangible Deliverables",
-          "weight": 26
+          "weight": 26,
+          "objectives": [
+            "シナリオに応じて、合意（アライメント）を作る戦略を立てられる。",
+            "変化する組織内の力学の中で、課題解決に必要な主要な関係者とのつながりを見極められる。",
+            "聞き手に合わせて、ビジョンを伝える最適なプレゼンテーション手法を選べる。",
+            "職種をまたいだ協働を生産的にするツールを使いこなせる。"
+          ]
         },
         {
           "id": "adjacent-roles",
           "name": "隣接する役割とスキルの活用",
-          "nameEn": "Leveraging Adjacent Roles and Skills",
-          "weight": 19
+          "nameEn": "Leveraging Adjacent Roles/Skills",
+          "weight": 19,
+          "objectives": [
+            "合意したビジョンから、実現可能で、どの段階でもビジョンからぶれない導入ロードマップを作れる。",
+            "ビジョンをソリューションとして届けるために必要な、技術面・業務面の能力を判断できる。",
+            "設計・開発チームの中で、業務と技術の成果物がばらばらな状況でも生産的な協働を促せる。",
+            "ビジョン作りに必要な知識やスキルを、どこから補うべきかを判断できる。"
+          ]
         }
       ],
-      "links": []
+      "links": [
+        {
+          "label": "Trailhead 認定資格ページ",
+          "url": "https://trailhead.salesforce.com/credentials/platformstrategydesigner"
+        },
+        {
+          "label": "公式試験ガイド",
+          "url": "https://help.salesforce.com/s/articleView?type=1&language=ja&id=005298981"
+        }
+      ]
     },
     {
       "id": "integration-architect",
@@ -369,14 +587,18 @@
         "questions": 60,
         "minutes": 105,
         "passingScore": 67,
-        "fee": "US$400（税別）",
-        "retakeFee": "US$200（税別）",
-        "prerequisite": "なし（推奨の前提知識あり）",
-        "verified": false,
-        "checkedAt": "2026-10-16",
+        "fee": "US$400 / 60,000 円（税別）",
+        "retakeFee": "US$200 / 30,000 円（税別）",
+        "prerequisite": "なし（実務経験と Platform Developer 程度の知識を推奨）",
+        "verified": true,
+        "checkedAt": "2026-10-17",
         "notes": [
-          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます。",
-          "出題範囲と配点は複数の解説サイトで一致した値です。公式試験ガイドで最終確認してください。"
+          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます（結果には影響しません）。",
+          "出題は Summer '23 リリースの内容に基づきます。",
+          "受験できる言語: 英語・日本語・フランス語・スペイン語。",
+          "試験中は資料を参照できません。テストセンターかオンライン監視（自宅など）のどちらかで受験します。",
+          "アーキテクト系の試験は受験料が US$400 です。",
+          "合格後は毎年 1 回、Trailhead のメンテナンスバッジを取得します。"
         ]
       },
       "domains": [
@@ -384,40 +606,90 @@
           "id": "landscape",
           "name": "現行システム環境の評価",
           "nameEn": "Evaluate the Current System Landscape",
-          "weight": 8
+          "weight": 8,
+          "objectives": [
+            "業務要件から現在のシステム構成を把握し、どんな標準・制限・境界・プロトコルがあるかを判断できる。",
+            "既存のシステム構成を分析し、要件を満たすうえでの制約や課題を見つけられる。",
+            "システム構成を踏まえて、認証と認可のニーズを評価できる。"
+          ]
         },
         {
           "id": "business-needs",
           "name": "ビジネスニーズの評価",
           "nameEn": "Evaluate Business Needs",
-          "weight": 11
+          "weight": 11,
+          "objectives": [
+            "ユースケースから、連携に必要な機能要件と非機能要件を特定できる。",
+            "連携要件に沿って、データを「機密 / 要保護 / 公開」に分類できる。",
+            "CRM の成功に欠かせない要素を、連携要件として盛り込める。",
+            "事業の成長と規制の要因が、連携方式の選択にどう影響するかを判断できる。"
+          ]
         },
         {
           "id": "requirements",
           "name": "連携要件への落とし込み",
           "nameEn": "Translate Needs to Integration Requirements",
-          "weight": 22
+          "weight": 22,
+          "objectives": [
+            "既存のシステム構成図から、システムと連携パターンの一覧（インベントリ）を作れる。",
+            "ユースケースと業務プロセスから、システムとプロセスの制約を評価できる。",
+            "ユースケースから、連携のセキュリティ・認証・認可の要件を特定できる。",
+            "性能要件（件数、応答時間、遅延）を特定し、それを満たす連携方式を提案できる。"
+          ]
         },
         {
           "id": "design",
           "name": "連携ソリューションの設計",
           "nameEn": "Design Integration Solutions",
-          "weight": 28
+          "weight": 28,
+          "objectives": [
+            "ユースケースから、要件を満たす連携パターンを選べる。",
+            "要件を満たすソリューションを構成するコンポーネントを定義できる。",
+            "提案する方式のトレードオフ・制限・制約を特定できる。",
+            "技術要件や制約に応じて、適切な Salesforce の API を指定できる。",
+            "技術要件や制約に応じて、使うべき標準・コンポーネント・手法・セキュリティの仕組みを決められる。"
+          ]
         },
         {
           "id": "build",
           "name": "ソリューションの構築",
           "nameEn": "Build Solution",
-          "weight": 23
+          "weight": 23,
+          "objectives": [
+            "Salesforce が API を提供する側・呼び出す側の両方について、API の設計・実装の考慮点を特定できる。",
+            "外部システムへのアウトバウンド呼び出しで、適切な方式を選ぶ考慮点を特定できる。",
+            "スケーラブルなソリューションを作るときの考慮点を説明できる。",
+            "連携方式ごとのエラー処理を決められる。",
+            "インバウンド・アウトバウンド連携のセキュリティを設計できる。",
+            "システム更新に耐える（レジリエンスのある）連携を作るための要素を特定できる。"
+          ]
         },
         {
           "id": "maintain",
           "name": "連携の保守",
           "nameEn": "Maintain Integration",
-          "weight": 8
+          "weight": 8,
+          "objectives": [
+            "連携の性能監視のニーズを特定できる。",
+            "連携が失敗したときのエラー処理・エスカレーション・復旧の手順を決められる。",
+            "連携の監視に必要なレポートを特定できる。"
+          ]
         }
       ],
-      "links": []
+      "links": [
+        {
+          "label": "Trailhead 認定資格ページ",
+          "url": "https://trailhead.salesforce.com/credentials/platformintegrationarchitect"
+        },
+        {
+          "label": "公式試験ガイド",
+          "url": "https://help.salesforce.com/s/articleView?type=1&language=ja&id=005298980"
+        },
+        {
+          "label": "Trailmix: Architect Journey: Integration Architecture",
+          "url": "https://trailhead.salesforce.com/users/strailhead/trailmixes/architect-integration-architecture"
+        }
+      ]
     },
     {
       "id": "data-architect",
@@ -430,15 +702,20 @@
       "exam": {
         "questions": 60,
         "minutes": 105,
-        "passingScore": 67,
-        "fee": "US$400（税別）",
-        "retakeFee": "US$200（税別）",
-        "prerequisite": "なし（推奨の前提知識あり）",
-        "verified": false,
-        "checkedAt": "2026-10-16",
+        "passingScore": 58,
+        "fee": "US$400 / 60,000 円（税別）",
+        "retakeFee": "US$200 / 30,000 円（税別）",
+        "prerequisite": "なし（Platform App Builder・Platform Developer の取得を推奨）",
+        "verified": true,
+        "checkedAt": "2026-10-17",
         "notes": [
-          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます。",
-          "出題範囲と配点は複数の解説サイトで一致した値です。公式試験ガイドで最終確認してください。（情報源によって配点に差があります）"
+          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます（結果には影響しません）。",
+          "合格ラインは 58% です。範囲が広いので、配点の大きい「データモデル」「データ管理」「大量データ」を優先しましょう。",
+          "出題は Spring '23 リリースの内容に基づきます。",
+          "受験できる言語: 英語・日本語・フランス語・スペイン語。",
+          "試験中は資料を参照できません。テストセンターかオンライン監視（自宅など）のどちらかで受験します。",
+          "アーキテクト系の試験は受験料が US$400 です。",
+          "合格後は毎年 1 回、Trailhead のメンテナンスバッジを取得します。"
         ]
       },
       "domains": [
@@ -446,40 +723,86 @@
           "id": "data-modeling",
           "name": "データモデリングとデータベース設計",
           "nameEn": "Data Modeling / Database Design",
-          "weight": 25
+          "weight": 25,
+          "objectives": [
+            "Customer 360 Platform のデータモデル設計の手法と考慮点（オブジェクト、項目とリレーション、オブジェクトの機能）を比較できる。",
+            "現在のセキュリティ・共有モデルを守りつつ、スケーラブルなデータモデルを設計する方法を提案できる。",
+            "業務・技術メタデータ（業務用語集、データリネージ、分類体系、データ分類）を捉えて管理する手法を比較できる。",
+            "本番組織でビッグオブジェクトを使う理由と、標準・カスタムオブジェクトとの違い、長所と短所を比較できる。",
+            "データスキュー（レコードロック、共有計算の問題、1 つの親に子が集中しすぎる状態）を避ける方法を提案できる。"
+          ]
         },
         {
           "id": "mdm",
           "name": "マスターデータ管理",
           "nameEn": "Master Data Management",
-          "weight": 5
+          "weight": 5,
+          "objectives": [
+            "マスターデータ管理（MDM）の実装手法と考慮点（実装スタイル、複数ソースの統合、残存ルール・しきい値・重み付け、外部参照データによる補完、正規（カノニカル）モデル、階層管理）を比較できる。",
+            "1 つの組織の中で、顧客の「ゴールデンレコード」（信頼できる唯一の情報源）を確立する方法を提案できる。",
+            "複数ソースの属性を統合する方法と、どの値を採用するかの基準・手法を説明できる。",
+            "参照データとメタデータを記録・維持し、追跡可能性と業務ルールの共通の前提を保つ方法を提案できる。"
+          ]
         },
         {
           "id": "data-management",
           "name": "Salesforce のデータ管理",
           "nameEn": "Salesforce Data Management",
-          "weight": 25
+          "weight": 25,
+          "objectives": [
+            "業務ニーズに合わせて、標準・カスタムオブジェクトを活かせる Salesforce ライセンスの組み合わせを提案できる。",
+            "データを一貫した形で保存するための手法を提案できる。",
+            "顧客との接点が複数のシステムにある場合に、Salesforce 上で顧客の統合ビューを作る手法を説明できる。",
+            "複数の Salesforce 組織のデータを統合・活用する設計を提案できる。"
+          ]
         },
         {
           "id": "governance",
           "name": "データガバナンス",
           "nameEn": "Data Governance",
-          "weight": 10
+          "weight": 10,
+          "objectives": [
+            "GDPR に準拠したデータモデルの設計方法を提案できる。個人情報・機微情報を特定・分類・保護する選択肢を説明できる。",
+            "全社的なデータガバナンスの仕組みを設計・導入する方法と考慮点を比較できる。"
+          ]
         },
         {
           "id": "ldv",
           "name": "大量データへの配慮",
           "nameEn": "Large Data Volume Considerations",
-          "weight": 20
+          "weight": 20,
+          "objectives": [
+            "大量データ（LDV）と性能を考慮して、スケールするデータモデルを設計できる。",
+            "ストレージ管理のニーズに合ったデータのアーカイブ・削除（パージ）計画を提案できる。",
+            "仮想化データ（外部に置いたまま参照するデータ）を使う場面と選択肢を説明できる。"
+          ]
         },
         {
           "id": "migration",
           "name": "データ移行",
           "nameEn": "Data Migration",
-          "weight": 15
+          "weight": 15,
+          "objectives": [
+            "ロード時に高いデータ品質を保つ手法を提案できる。",
+            "大量データを Salesforce に移行するときの性能を上げる手法を比較できる。",
+            "Salesforce からデータをエクスポートする手法と考慮点を比較できる。"
+          ]
         }
       ],
-      "links": []
+      "links": [
+        {
+          "label": "Trailhead 認定資格ページ",
+          "url": "https://trailhead.salesforce.com/credentials/platformdataarchitect"
+        },
+        {
+          "label": "公式試験ガイド",
+          "url": "https://help.salesforce.com/s/articleView?type=1&language=ja&id=005298972"
+        },
+        {
+          "label": "Trailmix: Architect Journey: Data Architecture",
+          "url": "https://trailhead.salesforce.com/users/strailhead/trailmixes/architect-data-architecture"
+        }
+      ]
     },
     {
       "id": "sharing-visibility-architect",
@@ -492,15 +815,21 @@
       "exam": {
         "questions": 60,
         "minutes": 120,
-        "passingScore": 67,
-        "fee": "US$400（税別）",
-        "retakeFee": "US$200（税別）",
-        "prerequisite": "なし（推奨の前提知識あり）",
-        "verified": false,
-        "checkedAt": "2026-10-16",
+        "passingScore": 58,
+        "fee": "US$400 / 60,000 円（税別）",
+        "retakeFee": "US$200 / 30,000 円（税別）",
+        "prerequisite": "なし（実務経験と Platform Developer 程度の知識を推奨）",
+        "verified": true,
+        "checkedAt": "2026-10-17",
         "notes": [
-          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます。",
-          "出題範囲と配点は複数の解説サイトで一致した値です。公式試験ガイドで最終確認してください。"
+          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます（結果には影響しません）。",
+          "試験時間は他より長い 120 分です。合格ラインは 58% です。",
+          "配点の 39% を「レコードへのアクセス」が占めます。共有の仕組みの組み合わせを最優先で固めましょう。",
+          "出題は Winter '23 リリースの内容に基づきます。",
+          "受験できる言語: 英語・日本語。",
+          "試験中は資料を参照できません。テストセンターかオンライン監視（自宅など）のどちらかで受験します。",
+          "アーキテクト系の試験は受験料が US$400 です。",
+          "合格後は毎年 1 回、Trailhead のメンテナンスを完了します。"
         ]
       },
       "domains": [
@@ -508,28 +837,67 @@
           "id": "object-field",
           "name": "標準・カスタムオブジェクトと項目の権限",
           "nameEn": "Permissions to Standard Objects, Custom Objects, and Fields",
-          "weight": 27
+          "weight": 27,
+          "objectives": [
+            "シナリオに応じて、ユーザーに必要なオブジェクト権限のレベルを提案できる。",
+            "シナリオに応じて、ユーザーに必要な項目権限のレベルを提案できる。",
+            "画面（ユーザーインターフェース）上でデータを隠す適切な仕組みを提案できる。",
+            "機微なデータ（PCI、個人情報、HIPAA など）を守る適切なアクセス制御を判断できる。",
+            "セキュリティ設定を確実に守らせるプログラム上の手段を提案できる。"
+          ]
         },
         {
           "id": "records",
           "name": "レコードへのアクセス",
           "nameEn": "Access to Records",
-          "weight": 39
+          "weight": 39,
+          "objectives": [
+            "条件に応じて、レコードへのアクセスを制限する組織の共有設定（OWD）を提案できる。",
+            "ロール階層を活かしてレコードアクセスの要件を満たす方法を提案できる。",
+            "共有ルールでレコードアクセスの要件を満たす方法を判断できる。",
+            "グループでレコードアクセスの要件を満たす方法を判断できる。",
+            "チームでレコードアクセスの要件を満たす方法を判断できる。",
+            "レコードアクセスの要件を満たすオブジェクトのリレーション（主従・参照）を判断できる。",
+            "プログラムによる共有（Apex 共有）で要件を満たす方法を判断できる。",
+            "外部ユーザーとレコードを共有する適切な仕組みを判断できる。",
+            "アクセス権を上書きする仕組み（「すべて表示」など）が要件にどう使えるかを判断できる。"
+          ]
         },
         {
           "id": "other-data",
           "name": "その他のデータへのアクセス",
           "nameEn": "Access to Other Data",
-          "weight": 21
+          "weight": 16,
+          "objectives": [
+            "標準・カスタムオブジェクト以外のデータ（ファイル、レポート、ダッシュボード、ナレッジ、Chatter など）へのアクセスを与える適切な制御を判断できる。"
+          ]
         },
         {
           "id": "implications",
           "name": "セキュリティモデルの選択による影響",
           "nameEn": "Implications of Security Model Choice",
-          "weight": 13
+          "weight": 18,
+          "objectives": [
+            "共有の仕組みが大規模になったときの影響（スケーラビリティ）を判断できる。",
+            "共有の設計に影響するライセンスの制限を判断できる。",
+            "共有モデルをテストする方法を判断できる。"
+          ]
         }
       ],
-      "links": []
+      "links": [
+        {
+          "label": "Trailhead 認定資格ページ",
+          "url": "https://trailhead.salesforce.com/credentials/platformsharingandvisibilityarchitect"
+        },
+        {
+          "label": "公式試験ガイド",
+          "url": "https://help.salesforce.com/s/articleView?type=1&language=ja&id=005298977"
+        },
+        {
+          "label": "Trailmix: Architect Journey: Sharing and Visibility",
+          "url": "https://trailhead.salesforce.com/users/strailhead/trailmixes/architect-sharing-and-visibility"
+        }
+      ]
     },
     {
       "id": "data-360-consultant",
@@ -543,14 +911,17 @@
         "questions": 60,
         "minutes": 105,
         "passingScore": 70,
-        "fee": "US$200（税別）",
-        "retakeFee": "US$100（税別）",
+        "fee": "US$200 / 30,000 円（税別）",
+        "retakeFee": "US$100 / 15,000 円（税別）",
         "prerequisite": "なし",
-        "verified": false,
-        "checkedAt": "2026-10-16",
+        "verified": true,
+        "checkedAt": "2026-10-17",
         "notes": [
-          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます。",
-          "出題範囲と配点は複数の解説サイトで一致した値です。公式試験ガイドで最終確認してください。"
+          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます（結果には影響しません）。",
+          "出題は Spring '26 リリースの内容に基づきます。Data Cloud から Data 360 に名称が変わりました。",
+          "受験できる言語: 英語・日本語・フランス語・スペイン語。",
+          "試験中は資料を参照できません。テストセンターかオンライン監視（自宅など）のどちらかで受験します。",
+          "合格後は毎年 1 回、Trailhead のメンテナンスモジュールを完了します。"
         ]
       },
       "domains": [
@@ -558,40 +929,83 @@
           "id": "positioning",
           "name": "ソリューションの位置づけ",
           "nameEn": "Solution Positioning",
-          "weight": 14
+          "weight": 14,
+          "objectives": [
+            "Data 360 の主要な用語と、ビジネス上の価値を説明できる。",
+            "生成 AI と予測 AI の土台としての Data 360 の役割を説明できる。",
+            "Data 360 の最初のユースケースを見つけられる。",
+            "データ倫理とガバナンスの原則を説明できる。"
+          ]
         },
         {
           "id": "setup",
           "name": "セットアップと管理",
           "nameEn": "Data 360 Setup and Administration",
-          "weight": 13
+          "weight": 13,
+          "objectives": [
+            "Data 360 の権限・権限セット・組織全体の設定を構成できる。",
+            "データガバナンスの要件をプラットフォームの設定に反映できる。",
+            "使えるツールで開発ライフサイクル（サンドボックス、データキットなど）を管理できる。",
+            "ツールを使って、よくある問題を診断・解決できる。"
+          ]
         },
         {
           "id": "ingestion",
           "name": "データソースの接続と取り込み",
           "nameEn": "Data Source Connection and Ingestion",
-          "weight": 18
+          "weight": 18,
+          "objectives": [
+            "Data 360 のデータ変換機能を説明できる。",
+            "さまざまなソースから Data 360 にデータを取り込む手順と考慮点を説明できる。",
+            "ゼロコピーを含む、Data 360 のデータ連携（コラボレーション）機能を説明できる。"
+          ]
         },
         {
           "id": "harmonization",
           "name": "データの調和と統合（ID 解決）",
           "nameEn": "Harmonization and Unification",
-          "weight": 17
+          "weight": 17,
+          "objectives": [
+            "統合（ユニフィケーション）の目的・手順・対応するユースケースを定義できる。",
+            "Data 360 でデータをモデリングできる。"
+          ]
         },
         {
           "id": "enhancement",
           "name": "データの拡張・共有・分析",
           "nameEn": "Data Enhancements, Sharing, and Analysis",
-          "weight": 18
+          "weight": 18,
+          "objectives": [
+            "統合したデータを拡張し、インサイトを作る方法を示せる。",
+            "他のシステムから Data 360 のデータを参照する方法を説明できる。",
+            "Data 360 のデータでレポートとダッシュボードを見る・作ることができる。",
+            "Data 360 の予測 AI・生成 AI のツールを顧客のシナリオに当てはめられる。"
+          ]
         },
         {
           "id": "activation",
           "name": "アクティベーションと活用",
           "nameEn": "Data Activations and Utilization",
-          "weight": 20
+          "weight": 20,
+          "objectives": [
+            "セグメンテーションの基本概念と用途を定義できる。",
+            "Data 360 でセグメントを管理できる。",
+            "Data 360 でアクティベーションを公開できる。",
+            "データに基づいてアクションを実行できる（データアクションなど）。",
+            "Salesforce の Flow で Data 360 を使える。"
+          ]
         }
       ],
-      "links": []
+      "links": [
+        {
+          "label": "Trailhead 認定資格ページ",
+          "url": "https://trailhead.salesforce.com/credentials/data360consultant"
+        },
+        {
+          "label": "公式試験ガイド",
+          "url": "https://help.salesforce.com/s/articleView?type=1&language=ja&id=005298940"
+        }
+      ]
     },
     {
       "id": "agentforce-specialist",
@@ -604,16 +1018,19 @@
       "exam": {
         "questions": 60,
         "minutes": 105,
-        "passingScore": null,
-        "fee": "US$200（税別）",
-        "retakeFee": "US$100（税別）",
-        "prerequisite": "なし",
-        "verified": false,
-        "checkedAt": "2026-10-16",
+        "passingScore": 72,
+        "fee": "US$200 / 30,000 円（税別）",
+        "retakeFee": "US$100 / 15,000 円（税別）",
+        "prerequisite": "なし（Platform Administrator・Platform App Builder を推奨）",
+        "verified": true,
+        "checkedAt": "2026-10-17",
         "notes": [
-          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます。",
-          "2026 年の改定で 6 分野の構成になりました。出題範囲と配点は複数の解説サイトで一致した値です。公式試験ガイドで最終確認してください。",
-          "合格ラインは情報源によって 72%〜73% と差があります。"
+          "採点対象 60 問のほかに、採点されない問題が最大 5 問含まれます（結果には影響しません）。",
+          "出題は Spring '26 リリースの内容に基づきます。Agent Script、ハイブリッド推論、マルチエージェント（MCP・A2A）など新しい機能が出題範囲に入りました。",
+          "受験できる言語: 英語・日本語・フランス語ほか。",
+          "試験中は資料を参照できません。テストセンターかオンライン監視（自宅など）のどちらかで受験します。",
+          "合格後は毎年 1 回、Trailhead のメンテナンスモジュールを完了します。",
+          "公式の推奨学習は「Agentblazer ステータス」の取得です。"
         ]
       },
       "domains": [
@@ -621,40 +1038,87 @@
           "id": "ai-agents",
           "name": "AI エージェント",
           "nameEn": "AI Agents",
-          "weight": 35
+          "weight": 35,
+          "objectives": [
+            "エージェントの動く仕組みと、Agent Script の基本的な構成要素を説明できる。",
+            "ハイブリッド推論の構成要素とメリット、Agent Script が Canvas ビューと Script ビューでどう働くかを説明できる。",
+            "フィルター・変数・テンプレート式などで、エージェントの決定的な（毎回同じ）動作を管理できる。",
+            "標準トピック・カスタムトピック・標準アクション・カスタムアクションを選んで設定できる。",
+            "エージェントを各チャネル（Web・Experience サイト、メール、音声、Slack）につなぐ手順を説明できる。",
+            "エージェントが実際にどのユーザーの権限で動くか（セキュリティコンテキスト）と、それがアクションの実行にどう影響するかを説明できる。",
+            "従業員エージェントとサービスエージェントの使い分けを判断できる。",
+            "Agent API を使うのが適切な場面を判断できる。"
+          ]
         },
         {
           "id": "prompt-engineering",
           "name": "プロンプトエンジニアリング",
           "nameEn": "Prompt Engineering",
-          "weight": 20
+          "weight": 20,
+          "objectives": [
+            "業務要件から、プロンプトビルダーを使うのが適切な場面を判断できる。",
+            "プロンプトテンプレートへのアクセスを制御する仕組みを特定できる。",
+            "プロンプトテンプレートの種類（項目生成、フレックスなど）ごとの考慮点を特定できる。",
+            "シナリオに応じて、適切なグラウンディングの手法を選べる。",
+            "プロンプトテンプレートを作成・有効化・実行する手順を説明できる。",
+            "効果的なプロンプトを書くベストプラクティスを説明できる。",
+            "Einstein Trust Layer のセキュリティとプライバシーの機能を特定できる。",
+            "特定のモデルへのアクセスを管理・禁止する方法を説明できる。"
+          ]
         },
         {
           "id": "data-360",
           "name": "Data 360 の基礎",
           "nameEn": "Data 360 Fundamentals",
-          "weight": 20
+          "weight": 20,
+          "objectives": [
+            "Agentforce データライブラリの考慮点と概念を説明できる。",
+            "チャンキング、インデックス作成、リトリーバーなど Data 360 の基本概念を説明できる。"
+          ]
         },
         {
           "id": "test-deploy",
           "name": "テスト・リリース・保守",
           "nameEn": "Testing, Deployment and Maintenance",
-          "weight": 10
+          "weight": 10,
+          "objectives": [
+            "テストセンターでエージェントをテストできる。",
+            "テストセンターの評価の仕組みを説明できる。",
+            "エージェントをサンドボックスから本番にリリースするときの考慮点を特定できる。",
+            "プロンプトテンプレートをサンドボックスから本番にリリースするときの考慮点を特定できる。"
+          ]
         },
         {
           "id": "governance",
           "name": "ガバナンスと可観測性",
           "nameEn": "Governance and Observability",
-          "weight": 10
+          "weight": 10,
+          "objectives": [
+            "エージェントを管理・監視する手順を説明できる。",
+            "エージェントの分析と最適化を説明できる。"
+          ]
         },
         {
           "id": "multi-agent",
           "name": "マルチエージェントのオーケストレーション",
           "nameEn": "Multi-Agent Orchestration",
-          "weight": 5
+          "weight": 5,
+          "objectives": [
+            "シナリオに応じて、スケーラビリティと統制の観点からマルチエージェント構成が適切かを判断できる。",
+            "MCP や A2A などのオープンなマルチエージェント標準の目的を説明できる。"
+          ]
         }
       ],
-      "links": []
+      "links": [
+        {
+          "label": "Trailhead 認定資格ページ",
+          "url": "https://trailhead.salesforce.com/credentials/agentforcespecialist"
+        },
+        {
+          "label": "公式試験ガイド",
+          "url": "https://help.salesforce.com/s/articleView?type=1&language=ja&id=005298924"
+        }
+      ]
     }
   ]
 }
