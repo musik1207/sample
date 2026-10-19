@@ -2,7 +2,7 @@
 
 Salesforce 認定資格（STEP 1〜5 の 10 資格）を順番に取得するための、個人用の学習サイトです。
 
-公開先: https://musik1207.github.io/sample/ （検索エンジンには載らない設定）
+公開先: https://pome-uniikura.github.io/sample/ （検索エンジンには載らない設定）
 
 ## できること
 

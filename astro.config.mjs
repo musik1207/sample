@@ -1,9 +1,9 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
-// GitHub Pages: https://musik1207.github.io/sample/
+// GitHub Pages: https://pome-uniikura.github.io/sample/
 export default defineConfig({
-  site: 'https://musik1207.github.io',
+  site: 'https://pome-uniikura.github.io',
   base: '/sample',
   trailingSlash: 'always',
   markdown: {
