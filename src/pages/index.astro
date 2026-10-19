@@ -3,12 +3,15 @@ import Base from '../layouts/Base.astro';
 import { certs, steps, url, certSummaries, getLessonKeys } from '../lib/data';
 
 const summaries = certSummaries(await getLessonKeys());
+const hoursOf = (ids: string[]) => certs.filter((c) => ids.includes(c.id)).reduce((sum, c) => sum + (c.study?.hours ?? 0), 0);
+const totalHours = hoursOf(certs.map((c) => c.id));
 ---
 
 <Base title="SF 資格ロードマップ" nav="home">
   <section class="hero">
     <h1>Salesforce 資格ロードマップ</h1>
     <p class="muted">STEP 1 から順に、10 個の認定資格を取得するための学習サイトです。</p>
+    <p class="small muted">学習時間の目安は全体で約 {totalHours} 時間（1 日 1 時間なら約 {Math.round(totalHours / 30)} か月）です。</p>
   </section>
 
   <section class="card next-card" aria-labelledby="next-title">
@@ -24,7 +27,9 @@ const summaries = certSummaries(await getLessonKeys());
             <span class="step-no">STEP {step.id}</span>
             <div>
               <h2>{step.title}</h2>
-              <p class="muted small">{step.subtitle}</p>
+              <p class="muted small">
+                {step.subtitle} ・ 目安 約 {hoursOf(certs.filter((c) => c.step === step.id).map((c) => c.id))} 時間
+              </p>
             </div>
           </div>
           <div class="grid grid-2">
@@ -47,6 +52,7 @@ const summaries = certSummaries(await getLessonKeys());
                   <div class="progress" aria-hidden="true">
                     <span data-bar />
                   </div>
+                  {c.study && <p class="small muted study">学習時間の目安 約 {c.study.hours} 時間</p>}
                   <p class="small muted meta">
                     <span data-percent>0%</span>
                     <span data-target />
@@ -204,5 +210,8 @@ const summaries = certSummaries(await getLessonKeys());
   }
   .meta {
     margin: 6px 0 0;
+  }
+  .cert-card .study {
+    margin: 4px 0 0;
   }
 </style>

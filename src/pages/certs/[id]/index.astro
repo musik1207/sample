@@ -1,6 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
-import { certs, steps, url, certSummaries, getLessonKeys } from '../../../lib/data';
+import { certs, steps, url, certSummaries, getLessonKeys, getLessonStats, domainBreakdown, formatHours } from '../../../lib/data';
 import type { Cert } from '../../../lib/types';
 
 export function getStaticPaths() {
@@ -10,6 +10,7 @@ export function getStaticPaths() {
 const { cert } = Astro.props as { cert: Cert };
 const step = steps.find((s) => s.id === cert.step)!;
 const lessonKeys = await getLessonKeys();
+const lessonStats = await getLessonStats();
 const summary = certSummaries(lessonKeys).find((s) => s.id === cert.id)!;
 const hasQuestions = summary.questions.length > 0;
 const show = (v: string | number | null, suffix = '') => (v === null ? '要確認' : `${v}${suffix}`);
@@ -41,9 +42,11 @@ const show = (v: string | number | null, suffix = '') => (v === null ? '要確�
             <tr><th scope="row">受験料</th><td>{show(cert.exam.fee)}</td></tr>
             <tr><th scope="row">再受験料</th><td>{show(cert.exam.retakeFee)}</td></tr>
             <tr><th scope="row">前提条件</th><td>{cert.exam.prerequisite}</td></tr>
+            {cert.study && <tr><th scope="row">学習時間の目安</th><td>約 {cert.study.hours} 時間</td></tr>}
           </tbody>
         </table>
       </div>
+      {cert.study && <p class="small study-note">学習時間の目安について: {cert.study.note}各範囲の時間は配点で割り振っています。</p>}
       <ul class="small notes">
         {cert.exam.notes.map((n) => <li>{n}</li>)}
       </ul>
@@ -72,6 +75,7 @@ const show = (v: string | number | null, suffix = '') => (v === null ? '要確�
         <input type="date" id="target-date" />
       </label>
       <p class="small muted" id="countdown"></p>
+      <p class="small" id="pace"></p>
       <label class="field">
         <span>合格日</span>
         <input type="date" id="passed-date" />
@@ -104,6 +108,7 @@ const show = (v: string | number | null, suffix = '') => (v === null ? '要確�
         cert.domains.map((d) => {
           const hasLesson = lessonKeys.has(`${cert.id}/${d.id}`);
           const qCount = summary.questions.filter((q) => q.domain === d.id).length;
+          const study = domainBreakdown(cert, d.id, lessonStats.get(`${cert.id}/${d.id}`));
           return (
             <li class="card domain" data-domain={d.id}>
               <div class="domain-head">
@@ -113,6 +118,20 @@ const show = (v: string | number | null, suffix = '') => (v === null ? '要確�
                 </div>
                 <span class="weight">{d.weight === null ? '配点 要確認' : `${d.weight}%`}</span>
               </div>
+              {study.totalHours !== null && (
+                <p class="small domain-study">
+                  学習時間の目安 <strong>約 {formatHours(study.totalHours)}</strong>
+                  <span class="muted">
+                    {`（${[
+                      study.readMinutes ? `レッスン ${study.readMinutes} 分` : '',
+                      study.handsOnMinutes ? `ハンズオン ${study.handsOnMinutes} 分` : '',
+                      study.questions ? `練習問題 ${study.questions} 問 ${study.practiceMinutes} 分` : '',
+                    ]
+                      .filter(Boolean)
+                      .join('・')}）`}
+                  </span>
+                </p>
+              )}
               {d.weight !== null && (
                 <div class="weight-bar" aria-hidden="true">
                   <span style={`width: ${d.weight * 4}%`} />
@@ -168,14 +187,26 @@ const show = (v: string | number | null, suffix = '') => (v === null ? '要確�
       targetInput.value = plan.targetDate ?? cert.suggestedTarget ?? '';
       passedInput.value = plan.passedDate ?? '';
 
+      const p = certProgress(cert, data);
+
       const countdown = document.getElementById('countdown')!;
+      const pace = document.getElementById('pace')!;
+      pace.textContent = '';
       if (plan.passedDate) countdown.textContent = '合格おめでとうございます！';
       else if (targetInput.value) {
         const d = daysUntil(targetInput.value);
         countdown.textContent = d >= 0 ? `あと ${d} 日` : `目標日を ${-d} 日過ぎています`;
+        if (cert.studyHours && d > 0) {
+          // 残りの学習時間は、進み具合（レッスンと正解済みの問題の割合）で減らす
+          const remaining = (cert.studyHours * (100 - p.percent)) / 100;
+          const perDay = Math.ceil((remaining * 60) / d / 5) * 5;
+          pace.textContent =
+            remaining <= 0
+              ? '学習の目安時間をこなしました。模擬試験で仕上げましょう。'
+              : `残り約 ${Math.round(remaining)} 時間 → 1 日あたり約 ${perDay} 分（週に約 ${Math.round((perDay * 7) / 60)} 時間）のペースです。`;
+        }
       } else countdown.textContent = '';
 
-      const p = certProgress(cert, data);
       document.getElementById('overall-percent')!.textContent = `${p.percent}%`;
       document.getElementById('overall-bar')!.style.width = `${p.percent}%`;
       document.getElementById('overall-detail')!.textContent =
@@ -267,6 +298,12 @@ const show = (v: string | number | null, suffix = '') => (v === null ? '要確�
   }
   .objectives {
     margin: 10px 0 4px;
+  }
+  .domain-study {
+    margin: 6px 0 4px;
+  }
+  .study-note {
+    margin: 8px 0 0;
   }
   .objectives summary {
     cursor: pointer;

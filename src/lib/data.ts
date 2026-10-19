@@ -47,10 +47,73 @@ export function certSummaries(lessonKeys: Set<string>) {
     name: c.name,
     status: c.status,
     suggestedTarget: c.suggestedTarget ?? null,
-    domains: c.domains.map((d) => ({ id: d.id, name: d.name, weight: d.weight })),
+    studyHours: c.study?.hours ?? null,
+    domains: c.domains.map((d) => ({ id: d.id, name: d.name, weight: d.weight, hours: domainStudyHours(c, d.id) })),
     questions: getQuestions(c.id).map((q) => ({ id: q.id, domain: q.domain })),
     lessonDomains: c.domains.map((d) => d.id).filter((d) => lessonKeys.has(`${c.id}/${d}`)),
   }));
 }
 
 export type CertSummary = ReturnType<typeof certSummaries>[number];
+
+/** 練習問題 1 問あたりの時間（回答と解説を読む時間、分） */
+export const MINUTES_PER_QUESTION = 1.5;
+
+/** 0.5 時間単位に丸める（最低 0.5 時間） */
+export function roundHours(h: number): number {
+  return Math.max(0.5, Math.round(h * 2) / 2);
+}
+
+/** 時間の表示（例: 1.5 → 「1.5 時間」、0.5 → 「30 分」） */
+export function formatHours(h: number): string {
+  if (h < 1) return `${Math.round(h * 60)} 分`;
+  return `${Number.isInteger(h) ? h : h.toFixed(1)} 時間`;
+}
+
+/** 範囲の学習時間の目安（資格の合計時間 × 配点） */
+export function domainStudyHours(cert: Cert, domainId: string): number | null {
+  const total = cert.study?.hours;
+  const weight = cert.domains.find((d) => d.id === domainId)?.weight;
+  if (!total || weight == null) return null;
+  return roundHours((total * weight) / 100);
+}
+
+export interface LessonStats {
+  /** レッスンを読む時間（分）。日本語はおよそ 1 分 500 文字 */
+  readMinutes: number;
+  /** 「やってみよう（N 分）」の合計（分） */
+  handsOnMinutes: number;
+}
+
+/** レッスン本文から読む時間とハンズオンの時間を見積もる */
+export function lessonStats(body: string): LessonStats {
+  const readMinutes = Math.max(1, Math.round(body.replace(/```mermaid[\s\S]*?```/g, '').length / 500));
+  let handsOnMinutes = 0;
+  for (const m of body.matchAll(/やってみよう（[^）]*?(\d+)\s*分/g)) handsOnMinutes += Number(m[1]);
+  return { readMinutes, handsOnMinutes };
+}
+
+/** 「資格/範囲」ごとのレッスンの見積もり */
+export async function getLessonStats(): Promise<Map<string, LessonStats>> {
+  const { getCollection } = await import('astro:content');
+  const lessons = await getCollection('lessons');
+  return new Map(lessons.map((l) => [`${l.data.cert}/${l.data.domain}`, lessonStats(l.body ?? '')]));
+}
+
+/** 範囲ごとの学習時間の内訳（このサイトの教材の分） */
+export function domainBreakdown(cert: Cert, domainId: string, stats?: LessonStats) {
+  const questions = getQuestions(cert.id).filter((q) => q.domain === domainId).length;
+  const practiceMinutes = Math.round(questions * MINUTES_PER_QUESTION);
+  const siteMinutes = (stats?.readMinutes ?? 0) + (stats?.handsOnMinutes ?? 0) + practiceMinutes;
+  const totalHours = domainStudyHours(cert, domainId);
+  return {
+    totalHours,
+    readMinutes: stats?.readMinutes ?? 0,
+    handsOnMinutes: stats?.handsOnMinutes ?? 0,
+    questions,
+    practiceMinutes,
+    siteMinutes,
+    /** 復習・Trailhead・実機での練習に使う残りの時間（分） */
+    otherMinutes: totalHours === null ? null : Math.max(0, Math.round(totalHours * 60 - siteMinutes)),
+  };
+}

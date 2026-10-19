@@ -21,21 +21,22 @@ Salesforce 認定資格（STEP 1〜5 の 10 資格）を順番に取得するた
 
 ## 教材の状況
 
-| 資格 | レッスン | 問題 | 合格ライン |
-|---|---|---|---|
-| Platform Administrator | 8 範囲 | 260 問 | 65% |
-| Business Analyst | 6 範囲 | 159 問 | 72% |
-| Agentforce Sales Consultant | 5 範囲 | 158 問 | 69% |
-| Agentforce Service Consultant | 8 範囲 | 158 問 | 78% |
-| Platform Strategy Designer | 4 範囲 | 149 問 | 70% |
-| Platform Integration Architect | 6 範囲 | 150 問 | 67% |
-| Platform Data Architect | 6 範囲 | 148 問 | 58% |
-| Platform Sharing and Visibility Architect | 4 範囲 | 152 問 | 58% |
-| Data 360 Consultant | 6 範囲 | 151 問 | 70% |
-| Agentforce Specialist | 6 範囲 | 152 問 | 72% |
+| 資格 | レッスン | 問題 | 合格ライン | 学習時間の目安 |
+|---|---|---|---|---|
+| Platform Administrator | 8 範囲 | 260 問 | 65% | 約 70 時間 |
+| Business Analyst | 6 範囲 | 159 問 | 72% | 約 40 時間 |
+| Agentforce Sales Consultant | 5 範囲 | 158 問 | 69% | 約 45 時間 |
+| Agentforce Service Consultant | 8 範囲 | 158 問 | 78% | 約 55 時間 |
+| Platform Strategy Designer | 4 範囲 | 149 問 | 70% | 約 30 時間 |
+| Platform Integration Architect | 6 範囲 | 150 問 | 67% | 約 60 時間 |
+| Platform Data Architect | 6 範囲 | 148 問 | 58% | 約 60 時間 |
+| Platform Sharing and Visibility Architect | 4 範囲 | 152 問 | 58% | 約 50 時間 |
+| Data 360 Consultant | 6 範囲 | 151 問 | 70% | 約 45 時間 |
+| Agentforce Specialist | 6 範囲 | 152 問 | 72% | 約 45 時間 |
 
 - 出題範囲・配点・合格ライン・受験料は、10 資格すべて Salesforce の公式試験ガイド（2026 年 10 月 17 日に確認）と照合済みです。合格ラインは日本語版がある資格は日本語版の値です。
 - 各範囲のレッスンの冒頭に、公式試験ガイドの出題目標（日本語訳）を表示しています。
+- 学習時間の目安は資格ごとの想定（前提は各資格ページに記載）で、範囲ごとの時間は配点で割り振っています。全体で約 500 時間です。
 - 用語集は 164 語です。
 
 ## 開発
