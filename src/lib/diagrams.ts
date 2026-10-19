@@ -15,7 +15,8 @@ export async function renderDiagrams(root: ParentNode = document): Promise<void>
   if (!blocks.length) return;
 
   const { default: mermaid } = await import('mermaid');
-  const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  // テーマは設定で固定されている場合があるので、OS ではなく実際の表示から判断する
+  const dark = getComputedStyle(document.documentElement).colorScheme === 'dark';
   mermaid.initialize({
     startOnLoad: false,
     securityLevel: 'strict',

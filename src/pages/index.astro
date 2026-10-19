@@ -5,213 +5,349 @@ import { certs, steps, url, certSummaries, getLessonKeys } from '../lib/data';
 const summaries = certSummaries(await getLessonKeys());
 const hoursOf = (ids: string[]) => certs.filter((c) => ids.includes(c.id)).reduce((sum, c) => sum + (c.study?.hours ?? 0), 0);
 const totalHours = hoursOf(certs.map((c) => c.id));
+const shortName = (name: string) => name.replace('Salesforce Certified ', '');
+const stepOf = Object.fromEntries(certs.map((c) => [c.id, c.step]));
 ---
 
 <Base title="SF 資格ロードマップ" nav="home">
-  <section class="hero">
+  <header class="page-head">
     <h1>Salesforce 資格ロードマップ</h1>
-    <p class="muted">STEP 1 から順に、10 個の認定資格を取得するための学習サイトです。</p>
-    <p class="small muted">学習時間の目安は全体で約 {totalHours} 時間（1 日 1 時間なら約 {Math.round(totalHours / 30)} か月）です。</p>
+    <p class="muted">STEP 1 から順に {certs.length} 資格。全体の目安は約 {totalHours} 時間（1 日 1 時間で約 {Math.round(totalHours / 30)} か月）です。</p>
+  </header>
+
+  <section class="card focus" aria-labelledby="focus-title" id="focus" hidden>
+    <p class="eyebrow" id="focus-step"></p>
+    <h2 id="focus-title" class="focus-title"></h2>
+    <div class="focus-progress">
+      <div class="progress thick" aria-hidden="true"><span id="focus-bar"></span></div>
+      <span class="focus-percent" id="focus-percent"></span>
+    </div>
+    <p class="small muted focus-meta" id="focus-meta"></p>
+    <p class="small focus-pace" id="focus-pace"></p>
+    <div class="btn-row stack" id="focus-actions"></div>
   </section>
 
-  <section class="card next-card" aria-labelledby="next-title">
-    <h2 id="next-title" class="next-title">次にやること</h2>
-    <div id="next-body" class="next-body"><p class="muted">読み込み中…</p></div>
+  <section class="card done-all" id="done-all" hidden>
+    <h2>すべての資格に合格しました 🎉</h2>
+    <p class="muted">おめでとうございます。復習や用語集はいつでも使えます。</p>
   </section>
 
+  <section aria-label="今日の学習" class="today">
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-label">今日の学習</span>
+        <span class="stat-value"><span id="today-count">0</span><small>件</small></span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">連続学習</span>
+        <span class="stat-value"><span id="streak">0</span><small>日</small></span>
+      </div>
+      <a class="stat stat-link" href={url('review/')}>
+        <span class="stat-label">復習待ち</span>
+        <span class="stat-value"><span id="review-total">0</span><small>問</small></span>
+      </a>
+    </div>
+    <p class="small muted today-hint" id="today-hint"></p>
+  </section>
+
+  <h2 class="section-title">ロードマップ</h2>
   <ol class="steps">
     {
-      steps.map((step) => (
-        <li class="step" style={`--step-color: var(--step-${step.id})`}>
-          <div class="step-head">
-            <span class="step-no">STEP {step.id}</span>
-            <div>
-              <h2>{step.title}</h2>
-              <p class="muted small">
-                {step.subtitle} ・ 目安 約 {hoursOf(certs.filter((c) => c.step === step.id).map((c) => c.id))} 時間
-              </p>
+      steps.map((step) => {
+        const list = certs.filter((c) => c.step === step.id);
+        return (
+          <li class="step" style={`--step-color: var(--step-${step.id})`}>
+            <div class="step-head">
+              <span class="step-no">STEP {step.id}</span>
+              <h3>{step.title}</h3>
+              <span class="small muted step-hours">約 {hoursOf(list.map((c) => c.id))} 時間</span>
             </div>
-          </div>
-          <div class="grid grid-2">
-            {certs
-              .filter((c) => c.step === step.id)
-              .map((c) => (
-                <a class="card cert-card" href={url(`certs/${c.id}/`)} data-cert={c.id}>
-                  <div class="cert-tags">
-                    {c.status === 'ready' ? (
-                      <span class="tag tag-ready">教材あり</span>
-                    ) : (
-                      <span class="tag">試験概要のみ</span>
-                    )}
-                    <span class="tag tag-passed" data-passed hidden>
-                      合格済み
+            <p class="small muted step-sub">{step.subtitle}</p>
+            <ul class="list">
+              {list.map((c) => (
+                <li class="row-link cert-row" data-cert={c.id}>
+                  <span class="cert-status" data-status aria-hidden="true" />
+                  <div class="cert-main">
+                    <a class="stretched cert-name" href={url(`certs/${c.id}/`)}>
+                      {shortName(c.name)}
+                    </a>
+                    <span class="tag tag-accent" data-current hidden>
+                      学習中
+                    </span>
+                    <span class="tag tag-success" data-passed hidden>
+                      合格
+                    </span>
+                    {c.status !== 'ready' && <span class="tag">試験概要のみ</span>}
+                    <p class="small muted cert-sub">
+                      {c.formerName && <span>旧: {shortName(c.formerName)} ・ </span>}
+                      {c.study && <span>約 {c.study.hours} 時間</span>}
+                      <span data-target />
+                    </p>
+                  </div>
+                  <div class="cert-progress">
+                    <div class="progress" aria-hidden="true">
+                      <span data-bar />
+                    </div>
+                    <span class="small cert-percent" data-percent>
+                      0%
                     </span>
                   </div>
-                  <h3>{c.name.replace('Salesforce Certified ', '')}</h3>
-                  {c.formerName && <p class="muted small former">旧: {c.formerName.replace('Salesforce Certified ', '')}</p>}
-                  <div class="progress" aria-hidden="true">
-                    <span data-bar />
-                  </div>
-                  {c.study && <p class="small muted study">学習時間の目安 約 {c.study.hours} 時間</p>}
-                  <p class="small muted meta">
-                    <span data-percent>0%</span>
-                    <span data-target />
-                  </p>
-                </a>
+                  <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path d="m9 6 6 6-6 6" />
+                  </svg>
+                </li>
               ))}
-          </div>
-        </li>
-      ))
+            </ul>
+          </li>
+        );
+      })
     }
   </ol>
 
   <script type="application/json" id="cert-data" set:html={JSON.stringify(summaries)} />
+  <script type="application/json" id="cert-steps" set:html={JSON.stringify(stepOf)} />
   <script>
     import type { CertSummary } from '../lib/data';
-    import { loadProgress } from '../lib/storage';
-    import { certProgress, daysUntil, readJson } from '../lib/progress';
+    import { getReadingPos, loadProgress } from '../lib/storage';
+    import { certProgress, daysLabel, daysUntil, nextAction, paceText, readJson, studyStreak } from '../lib/progress';
 
     const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     const summaries = readJson<CertSummary[]>('cert-data');
+    const stepOf = readJson<Record<string, number>>('cert-steps');
     const data = loadProgress();
-
+    const shortName = (name: string) => name.replace('Salesforce Certified ', '');
     const targetOf = (c: CertSummary) => data.plans[c.id]?.targetDate ?? c.suggestedTarget ?? null;
+    const $ = (id: string) => document.getElementById(id)!;
+
+    // いま取り組む資格: 合格していない最初の資格
+    const current = summaries.find((c) => !data.plans[c.id]?.passedDate);
 
     for (const c of summaries) {
-      const card = document.querySelector<HTMLElement>(`[data-cert="${c.id}"]`);
-      if (!card) continue;
+      const row = document.querySelector<HTMLElement>(`[data-cert="${c.id}"]`);
+      if (!row) continue;
       const p = certProgress(c, data);
-      const passed = data.plans[c.id]?.passedDate;
-      card.querySelector<HTMLElement>('[data-bar]')!.style.width = `${passed ? 100 : p.percent}%`;
-      card.querySelector('[data-percent]')!.textContent = passed ? '100%' : `${p.percent}%`;
-      card.querySelector<HTMLElement>('[data-passed]')!.hidden = !passed;
+      const passed = Boolean(data.plans[c.id]?.passedDate);
+      const percent = passed ? 100 : p.percent;
+      row.querySelector<HTMLElement>('[data-bar]')!.style.width = `${percent}%`;
+      row.querySelector('[data-percent]')!.textContent = `${percent}%`;
+      row.querySelector<HTMLElement>('[data-passed]')!.hidden = !passed;
+      row.querySelector<HTMLElement>('[data-current]')!.hidden = c !== current;
+      row.dataset.state = passed ? 'passed' : c === current ? 'current' : percent > 0 ? 'started' : 'todo';
       const target = targetOf(c);
       if (target && !passed) {
-        const d = daysUntil(target);
-        card.querySelector('[data-target]')!.textContent = ` ・ 受験目標 ${target}（${d >= 0 ? `あと ${d} 日` : `${-d} 日超過`}）`;
+        row.querySelector('[data-target]')!.textContent = ` ・ 目標 ${target.slice(5).replace('-', '/')}（${daysLabel(daysUntil(target))}）`;
       }
     }
 
-    // 次にやること: 合格していない最初の資格
-    const current = summaries.find((c) => !data.plans[c.id]?.passedDate);
-    const body = document.getElementById('next-body')!;
     if (!current) {
-      body.innerHTML = '<p>すべての資格に合格しました。おめでとうございます！</p>';
+      $('done-all').hidden = false;
     } else {
       const p = certProgress(current, data);
-      const nextLesson = current.lessonDomains.find((d) => !data.lessons[`${current.id}/${d}`]);
-      const domainName = (id: string) => current.domains.find((d) => d.id === id)?.name ?? id;
       const target = targetOf(current);
-      const items: string[] = [];
-      if (nextLesson) {
-        items.push(
-          `<a class="btn btn-primary" href="${base}/certs/${current.id}/${nextLesson}/">レッスンを読む: ${domainName(nextLesson)}</a>`,
-        );
-      } else if (p.mastered < p.questionsTotal) {
-        items.push(`<a class="btn btn-primary" href="${base}/certs/${current.id}/quiz/?mode=all">練習問題を解く</a>`);
-      } else if (p.questionsTotal > 0) {
-        items.push(`<a class="btn btn-primary" href="${base}/certs/${current.id}/quiz/?mode=mock">模擬試験に挑戦</a>`);
+      $('focus').hidden = false;
+      $('focus').style.setProperty('--step-color', `var(--step-${stepOf[current.id]})`);
+      $('focus-step').textContent = `いま取り組む資格 ・ STEP ${stepOf[current.id]}`;
+      $('focus-title').textContent = shortName(current.name);
+      $('focus-bar').style.width = `${p.percent}%`;
+      $('focus-percent').textContent = `${p.percent}%`;
+      const meta = [`レッスン ${p.lessonsDone}/${p.lessonsTotal}`, `正解した問題 ${p.mastered}/${p.questionsTotal}`];
+      if (target) meta.unshift(`受験目標 ${target}（${daysLabel(daysUntil(target))}）`);
+      $('focus-meta').textContent = meta.join(' ・ ');
+      $('focus-pace').textContent = target ? paceText(current.studyHours, p.percent, daysUntil(target)) : '';
+
+      const actions: string[] = [];
+      // 読みかけのレッスンがあれば、続きを最優先にする
+      const reading = current.lessonDomains
+        .filter((d) => !data.lessons[`${current.id}/${d}`])
+        .map((d) => ({ d, pos: getReadingPos(`${current.id}/${d}`) }))
+        .find((r) => r.pos);
+      const next = nextAction(current, data, base);
+      if (reading) {
+        const name = current.domains.find((d) => d.id === reading.d)?.name ?? reading.d;
+        actions.push(`<a class="btn btn-primary" href="${base}/certs/${current.id}/${reading.d}/#${reading.pos!.heading}">続きを読む: ${name}</a>`);
+      } else if (next) {
+        actions.push(`<a class="btn btn-primary" href="${next.href}">${next.label}</a>`);
       }
-      if (p.reviewCount > 0) {
-        items.push(`<a class="btn" href="${base}/review/">復習する（${p.reviewCount} 問）</a>`);
-      }
-      items.push(`<a class="btn" href="${base}/certs/${current.id}/">資格ページへ</a>`);
-      const countdown = target
-        ? `<p class="countdown">受験目標 <strong>${target}</strong>（${daysUntil(target) >= 0 ? `あと <strong>${daysUntil(target)}</strong> 日` : `${-daysUntil(target)} 日超過`}）</p>`
-        : '';
-      body.innerHTML = `
-        <p class="next-cert">${current.name.replace('Salesforce Certified ', '')}</p>
-        ${countdown}
-        <p class="small muted">レッスン ${p.lessonsDone}/${p.lessonsTotal} ・ 正解済みの問題 ${p.mastered}/${p.questionsTotal}</p>
-        <div class="btn-row">${items.join('')}</div>`;
+      actions.push(`<a class="btn" href="${base}/certs/${current.id}/">資格ページを開く</a>`);
+      $('focus-actions').innerHTML = actions.join('');
     }
+
+    // 今日の学習
+    const { streak, today } = studyStreak(data.activity);
+    const reviewTotal = Object.values(data.questions).filter((q) => q.inReview).length;
+    $('today-count').textContent = String(today);
+    $('streak').textContent = String(streak);
+    $('review-total').textContent = String(reviewTotal);
+    $('today-hint').textContent =
+      today > 0
+        ? '今日も学習できました。この調子で続けましょう。'
+        : streak > 0
+          ? `連続 ${streak} 日です。今日も 1 問解くと記録が伸びます。`
+          : '問題を解いたりレッスンを読み終えたりすると、ここに記録されます。';
   </script>
 </Base>
 
 <style>
-  .hero {
+  .page-head {
     margin-bottom: 20px;
   }
-  .next-card {
-    margin-bottom: 32px;
-    border-left: 4px solid var(--accent);
-  }
-  .next-title {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin: 0 0 4px;
-    font-weight: 600;
-  }
-  .next-body :global(.next-cert) {
-    font-size: 1.2rem;
-    font-weight: 700;
+  .page-head p {
     margin: 0;
   }
-  .next-body :global(.countdown) {
-    margin: 4px 0;
+  .focus {
+    border-top: 4px solid var(--step-color, var(--accent));
+    margin-bottom: 12px;
+  }
+  .focus-title {
+    font-size: 1.35rem;
+    margin: 0 0 12px;
+  }
+  .focus-progress {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .focus-progress .progress {
+    flex: 1;
+  }
+  .focus-progress .progress > span {
+    background: var(--step-color, var(--accent));
+  }
+  .focus-percent {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    min-width: 3em;
+    text-align: right;
+  }
+  .focus-meta {
+    margin: 8px 0 0;
+  }
+  .focus-pace {
+    margin: 2px 0 16px;
+  }
+  .focus-pace:empty {
+    margin-bottom: 12px;
+  }
+  .done-all {
+    margin-bottom: 12px;
+  }
+  .done-all h2 {
+    margin-top: 0;
+  }
+  .today .stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .stat-link {
+    color: inherit;
+    text-decoration: none;
+    display: block;
+  }
+  .stat-link:hover {
+    background: var(--accent-soft);
+    color: inherit;
+  }
+  .today-hint {
+    margin: 6px 2px 0;
   }
   .steps {
     list-style: none;
     padding: 0;
     margin: 0;
     display: grid;
-    gap: 32px;
+    gap: 28px;
   }
   .step-head {
     display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 12px;
+    align-items: center;
+    gap: 10px;
   }
-  .step-head h2 {
+  .step-head h3 {
     margin: 0;
-    font-size: 1.2rem;
+    font-size: 1.05rem;
   }
-  .step-head p {
-    margin: 0;
+  .step-hours {
+    margin-left: auto;
+    white-space: nowrap;
+  }
+  .step-sub {
+    margin: 0 0 8px;
   }
   .step-no {
-    background: var(--step-color);
-    color: var(--bg);
+    background: color-mix(in srgb, var(--step-color) 14%, transparent);
+    color: var(--step-color);
     font-weight: 700;
-    font-size: 0.8rem;
-    padding: 4px 10px;
+    font-size: 0.72rem;
+    padding: 2px 10px;
     border-radius: 999px;
     white-space: nowrap;
-    margin-top: 2px;
+    letter-spacing: 0.04em;
   }
-  .cert-card {
-    display: block;
-    color: inherit;
-    text-decoration: none;
-    border-top: 3px solid var(--step-color);
-    transition: transform 0.15s ease;
+  .cert-row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
   }
-  .cert-card:hover {
-    transform: translateY(-2px);
+  .cert-status {
+    width: 12px;
+    height: 12px;
+    border-radius: 999px;
+    border: 2px solid var(--border-strong);
+  }
+  .cert-row[data-state='started'] .cert-status,
+  .cert-row[data-state='current'] .cert-status {
     border-color: var(--step-color);
+    background: conic-gradient(var(--step-color) 50%, transparent 0);
   }
-  .cert-card h3 {
-    font-size: 1rem;
-    margin: 8px 0 0;
+  .cert-row[data-state='passed'] .cert-status {
+    border-color: var(--success);
+    background: var(--success);
   }
-  .cert-card .former {
-    margin: 0;
+  .cert-main {
+    min-width: 0;
   }
-  .cert-card .progress {
-    margin-top: 12px;
+  .cert-name {
+    font-weight: 700;
+    margin-right: 6px;
   }
-  .cert-card .progress > span {
+  .cert-sub {
+    margin: 2px 0 0;
+  }
+  .cert-progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 140px;
+  }
+  .cert-progress .progress {
+    flex: 1;
+  }
+  .cert-progress .progress > span {
     background: var(--step-color);
   }
-  .cert-tags {
-    display: flex;
-    gap: 6px;
+  .cert-row[data-state='passed'] .cert-progress .progress > span {
+    background: var(--success);
   }
-  .meta {
-    margin: 6px 0 0;
+  .cert-percent {
+    font-variant-numeric: tabular-nums;
+    min-width: 2.8em;
+    text-align: right;
+    color: var(--text-muted);
   }
-  .cert-card .study {
-    margin: 4px 0 0;
+  @media (max-width: 599px) {
+    .cert-row {
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 4px 12px;
+    }
+    .cert-progress {
+      grid-column: 2;
+      grid-row: 2;
+      width: auto;
+    }
+    .chevron {
+      grid-column: 3;
+      grid-row: 1 / span 2;
+    }
   }
 </style>
