@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+import { url } from '../lib/data';
+---
+
+<Base title="ページが見つかりません">
+  <section class="card empty">
+    <h1>ページが見つかりません</h1>
+    <p class="muted">URL が変わったか、ページが移動した可能性があります。ロードマップから探してください。</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href={url()}>ロードマップへ</a>
+      <a class="btn" href={url('glossary/')}>用語集で探す</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .empty {
+    margin-top: 24px;
+  }
+  .empty h1 {
+    font-size: 1.3rem;
+  }
+</style>

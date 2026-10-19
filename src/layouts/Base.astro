@@ -6,14 +6,25 @@ interface Props {
   title: string;
   description?: string;
   nav?: 'home' | 'review' | 'glossary' | 'settings';
+  /** レッスンのように横に目次を置くページは広めにする */
+  wide?: boolean;
 }
 
-const { title, description = 'Salesforce 認定資格の学習サイト', nav } = Astro.props;
+const { title, description = 'Salesforce 認定資格の学習サイト', nav, wide = false } = Astro.props;
+
+// アイコンは線だけのシンプルなもの（24×24）
+const icons = {
+  home: '<path d="M9 4 3 6.5v13.5l6-2.5 6 2.5 6-2.5V4l-6 2.5z"/><path d="M9 4v13.5M15 6.5V20"/>',
+  review: '<path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/><path d="M12 8v4l3 2"/>',
+  glossary: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/>',
+  settings: '<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>',
+};
+
 const navItems = [
-  { key: 'home', label: 'ロードマップ', href: url() },
-  { key: 'review', label: '復習', href: url('review/') },
-  { key: 'glossary', label: '用語集', href: url('glossary/') },
-  { key: 'settings', label: '記録と設定', href: url('settings/') },
+  { key: 'home', label: 'ロードマップ', short: 'ホーム', href: url() },
+  { key: 'review', label: '復習', short: '復習', href: url('review/') },
+  { key: 'glossary', label: '用語集', short: '用語集', href: url('glossary/') },
+  { key: 'settings', label: '記録と設定', short: '設定', href: url('settings/') },
 ] as const;
 ---
 
@@ -21,15 +32,26 @@ const navItems = [
 <html lang="ja">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="robots" content="noindex, nofollow" />
     <meta name="description" content={description} />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f141a" media="(prefers-color-scheme: dark)" />
     <link rel="icon" type="image/svg+xml" href={url('favicon.svg')} />
     <title>{title === 'SF 資格ロードマップ' ? title : `${title} | SF 資格ロードマップ`}</title>
+    <script is:inline>
+      // 画面が描かれる前にテーマと文字サイズを反映して、ちらつきを防ぐ
+      try {
+        var p = JSON.parse(localStorage.getItem('sf-cert-study:prefs') || '{}');
+        if (p.theme === 'light' || p.theme === 'dark') document.documentElement.dataset.theme = p.theme;
+        if (p.size === 'large') document.documentElement.dataset.size = 'large';
+      } catch (e) {}
+    </script>
   </head>
   <body>
+    <a class="skip-link" href="#main">本文へ移動</a>
     <header class="site-header">
-      <div class="container">
+      <div class:list={['container', { wide }]}>
         <a class="brand" href={url()}>
           <img src={url('favicon.svg')} alt="" width="24" height="24" />
           SF 資格ロードマップ
@@ -38,19 +60,32 @@ const navItems = [
           {
             navItems.map((item) => (
               <a href={item.href} aria-current={nav === item.key ? 'page' : undefined}>
-                {item.label}
-                {item.key === 'review' && <span class="badge-count" data-review-count />}
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                  set:html={icons[item.key]}
+                />
+                <span class="nav-label">
+                  <span class="nav-long">{item.label}</span>
+                  <span class="nav-short">{item.short}</span>
+                </span>
+                {item.key === 'review' && <span class="badge-count" data-review-count aria-label="復習待ちの問題数" />}
               </a>
             ))
           }
         </nav>
       </div>
     </header>
-    <main class="container">
+    <main id="main" class:list={['container', { wide }]} tabindex="-1">
       <slot />
     </main>
     <footer class="site-footer">
-      <div class="container">
+      <div class:list={['container', { wide }]}>
         個人の学習用サイトです。練習問題はすべてオリジナルで、実際の試験問題ではありません。試験の最新情報は必ず Trailhead の公式試験ガイドで確認してください。
       </div>
     </footer>
@@ -63,3 +98,25 @@ const navItems = [
     </script>
   </body>
 </html>
+
+<style>
+  main:focus {
+    outline: none;
+  }
+  .nav-short {
+    display: none;
+  }
+  @media (min-width: 720px) {
+    .site-nav svg {
+      display: none;
+    }
+  }
+  @media (max-width: 719px) {
+    .nav-long {
+      display: none;
+    }
+    .nav-short {
+      display: inline;
+    }
+  }
+</style>

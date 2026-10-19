@@ -73,6 +73,9 @@ function el<K extends keyof HTMLElementTagNameMap>(
   return node;
 }
 
+/** キーボード操作の受け口（runQuiz を呼び直したときに古いものを外す） */
+let keyHandler: ((e: KeyboardEvent) => void) | null = null;
+
 export function runQuiz(opts: QuizOptions): void {
   const { root, mode } = opts;
   const domainName = (id: string) => opts.domains.find((d) => d.id === id)?.name ?? id;
@@ -119,11 +122,21 @@ export function runQuiz(opts: QuizOptions): void {
 
   function header() {
     const answered = items.filter((i) => (mode === 'mock' ? i.selected.size > 0 : i.submitted)).length;
+    const correct = items.filter((i) => i.submitted && isCorrect(i)).length;
+    const status =
+      mode === 'mock' ? `問題 ${index + 1} / ${items.length} ・ 回答済み ${answered}` : `問題 ${index + 1} / ${items.length} ・ 正解 ${correct} / ${answered}`;
+    const bar = el('span');
+    bar.style.width = `${(answered / items.length) * 100}%`;
     return el(
       'div',
       { class: 'quiz-header' },
-      el('div', {}, el('p', { class: 'quiz-title' }, opts.title), el('p', { class: 'small muted' }, `問題 ${index + 1} / ${items.length} ・ 回答済み ${answered}`)),
-      mode === 'mock' ? el('span', { class: 'timer', 'data-timer': '', 'aria-live': 'off' }, '') : null,
+      el(
+        'div',
+        { class: 'quiz-header-row' },
+        el('div', {}, el('p', { class: 'quiz-title' }, opts.title), el('p', { class: 'small muted' }, status)),
+        mode === 'mock' ? el('span', { class: 'timer', 'data-timer': '', 'aria-live': 'off' }, '') : null,
+      ),
+      el('div', { class: 'progress', 'aria-hidden': 'true' }, bar),
     );
   }
 
@@ -159,10 +172,16 @@ export function runQuiz(opts: QuizOptions): void {
     const body = el(
       'div',
       { class: 'card quiz-card' },
-      el('p', { class: 'small muted' }, domainName(q.domain), q.type === 'multi' ? ` ・ ${q.answer.length} つ選択` : ''),
-      el('p', { class: 'question' }, q.question),
+      el(
+        'p',
+        { class: 'quiz-meta small muted' },
+        el('span', {}, domainName(q.domain)),
+        q.type === 'multi' ? el('span', { class: 'tag tag-accent' }, `${q.answer.length} つ選択`) : null,
+      ),
+      el('p', { class: 'question', id: 'question-text' }, q.question),
       choices,
     );
+    choices.setAttribute('aria-labelledby', 'question-text');
 
     if (showResult) {
       const ok = isCorrect(item);
@@ -188,19 +207,30 @@ export function runQuiz(opts: QuizOptions): void {
           item.submitted = true;
           recordAnswer(q.id, isCorrect(item));
           renderQuestion();
+          // 解説と「次の問題」ボタンが画面の外にあるときは見える位置まで送る
+          root.querySelector<HTMLElement>('.quiz-actions')?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          root.querySelector<HTMLElement>('[data-next]')?.focus({ preventScroll: true });
         });
         actions.append(submit);
       } else {
         const last = index === items.length - 1;
-        const nextBtn = el('button', { class: 'btn btn-primary', type: 'button' }, last ? '結果を見る' : '次の問題 →');
+        const nextBtn = el('button', { class: 'btn btn-primary', type: 'button', 'data-next': '' }, last ? '結果を見る' : '次の問題 →');
         nextBtn.addEventListener('click', () => {
           if (last) showPracticeResult();
           else {
             index++;
             renderQuestion();
+            scrollToTop();
           }
         });
         actions.append(nextBtn);
+      }
+      // 途中でやめても、それまでの結果を見られるようにする
+      const answered = items.filter((i) => i.submitted).length;
+      if (answered > 0 && index < items.length - 1) {
+        const stop = el('button', { class: 'btn btn-ghost', type: 'button' }, 'ここで終了して結果を見る');
+        stop.addEventListener('click', showPracticeResult);
+        actions.prepend(stop);
       }
     } else {
       const prevBtn = el('button', { class: 'btn', type: 'button' }, '← 前へ');
@@ -214,11 +244,12 @@ export function runQuiz(opts: QuizOptions): void {
         item.flagged = !item.flagged;
         renderQuestion();
       });
-      const nextBtn = el('button', { class: 'btn', type: 'button' }, '次へ →');
+      const nextBtn = el('button', { class: 'btn', type: 'button', 'data-next': '' }, '次へ →');
       nextBtn.disabled = index === items.length - 1;
       nextBtn.addEventListener('click', () => {
         index++;
         renderQuestion();
+        scrollToTop();
       });
       const finish = el('button', { class: 'btn btn-primary', type: 'button' }, '見直し画面へ');
       finish.addEventListener('click', renderReviewScreen);
@@ -230,7 +261,50 @@ export function runQuiz(opts: QuizOptions): void {
       root.append(el('div', { class: 'palette', 'data-palette': '' }));
       renderPalette();
     }
+    root.append(
+      el(
+        'p',
+        { class: 'kbd-hint small muted' },
+        'キーボード: ',
+        el('kbd', {}, '1'),
+        '〜',
+        el('kbd', {}, String(Math.min(9, item.order.length))),
+        ' で選択、',
+        el('kbd', {}, 'Enter'),
+        mode === 'mock' ? ' で次の問題' : ' で回答・次の問題',
+      ),
+    );
     updateButtons();
+  }
+
+  /** 次の問題に進んだとき、問題文が画面の上に隠れていれば戻す */
+  function scrollToTop() {
+    if (root.getBoundingClientRect().top < 0) root.scrollIntoView({ block: 'start' });
+  }
+
+  function onKey(e: KeyboardEvent) {
+    if (e.ctrlKey || e.metaKey || e.altKey || finished) return;
+    const target = e.target as HTMLElement;
+    if (target.closest('input[type="text"], input[type="search"], input[type="date"], textarea, select, dialog')) return;
+    const item = items[index];
+    if (!item || !root.querySelector('.quiz-card')) return;
+    const pos = /^[1-9]$/.test(e.key) ? Number(e.key) - 1 : -1;
+    if (pos >= 0 && pos < item.order.length) {
+      const input = root.querySelector<HTMLInputElement>(`#c-${pos}`);
+      if (!input || input.disabled) return;
+      e.preventDefault();
+      input.click();
+      input.focus({ preventScroll: true });
+      return;
+    }
+    // ボタンやリンクの上の Enter は、そのボタン自体の動作に任せる
+    if (e.key === 'Enter' && !target.closest('button, a')) {
+      const btn = root.querySelector<HTMLButtonElement>('[data-submit]:not([disabled]), [data-next]:not([disabled])');
+      if (btn) {
+        e.preventDefault();
+        btn.click();
+      }
+    }
   }
 
   /** 本番の試験と同じく、採点前に全問の回答状況を一覧で確認する画面 */
@@ -392,18 +466,23 @@ export function runQuiz(opts: QuizOptions): void {
 
   function showPracticeResult() {
     finished = true;
-    const correct = items.filter(isCorrect).length;
-    const { table } = byDomainTable(items);
+    // 途中で終えた場合は、回答した問題だけで集計する
+    const done = items.filter((i) => i.submitted);
+    const correct = done.filter(isCorrect).length;
+    const pct = done.length ? Math.round((correct / done.length) * 100) : 0;
+    const { table } = byDomainTable(done);
     root.replaceChildren(
       el(
         'div',
         { class: 'card result' },
-        el('p', { class: 'small muted' }, opts.title),
-        el('p', { class: 'score' }, `${correct} / ${items.length} 問正解（${Math.round((correct / items.length) * 100)}%）`),
+        el('p', { class: 'small muted' }, opts.title, done.length < items.length ? `（${items.length} 問中 ${done.length} 問に回答）` : ''),
+        el('p', { class: 'score' }, `${correct} / ${done.length} 問正解`, el('span', { class: 'score-pct' }, `${pct}%`)),
+        el('div', { class: 'progress thick result-bar', 'aria-hidden': 'true' }, el('span', { style: `width:${pct}%` })),
         table,
-        resultActions(items.length - correct, items),
+        resultActions(done.length - correct, done),
       ),
     );
+    root.scrollIntoView({ block: 'start' });
   }
 
   function finishMock(timeUp: boolean) {
@@ -435,7 +514,7 @@ export function runQuiz(opts: QuizOptions): void {
         { class: 'card result' },
         timeUp ? el('p', { class: 'notice' }, '時間切れのため自動で採点しました。') : null,
         el('p', { class: 'small muted' }, opts.title),
-        el('p', { class: 'score' }, `${correct} / ${items.length} 問正解（${pct}%）`),
+        el('p', { class: 'score' }, `${correct} / ${items.length} 問正解`, el('span', { class: 'score-pct' }, `${pct}%`)),
         verdict,
         el('p', { class: 'small muted' }, `所要時間 ${Math.floor(durationSec / 60)} 分 ${durationSec % 60} 秒`),
         el('h2', {}, '範囲別の正答率'),
@@ -446,6 +525,10 @@ export function runQuiz(opts: QuizOptions): void {
       reviewList(items),
     );
   }
+
+  if (keyHandler) document.removeEventListener('keydown', keyHandler);
+  keyHandler = onKey;
+  document.addEventListener('keydown', keyHandler);
 
   if (!opts.questions.length) {
     root.replaceChildren(el('div', { class: 'card' }, el('p', {}, '対象の問題がありません。'), el('a', { class: 'btn', href: opts.backHref }, opts.backLabel)));

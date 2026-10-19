@@ -1,21 +1,46 @@
 ---
 import Base from '../layouts/Base.astro';
-import { certs, getAllQuestions } from '../lib/data';
+import { certs, getAllQuestions, url } from '../lib/data';
 import '../styles/quiz.css';
 
 // 範囲 ID は資格をまたぐと重複しうるので、資格 ID を付けて一意にする
 const payload = {
   questions: getAllQuestions().map((q) => ({ ...q, domain: `${q.certId}:${q.domain}` })),
   domains: certs.flatMap((c) => c.domains.map((d) => ({ id: `${c.id}:${d.id}`, name: d.name, weight: d.weight }))),
+  certs: certs.map((c) => ({ id: c.id, name: c.name.replace('Salesforce Certified ', '') })),
 };
 ---
 
 <Base title="復習" nav="review">
-  <h1>復習</h1>
-  <p class="muted">
-    間違えた問題がここに集まります。<strong>2 回続けて正解</strong>すると復習リストから外れます。
-  </p>
+  <div id="intro">
+    <h1>復習</h1>
+    <p class="muted">間違えた問題が自動で集まります。<strong>2 回続けて正解</strong>すると、このリストから外れます。</p>
+  </div>
+
+  <section class="card empty" id="empty" hidden>
+    <div class="empty-icon" aria-hidden="true">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 6 9 17l-5-5"></path>
+      </svg>
+    </div>
+    <h2>復習待ちの問題はありません</h2>
+    <p class="muted">練習問題や模擬試験で間違えた問題が、ここに自動で集まります。</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" id="empty-cta" href={url()}>ロードマップへ</a>
+    </div>
+  </section>
+
+  <section id="picker" hidden>
+    <div class="card start">
+      <p class="start-count"><strong id="total">0</strong> 問が復習待ちです</p>
+      <a class="btn btn-primary" href="?cert=all">すべて復習する</a>
+    </div>
+    <h2 class="section-title">資格ごとに復習する</h2>
+    <ul class="list" id="cert-list"></ul>
+  </section>
+
   <div id="quiz"></div>
+
   <script type="application/json" id="quiz-data" set:html={JSON.stringify(payload)} />
   <script>
     import type { QuizQuestion } from '../lib/types';
@@ -23,24 +48,83 @@ const payload = {
     import { readJson } from '../lib/progress';
     import { runQuiz, type DomainInfo } from '../lib/quiz-runner';
 
-    const data = readJson<{ questions: QuizQuestion[]; domains: DomainInfo[] }>('quiz-data');
+    const data = readJson<{ questions: QuizQuestion[]; domains: DomainInfo[]; certs: { id: string; name: string }[] }>('quiz-data');
     const progress = loadProgress();
     const targets = data.questions.filter((q) => progress.questions[q.id]?.inReview);
-    const root = document.getElementById('quiz')!;
     const home = import.meta.env.BASE_URL;
+    const reviewHref = `${home}review/`;
+    const $ = (id: string) => document.getElementById(id)!;
+    const certParam = new URLSearchParams(location.search).get('cert');
 
     if (!targets.length) {
-      root.innerHTML = `<div class="card"><p>復習待ちの問題はありません。</p><a class="btn" href="${home}">ロードマップへ</a></div>`;
-    } else {
+      $('empty').hidden = false;
+      // まだ合格していない最初の資格の演習へ案内する
+      const current = data.certs.find((c) => !progress.plans[c.id]?.passedDate);
+      if (current) {
+        const cta = $('empty-cta') as HTMLAnchorElement;
+        cta.href = `${home}certs/${current.id}/quiz/?mode=all`;
+        cta.textContent = `${current.name} の練習問題へ`;
+      }
+    } else if (certParam) {
+      const list = certParam === 'all' ? targets : targets.filter((q) => q.certId === certParam);
+      const name = data.certs.find((c) => c.id === certParam)?.name;
+      $('intro').hidden = true;
       runQuiz({
-        root,
+        root: $('quiz'),
         mode: 'practice',
-        questions: targets,
+        questions: list,
         domains: data.domains,
-        title: `復習（${targets.length} 問）`,
-        backHref: home,
-        backLabel: 'ロードマップへ',
+        title: name ? `復習: ${name}（${list.length} 問）` : `復習（${list.length} 問）`,
+        backHref: reviewHref,
+        backLabel: '復習の一覧へ',
       });
+    } else {
+      $('picker').hidden = false;
+      $('total').textContent = String(targets.length);
+      const counts = new Map<string, number>();
+      for (const q of targets) counts.set(q.certId, (counts.get(q.certId) ?? 0) + 1);
+      $('cert-list').innerHTML = data.certs
+        .filter((c) => counts.has(c.id))
+        .map(
+          (c) => `<li class="row-link review-row">
+            <a class="stretched" href="?cert=${c.id}">${c.name}</a>
+            <span class="tag tag-danger">${counts.get(c.id)} 問</span>
+            <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+          </li>`,
+        )
+        .join('');
     }
   </script>
 </Base>
+
+<style>
+  .start {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .start-count {
+    margin: 0;
+    font-size: 1.05rem;
+  }
+  .start-count strong {
+    font-size: 1.6rem;
+    margin-right: 2px;
+  }
+  .empty {
+    margin-top: 16px;
+  }
+  #cert-list :global(.review-row) {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+  #cert-list :global(.review-row .stretched) {
+    flex: 1;
+    font-weight: 600;
+  }
+</style>
