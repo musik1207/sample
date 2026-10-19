@@ -42,6 +42,8 @@ export interface Cert {
   status: 'ready' | 'outline';
   exam: ExamInfo;
   domains: Domain[];
+  /** 学習時間の目安（時間）と前提 */
+  study?: { hours: number; note: string };
   /** 初期の受験目標日（ユーザーが設定すると上書き） */
   suggestedTarget?: string;
   links: { label: string; url: string }[];

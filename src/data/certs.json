@@ -157,7 +157,11 @@
           "label": "公式試験ガイド",
           "url": "https://help.salesforce.com/s/articleView?type=1&language=ja&id=005298966"
         }
-      ]
+      ],
+      "study": {
+        "hours": 70,
+        "note": "Trailhead で基本操作に触れたことがある人の目安です。Salesforce を初めて触る場合は、さらに 30 時間ほど見込んでください。"
+      }
     },
     {
       "id": "business-analyst",
@@ -264,7 +268,11 @@
           "label": "公式試験ガイド",
           "url": "https://help.salesforce.com/s/articleView?type=1&language=ja&id=005298939"
         }
-      ]
+      ],
+      "study": {
+        "hours": 40,
+        "note": "Platform Administrator の内容を学習済みの人の目安です。業務分析の実務経験があれば短くなります。"
+      }
     },
     {
       "id": "agentforce-sales-consultant",
@@ -363,7 +371,11 @@
           "label": "公式試験ガイド",
           "url": "https://help.salesforce.com/s/articleView?type=1&language=ja&id=005298976"
         }
-      ]
+      ],
+      "study": {
+        "hours": 45,
+        "note": "Platform Administrator 合格後の目安です。営業部門の業務経験があれば短くなります。"
+      }
     },
     {
       "id": "agentforce-service-consultant",
@@ -487,7 +499,11 @@
           "label": "公式試験ガイド",
           "url": "https://help.salesforce.com/s/articleView?type=1&language=ja&id=005298989"
         }
-      ]
+      ],
+      "study": {
+        "hours": 55,
+        "note": "Platform Administrator 合格後の目安です。合格ラインが 78% と高いため、問題演習を多めに見込んでいます。"
+      }
     },
     {
       "id": "platform-strategy-designer",
@@ -573,7 +589,11 @@
           "label": "公式試験ガイド",
           "url": "https://help.salesforce.com/s/articleView?type=1&language=ja&id=005298981"
         }
-      ]
+      ],
+      "study": {
+        "hours": 30,
+        "note": "Business Analyst の内容を学習済みの人の目安です。英語の試験なので、英語の用語の確認も含みます。"
+      }
     },
     {
       "id": "integration-architect",
@@ -689,7 +709,11 @@
           "label": "Trailmix: Architect Journey: Integration Architecture",
           "url": "https://trailhead.salesforce.com/users/strailhead/trailmixes/architect-integration-architecture"
         }
-      ]
+      ],
+      "study": {
+        "hours": 60,
+        "note": "Platform Administrator と開発の基礎（Apex・API の概念）を学習済みの人の目安です。"
+      }
     },
     {
       "id": "data-architect",
@@ -802,7 +826,11 @@
           "label": "Trailmix: Architect Journey: Data Architecture",
           "url": "https://trailhead.salesforce.com/users/strailhead/trailmixes/architect-data-architecture"
         }
-      ]
+      ],
+      "study": {
+        "hours": 60,
+        "note": "Platform Administrator と開発の基礎を学習済みの人の目安です。大量データ・移行の実務経験があれば短くなります。"
+      }
     },
     {
       "id": "sharing-visibility-architect",
@@ -897,7 +925,11 @@
           "label": "Trailmix: Architect Journey: Sharing and Visibility",
           "url": "https://trailhead.salesforce.com/users/strailhead/trailmixes/architect-sharing-and-visibility"
         }
-      ]
+      ],
+      "study": {
+        "hours": 50,
+        "note": "Platform Administrator の共有の範囲を理解している人の目安です。"
+      }
     },
     {
       "id": "data-360-consultant",
@@ -1005,7 +1037,11 @@
           "label": "公式試験ガイド",
           "url": "https://help.salesforce.com/s/articleView?type=1&language=ja&id=005298940"
         }
-      ]
+      ],
+      "study": {
+        "hours": 45,
+        "note": "Platform Administrator 合格後の目安です。Data 360 の実機（Trailhead の環境）での練習を含みます。"
+      }
     },
     {
       "id": "agentforce-specialist",
@@ -1118,7 +1154,11 @@
           "label": "公式試験ガイド",
           "url": "https://help.salesforce.com/s/articleView?type=1&language=ja&id=005298924"
         }
-      ]
+      ],
+      "study": {
+        "hours": 45,
+        "note": "Platform Administrator 合格後の目安です。Agentforce Builder での実機練習を含みます。"
+      }
     }
   ]
 }
