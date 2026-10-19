@@ -43,7 +43,7 @@ Salesforce 認定資格（STEP 1〜5 の 10 資格）を順番に取得するた
 
 ```sh
 npm install
-npm run dev       # http://localhost:4321/sample/
+npm run dev       # http://localhost:4321/salesforce-learning-hub/
 npm run validate  # 教材データの整合性チェック
 npm run build     # 型チェック + ビルド（dist/）
 ```

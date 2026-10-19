@@ -1,10 +1,10 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
-// GitHub Pages: https://musik1207.github.io/sample/
+// GitHub Pages: https://pome-uniikura.github.io/salesforce-learning-hub/
 export default defineConfig({
-  site: 'https://musik1207.github.io',
-  base: '/sample',
+  site: 'https://pome-uniikura.github.io',
+  base: '/salesforce-learning-hub',
   trailingSlash: 'always',
   markdown: {
     // ```mermaid のコードブロックは図としてブラウザで描画する
