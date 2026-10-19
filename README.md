@@ -2,7 +2,7 @@
 
 Salesforce 認定資格（STEP 1〜5 の 10 資格）を順番に取得するための、個人用の学習サイトです。
 
-公開先: https://pome-uniikura.github.io/sample/ （検索エンジンには載らない設定）
+公開先: https://pome-uniikura.github.io/salesforce-learning-hub/ （検索エンジンには載らない設定）
 
 ## できること
 
@@ -43,7 +43,7 @@ Salesforce 認定資格（STEP 1〜5 の 10 資格）を順番に取得するた
 
 ```sh
 npm install
-npm run dev       # http://localhost:4321/sample/
+npm run dev       # http://localhost:4321/salesforce-learning-hub/
 npm run validate  # 教材データの整合性チェック
 npm run build     # 型チェック + ビルド（dist/）
 ```
