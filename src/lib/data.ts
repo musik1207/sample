@@ -14,6 +14,17 @@ for (const [path, mod] of Object.entries(questionModules)) {
   questionsByCert[id] = mod.default;
 }
 
+/** 画面に出す資格名 */
+export function displayName(cert: Pick<Cert, 'name' | 'shortName'>): string {
+  return cert.shortName ?? cert.name.replace('Salesforce Certified ', '');
+}
+
+/** 苦手判定や模擬試験の判定に使う基準（合格ライン、なければ目安） */
+export function scoreLine(cert: Cert): { value: number; label: string } {
+  if (cert.exam.passingScore !== null) return { value: cert.exam.passingScore, label: '合格ライン' };
+  return { value: cert.exam.targetScore ?? 65, label: '目安' };
+}
+
 export function getCert(id: string): Cert | undefined {
   return certs.find((c) => c.id === id);
 }
@@ -44,7 +55,7 @@ export async function getLessonKeys(): Promise<Set<string>> {
 export function certSummaries(lessonKeys: Set<string>) {
   return certs.map((c) => ({
     id: c.id,
-    name: c.name,
+    name: displayName(c),
     status: c.status,
     suggestedTarget: c.suggestedTarget ?? null,
     studyHours: c.study?.hours ?? null,
@@ -113,7 +124,7 @@ export function domainBreakdown(cert: Cert, domainId: string, stats?: LessonStat
     questions,
     practiceMinutes,
     siteMinutes,
-    /** 復習・Trailhead・実機での練習に使う残りの時間（分） */
+    /** 復習・公式教材・実務での練習に使う残りの時間（分） */
     otherMinutes: totalHours === null ? null : Math.max(0, Math.round(totalHours * 60 - siteMinutes)),
   };
 }

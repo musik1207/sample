@@ -1,8 +1,8 @@
 ---
 import Base from '../layouts/Base.astro';
-import { certs } from '../lib/data';
+import { certs, displayName } from '../lib/data';
 
-const names = Object.fromEntries(certs.map((c) => [c.id, c.name.replace('Salesforce Certified ', '')]));
+const names = Object.fromEntries(certs.map((c) => [c.id, displayName(c)]));
 ---
 
 <Base title="記録と設定" nav="settings">

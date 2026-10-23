@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { certs, steps, url, certSummaries, getLessonKeys } from '../lib/data';
+import { certs, steps, url, certSummaries, getLessonKeys, displayName } from '../lib/data';
 
 const summaries = certSummaries(await getLessonKeys());
 const hoursOf = (ids: string[]) => certs.filter((c) => ids.includes(c.id)).reduce((sum, c) => sum + (c.study?.hours ?? 0), 0);
@@ -9,10 +9,10 @@ const shortName = (name: string) => name.replace('Salesforce Certified ', '');
 const stepOf = Object.fromEntries(certs.map((c) => [c.id, c.step]));
 ---
 
-<Base title="SF 資格ロードマップ" nav="home">
+<Base title="資格ロードマップ" nav="home">
   <header class="page-head">
-    <h1>Salesforce 資格ロードマップ</h1>
-    <p class="muted">STEP 1 から順に {certs.length} 資格。全体の目安は約 {totalHours} 時間（1 日 1 時間で約 {Math.round(totalHours / 30)} か月）です。</p>
+    <h1>資格ロードマップ</h1>
+    <p class="muted">PMP と Salesforce 認定資格を、STEP 1 から順に {certs.length} 資格。全体の目安は約 {totalHours} 時間（1 日 1 時間で約 {Math.round(totalHours / 30)} か月）です。</p>
   </header>
 
   <section class="card focus" aria-labelledby="focus-title" id="focus" hidden>
@@ -69,7 +69,7 @@ const stepOf = Object.fromEntries(certs.map((c) => [c.id, c.step]));
                   <span class="cert-status" data-status aria-hidden="true" />
                   <div class="cert-main">
                     <a class="stretched cert-name" href={url(`certs/${c.id}/`)}>
-                      {shortName(c.name)}
+                      {displayName(c)}
                     </a>
                     <span class="tag tag-accent" data-current hidden>
                       学習中
@@ -115,7 +115,6 @@ const stepOf = Object.fromEntries(certs.map((c) => [c.id, c.step]));
     const summaries = readJson<CertSummary[]>('cert-data');
     const stepOf = readJson<Record<string, number>>('cert-steps');
     const data = loadProgress();
-    const shortName = (name: string) => name.replace('Salesforce Certified ', '');
     const targetOf = (c: CertSummary) => data.plans[c.id]?.targetDate ?? c.suggestedTarget ?? null;
     const $ = (id: string) => document.getElementById(id)!;
 
@@ -147,7 +146,7 @@ const stepOf = Object.fromEntries(certs.map((c) => [c.id, c.step]));
       $('focus').hidden = false;
       $('focus').style.setProperty('--step-color', `var(--step-${stepOf[current.id]})`);
       $('focus-step').textContent = `いま取り組む資格 ・ STEP ${stepOf[current.id]}`;
-      $('focus-title').textContent = shortName(current.name);
+      $('focus-title').textContent = current.name;
       $('focus-bar').style.width = `${p.percent}%`;
       $('focus-percent').textContent = `${p.percent}%`;
       const meta = [`レッスン ${p.lessonsDone}/${p.lessonsTotal}`, `正解した問題 ${p.mastered}/${p.questionsTotal}`];

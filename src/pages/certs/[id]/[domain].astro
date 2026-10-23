@@ -1,7 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
-import { domainBreakdown, formatHours, getCert, getQuestions, lessonStats, steps, url } from '../../../lib/data';
+import { displayName, domainBreakdown, formatHours, getCert, getQuestions, lessonStats, steps, url } from '../../../lib/data';
 
 export async function getStaticPaths() {
   const lessons = await getCollection('lessons');
@@ -22,7 +22,7 @@ const next = cert.domains.slice(domainIndex + 1).find((d) => hasLesson(d.id));
 const qCount = getQuestions(cert.id).filter((q) => q.domain === domain.id).length;
 const { Content, headings } = await render(lesson);
 const study = domainBreakdown(cert, domain.id, lessonStats(lesson.body ?? ''));
-const shortName = cert.name.replace('Salesforce Certified ', '');
+const shortName = displayName(cert);
 const step = steps.find((s) => s.id === cert.step)!;
 
 // 目次: h2 の下に h3 をぶら下げる
@@ -65,7 +65,7 @@ const otherHours = study.otherMinutes ? Math.round(study.otherMinutes / 30) / 2 
               <li>レッスンを読む: 約 {study.readMinutes} 分</li>
               {study.handsOnMinutes > 0 && <li>やってみよう（ハンズオン）: 約 {study.handsOnMinutes} 分</li>}
               {study.questions > 0 && <li>練習問題 {study.questions} 問: 約 {study.practiceMinutes} 分</li>}
-              {otherHours > 0 && <li>問題の 2 周目以降・復習・Trailhead・実機での練習: 約 {formatHours(otherHours)}</li>}
+              {otherHours > 0 && <li>問題の 2 周目以降・復習・公式教材や実務での練習: 約 {formatHours(otherHours)}</li>}
             </ul>
             <p class="muted">資格全体の目安（{cert.study?.hours} 時間）を配点で割り振った値です。</p>
             {
@@ -598,12 +598,12 @@ const otherHours = study.otherMinutes ? Math.round(study.otherMinutes / 30) / 2 
     background: var(--warning-soft);
   }
   .lesson :global(.callout.handson) {
-    border-color: var(--step-3);
-    background: color-mix(in srgb, var(--step-3) 9%, var(--surface));
+    border-color: var(--step-4);
+    background: color-mix(in srgb, var(--step-4) 9%, var(--surface));
   }
   .lesson :global(.callout.example) {
-    border-color: var(--step-2);
-    background: color-mix(in srgb, var(--step-2) 8%, var(--surface));
+    border-color: var(--step-3);
+    background: color-mix(in srgb, var(--step-3) 8%, var(--surface));
   }
 
   /* 読み終えたときの案内 */

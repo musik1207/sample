@@ -1,6 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
-import { certs, steps, url, certSummaries, getLessonKeys, domainStudyHours, formatHours } from '../../../lib/data';
+import { certs, steps, url, certSummaries, getLessonKeys, domainStudyHours, formatHours, displayName, scoreLine } from '../../../lib/data';
 import type { Cert } from '../../../lib/types';
 
 export function getStaticPaths() {
@@ -13,8 +13,9 @@ const lessonKeys = await getLessonKeys();
 const summary = certSummaries(lessonKeys).find((s) => s.id === cert.id)!;
 const hasQuestions = summary.questions.length > 0;
 const show = (v: string | number | null, suffix = '') => (v === null ? '要確認' : `${v}${suffix}`);
-const shortName = cert.name.replace('Salesforce Certified ', '');
+const shortName = displayName(cert);
 const passing = cert.exam.passingScore;
+const line = scoreLine(cert);
 ---
 
 <Base title={shortName}>
@@ -24,9 +25,14 @@ const passing = cert.exam.passingScore;
 
   <header class="cert-head" style={`--step-color: var(--step-${step.id})`}>
     <h1>{shortName}</h1>
-    <p class="small muted official">
-      {cert.name}{cert.formerName && `（旧: ${cert.formerName.replace('Salesforce Certified ', '')}）`}
-    </p>
+    {
+      (cert.name !== shortName || cert.formerName) && (
+        <p class="small muted official">
+          {cert.name}
+          {cert.formerName && `（旧: ${cert.formerName.replace('Salesforce Certified ', '')}）`}
+        </p>
+      )
+    }
     <p class="summary">{cert.summary}</p>
   </header>
 
@@ -51,7 +57,7 @@ const passing = cert.exam.passingScore;
         hasQuestions && (
           <>
             <a class="btn" href={url(`certs/${cert.id}/quiz/?mode=mock`)}>
-              模擬試験（{cert.exam.questions ?? 60} 問）
+              模擬試験（{Math.min(cert.exam.questions ?? 60, summary.questions.length)} 問）
             </a>
             <a class="btn" href={url(`certs/${cert.id}/quiz/?mode=all`)}>
               全範囲から演習
@@ -130,7 +136,10 @@ const passing = cert.exam.passingScore;
     <div class="stats">
       <div class="stat"><span class="stat-label">問題数</span><span class="stat-value">{show(cert.exam.questions)}<small>問</small></span></div>
       <div class="stat"><span class="stat-label">試験時間</span><span class="stat-value">{show(cert.exam.minutes)}<small>分</small></span></div>
-      <div class="stat"><span class="stat-label">合格ライン</span><span class="stat-value">{show(passing)}<small>%</small></span></div>
+      <div class="stat">
+        <span class="stat-label">合格ライン</span>
+        <span class="stat-value">{passing === null ? (cert.exam.passingNote ?? '要確認') : passing}{passing !== null && <small>%</small>}</span>
+      </div>
       {cert.study && <div class="stat"><span class="stat-label">学習時間の目安</span><span class="stat-value">{cert.study.hours}<small>時間</small></span></div>}
     </div>
     <details class="exam-more">
@@ -167,7 +176,7 @@ const passing = cert.exam.passingScore;
   </section>
 
   <script type="application/json" id="cert-data" set:html={JSON.stringify(summary)} />
-  <script type="application/json" id="cert-passing" set:html={JSON.stringify(passing)} />
+  <script type="application/json" id="cert-line" set:html={JSON.stringify(line)} />
   <script>
     import type { CertSummary } from '../../../lib/data';
     import { getReadingPos, loadProgress, setPlan } from '../../../lib/storage';
@@ -175,7 +184,7 @@ const passing = cert.exam.passingScore;
 
     const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     const cert = readJson<CertSummary>('cert-data');
-    const passing = readJson<number | null>('cert-passing');
+    const line = readJson<{ value: number; label: string }>('cert-line');
     const targetInput = document.getElementById('target-date') as HTMLInputElement;
     const passedInput = document.getElementById('passed-date') as HTMLInputElement;
     const $ = (id: string) => document.getElementById(id)!;
@@ -224,11 +233,11 @@ const passing = cert.exam.passingScore;
       }
 
       // 苦手な範囲
-      const weak = weakDomains(cert, data, passing);
+      const weak = weakDomains(cert, data, line.value);
       const weakEl = $('weak');
       weakEl.hidden = weak.length === 0;
       weakEl.innerHTML = weak.length
-        ? `<p class="small weak-title">苦手な範囲（正答率が合格ライン ${passing ?? 65}% 未満）</p><div class="btn-row">${weak
+        ? `<p class="small weak-title">苦手な範囲（正答率が${line.label} ${line.value}% 未満）</p><div class="btn-row">${weak
             .slice(0, 3)
             .map(
               (d) =>
@@ -252,7 +261,7 @@ const passing = cert.exam.passingScore;
         const bar = el.querySelector<HTMLElement>('[data-bar]');
         if (bar) bar.style.width = `${dp.percent}%`;
         el.dataset.state = dp.percent === 100 ? 'done' : dp.lessonsDone ? 'read' : 'todo';
-        el.classList.toggle('is-weak', acc.answered >= 5 && acc.rate !== null && acc.rate < (passing ?? 65));
+        el.classList.toggle('is-weak', acc.answered >= 5 && acc.rate !== null && acc.rate < line.value);
       }
 
       // 模擬試験の履歴
@@ -261,7 +270,7 @@ const passing = cert.exam.passingScore;
         ? `<p class="small muted mock-title">模擬試験の結果（直近 ${mocks.length} 回）</p><ul class="mock-list">${mocks
             .map((m) => {
               const pct = Math.round((m.score / m.total) * 100);
-              const ok = passing !== null && pct >= passing;
+              const ok = pct >= line.value;
               return `<li><span class="tag ${ok ? 'tag-success' : 'tag-danger'}">${pct}%</span><span class="small muted">${m.date.slice(5, 10).replace('-', '/')}</span></li>`;
             })
             .join('')}</ul>`

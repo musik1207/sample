@@ -494,6 +494,7 @@
     "reading": "User Story",
     "description": "「（誰）として、（目的）のために、（何）がしたい」の形で要件を表したもの。受け入れ基準とセットで書く。",
     "certs": [
+      "pmp",
       "business-analyst"
     ],
     "tags": [
@@ -516,6 +517,7 @@
     "reading": "モスコウ",
     "description": "要件を Must（必須）・Should（重要）・Could（あれば良い）・Won't（今回はやらない）に分けて優先順位を付ける手法。",
     "certs": [
+      "pmp",
       "business-analyst",
       "platform-strategy-designer"
     ],
@@ -528,6 +530,7 @@
     "reading": "レイシー",
     "description": "タスクごとに Responsible（実行）・Accountable（説明責任）・Consulted（相談）・Informed（報告）の役割を決める表。",
     "certs": [
+      "pmp",
       "business-analyst"
     ],
     "tags": [
@@ -539,6 +542,7 @@
     "reading": "インベスト",
     "description": "良いユーザーストーリーの条件。Independent・Negotiable・Valuable・Estimable・Small・Testable。",
     "certs": [
+      "pmp",
       "business-analyst"
     ],
     "tags": [
@@ -550,6 +554,7 @@
     "reading": "Acceptance Criteria",
     "description": "ユーザーストーリーが完了したと言える条件。Given / When / Then 形式で書くことが多い。",
     "certs": [
+      "pmp",
       "business-analyst"
     ],
     "tags": [
@@ -595,6 +600,7 @@
     "reading": "Epic",
     "description": "1 スプリントで終わらない大きなユーザーストーリーの集まり。価値の単位で小さなストーリーに分割する。",
     "certs": [
+      "pmp",
       "business-analyst"
     ],
     "tags": [
@@ -617,6 +623,7 @@
     "reading": "Scope Creep",
     "description": "プロジェクトの範囲がなし崩しに広がること。変更は影響評価と承認を経て行う。",
     "certs": [
+      "pmp",
       "business-analyst"
     ],
     "tags": [
@@ -1837,6 +1844,7 @@
     "reading": "Minimum Viable / Lovable Product",
     "description": "MVP は学ぶために最小限の機能で早く出す考え方。MLP は最小限でもユーザーに愛される体験の質を重視する考え方。",
     "certs": [
+      "pmp",
       "platform-strategy-designer"
     ],
     "tags": [
@@ -1899,6 +1907,563 @@
     ],
     "tags": [
       "AI"
+    ]
+  },
+  {
+    "term": "プロジェクト憲章",
+    "reading": "Project Charter",
+    "description": "プロジェクトを正式に認め、PM に組織の資源を使う権限を与える文書。スポンサーが発行する。目的、高いレベルの要求、成功の基準、主要なリスクなどを書く。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "プロジェクト"
+    ]
+  },
+  {
+    "term": "プロジェクトマネジメント計画書",
+    "reading": "Project Management Plan",
+    "description": "スコープ・スケジュール・コストなど各分野の計画と、ベースラインをまとめた統合計画。変更管理を通して更新する。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "プロジェクト"
+    ]
+  },
+  {
+    "term": "ベースライン",
+    "reading": "Baseline",
+    "description": "承認されたスコープ・スケジュール・コストの計画。実績と比べる基準になり、変更管理を通さないと変えられない。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "プロジェクト"
+    ]
+  },
+  {
+    "term": "WBS（作業分解構成図）",
+    "reading": "Work Breakdown Structure",
+    "description": "プロジェクトの成果物と作業を階層的に分解した図。下位の合計が上位のすべてを表す（100% ルール）。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "スコープ"
+    ]
+  },
+  {
+    "term": "ワークパッケージ",
+    "reading": "Work Package",
+    "description": "WBS の最下層の要素。コストと期間を見積もり、管理する単位になる。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "スコープ"
+    ]
+  },
+  {
+    "term": "クリティカルパス",
+    "reading": "Critical Path",
+    "description": "ネットワーク図の中で最も長い経路。この経路の作業が遅れるとプロジェクト全体が遅れる。フロートはゼロ。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "スケジュール"
+    ]
+  },
+  {
+    "term": "トータルフロート",
+    "reading": "Total Float",
+    "description": "プロジェクトの完了日を遅らせずに、ある作業を遅らせられる日数。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "スケジュール"
+    ]
+  },
+  {
+    "term": "クラッシング",
+    "reading": "Crashing",
+    "description": "人や費用を追加して、クリティカルパス上の作業の期間を短くする方法。コストが増える。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "スケジュール"
+    ]
+  },
+  {
+    "term": "ファストトラッキング",
+    "reading": "Fast Tracking",
+    "description": "順番に行う予定だった作業を並行して進め、期間を短くする方法。手戻りのリスクが増える。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "スケジュール"
+    ]
+  },
+  {
+    "term": "資源平準化",
+    "reading": "Resource Leveling",
+    "description": "資源の取り合いや使いすぎを解消するため作業をずらす手法。完了日が延びることがある。フロート内でずらすのは資源円滑化。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "資源"
+    ]
+  },
+  {
+    "term": "三点見積もり（PERT）",
+    "reading": "Three-Point Estimating",
+    "description": "楽観値・最頻値・悲観値から見積もる手法。PERT は (楽観＋4×最頻＋悲観)÷6、三角分布は 3 つの平均。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "見積もり"
+    ]
+  },
+  {
+    "term": "アーンドバリュー（EV）",
+    "reading": "Earned Value",
+    "description": "実際に終わった作業に割り当てられていた予算。PV（計画価値）・AC（実コスト）と比べて進み具合と費用を評価する。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "コスト"
+    ]
+  },
+  {
+    "term": "CPI（コスト効率指数）",
+    "reading": "Cost Performance Index",
+    "description": "EV ÷ AC。1 未満なら、終えた作業に対して予算より多く費用がかかっている。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "コスト"
+    ]
+  },
+  {
+    "term": "SPI（スケジュール効率指数）",
+    "reading": "Schedule Performance Index",
+    "description": "EV ÷ PV。1 未満なら、予定より遅れている。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "スケジュール"
+    ]
+  },
+  {
+    "term": "EAC（完成時総コスト見込み）",
+    "reading": "Estimate at Completion",
+    "description": "プロジェクトが終わるまでに必要な費用の見込み。今の効率が続く場合は BAC ÷ CPI。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "コスト"
+    ]
+  },
+  {
+    "term": "コンティンジェンシー予備",
+    "reading": "Contingency Reserve",
+    "description": "特定済みのリスク（既知の未知）に備える予算。コストベースラインに含まれ、PM が管理する。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "コスト",
+      "リスク"
+    ]
+  },
+  {
+    "term": "マネジメント予備",
+    "reading": "Management Reserve",
+    "description": "予想していなかった出来事（未知の未知）に備える予算。ベースラインの外にあり、使うにはスポンサーなどの承認が必要。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "コスト",
+      "リスク"
+    ]
+  },
+  {
+    "term": "品質コスト（CoQ）",
+    "reading": "Cost of Quality",
+    "description": "品質のためにかかる費用。適合コスト（予防・評価）と不適合コスト（内部失敗・外部失敗）に分ける。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "品質"
+    ]
+  },
+  {
+    "term": "管理図",
+    "reading": "Control Chart",
+    "description": "工程が安定しているかを見る図。管理限界の外に出る、または平均の片側に 7 点続くと原因を調べる。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "品質"
+    ]
+  },
+  {
+    "term": "パレート図",
+    "reading": "Pareto Chart",
+    "description": "原因を件数の多い順に並べた図。少数の原因が大部分を占める（80 対 20）ことを見つけ、効果の大きい対策から行う。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "品質"
+    ]
+  },
+  {
+    "term": "完全定額契約（FFP）",
+    "reading": "Firm Fixed Price",
+    "description": "決まった金額で売り手が完成させる契約。費用が増えるリスクは主に売り手が負い、買い手のリスクは最も小さい。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "調達"
+    ]
+  },
+  {
+    "term": "コスト・プラス定額報酬契約（CPFF）",
+    "reading": "Cost Plus Fixed Fee",
+    "description": "実費に決まった報酬を加えて払う契約。範囲が決められないときに使う。買い手のリスクが最も大きい。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "調達"
+    ]
+  },
+  {
+    "term": "タイム・アンド・マテリアル契約（T&M）",
+    "reading": "Time and Materials",
+    "description": "時間単価と使った時間、材料費で払う契約。短期間の要員の追加や、範囲がはっきりしない小さな作業に向く。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "調達"
+    ]
+  },
+  {
+    "term": "RFP（提案依頼書）",
+    "reading": "Request for Proposal",
+    "description": "ベンダーに解決策の提案を求める文書。価格以外も評価する。価格を比べるなら RFQ、情報を集めるなら RFI。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "調達"
+    ]
+  },
+  {
+    "term": "ステークホルダー登録簿",
+    "reading": "Stakeholder Register",
+    "description": "ステークホルダーの情報（役割、期待、影響力、関心など）をまとめた文書。プロジェクト中に繰り返し更新する。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "ステークホルダー"
+    ]
+  },
+  {
+    "term": "権力・関心度グリッド",
+    "reading": "Power/Interest Grid",
+    "description": "ステークホルダーを権力と関心の高さで 4 つに分け、関わり方（注意深くマネジメント・満足を保つ・情報を伝える・監視）を決める道具。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "ステークホルダー"
+    ]
+  },
+  {
+    "term": "エンゲージメント評価マトリックス",
+    "reading": "Stakeholder Engagement Assessment Matrix",
+    "description": "ステークホルダーの関与を「知らない・抵抗・中立・支援・主導」で表し、現在（C）と望ましい状態（D）の差を埋める計画を立てる表。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "ステークホルダー"
+    ]
+  },
+  {
+    "term": "コミュニケーションチャネル",
+    "reading": "Communication Channels",
+    "description": "人と人のやりとりの経路の数。n 人なら n×(n−1)÷2。人数が増えると急に増える。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "コミュニケーション"
+    ]
+  },
+  {
+    "term": "タックマン・モデル",
+    "reading": "Tuckman Model",
+    "description": "チームの成長段階。形成期・混乱期・統一期・機能期・散会期。段階に合わせてリーダーシップを変える。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "チーム"
+    ]
+  },
+  {
+    "term": "サーバントリーダーシップ",
+    "reading": "Servant Leadership",
+    "description": "チームが成果を出せるように支えるリーダーシップ。障害を取り除き、チームを守り、権限を委ねる。アジャイルの基本。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "チーム",
+      "アジャイル"
+    ]
+  },
+  {
+    "term": "チームチャーター",
+    "reading": "Team Charter",
+    "description": "チームの価値観、グラウンドルール、意思決定や対立解決の方法などをまとめた合意書。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "チーム"
+    ]
+  },
+  {
+    "term": "ゴールドプレーティング",
+    "reading": "Gold Plating",
+    "description": "頼まれていない機能や作業を、チームが自分の判断で追加すること。コスト・リスク・品質のばらつきを生むため避ける。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "スコープ"
+    ]
+  },
+  {
+    "term": "統合変更管理",
+    "reading": "Integrated Change Control",
+    "description": "変更要求を文書にし、影響を分析し、承認・却下を判断し、承認されたら計画とベースラインを更新して実施する一連の流れ。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "変更管理"
+    ]
+  },
+  {
+    "term": "変更管理委員会（CCB）",
+    "reading": "Change Control Board",
+    "description": "変更要求を審査し、承認や却下を判断する人たちの集まり。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "変更管理",
+      "ガバナンス"
+    ]
+  },
+  {
+    "term": "リスク登録簿",
+    "reading": "Risk Register",
+    "description": "特定したリスク、確率と影響、対応策、リスクオーナーなどを記録する文書。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "リスク"
+    ]
+  },
+  {
+    "term": "課題ログ",
+    "reading": "Issue Log",
+    "description": "すでに起きている問題（課題）と、担当者、期限、対応状況を記録する文書。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "リスク"
+    ]
+  },
+  {
+    "term": "期待金額値（EMV）",
+    "reading": "Expected Monetary Value",
+    "description": "発生確率 × 影響額。脅威はマイナス、好機はプラスで計算し、リスクの影響を金額で比べる。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "リスク"
+    ]
+  },
+  {
+    "term": "二次リスク",
+    "reading": "Secondary Risk",
+    "description": "リスクに対応したことで新しく生まれるリスク。対応後も残る元のリスクは残存リスク。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "リスク"
+    ]
+  },
+  {
+    "term": "組織のプロセス資産（OPA）",
+    "reading": "Organizational Process Assets",
+    "description": "手順書、テンプレート、過去の教訓や記録など、組織が持つプロジェクトで使える資産。プロジェクトが更新できる。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "ガバナンス"
+    ]
+  },
+  {
+    "term": "組織体の環境要因（EEF）",
+    "reading": "Enterprise Environmental Factors",
+    "description": "組織の文化と構造、法令、市場の状況など、プロジェクトが従う、または影響を受ける条件。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "ガバナンス"
+    ]
+  },
+  {
+    "term": "PMO",
+    "reading": "Project Management Office",
+    "description": "プロジェクトのマネジメントを支える組織。統制の強さで支援型・コントロール型・指揮型がある。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "ガバナンス"
+    ]
+  },
+  {
+    "term": "ベロシティ",
+    "reading": "Velocity",
+    "description": "1 スプリントでチームが終えたストーリーポイントの量。見通しに使う。チームごとに違うので、チーム間で比べない。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "アジャイル"
+    ]
+  },
+  {
+    "term": "バーンダウンチャート",
+    "reading": "Burndown Chart",
+    "description": "残りの作業量の推移を表すグラフ。実績が理想の線より上なら遅れている。完了した作業と全体のスコープを表すのはバーンアップチャート。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "アジャイル"
+    ]
+  },
+  {
+    "term": "完成の定義（DoD）",
+    "reading": "Definition of Done",
+    "description": "すべてのプロダクトバックログ項目に共通する、完成とみなすための条件（テスト済み、レビュー済みなど）。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "アジャイル",
+      "品質"
+    ]
+  },
+  {
+    "term": "スパイク",
+    "reading": "Spike",
+    "description": "技術的な不確かさを減らすための、時間を区切った調査の作業。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "アジャイル",
+      "リスク"
+    ]
+  },
+  {
+    "term": "ハイブリッド型",
+    "reading": "Hybrid Approach",
+    "description": "予測型とアジャイル型を組み合わせた進め方。固定が必要な部分は予測型、変化に合わせたい部分はアジャイル型で進める。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "プロジェクト",
+      "アジャイル"
+    ]
+  },
+  {
+    "term": "テーラリング",
+    "reading": "Tailoring",
+    "description": "プロジェクトの規模・複雑さ・状況に合わせて、進め方・プロセス・成果物を選んで調整すること。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "プロジェクト"
+    ]
+  },
+  {
+    "term": "ADKAR",
+    "reading": "アドカー",
+    "description": "個人が変化を受け入れる 5 段階。認識・欲求・知識・能力・定着。組織の変革を支えるときに使う。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "組織変革"
+    ]
+  },
+  {
+    "term": "PDU",
+    "reading": "Professional Development Unit",
+    "description": "PMI の資格を維持するための継続学習の単位。PMP は 3 年ごとに 60 PDU が必要。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "PMP"
+    ]
+  },
+  {
+    "term": "ECO（試験内容の概要）",
+    "reading": "Examination Content Outline",
+    "description": "PMI が公開している試験の出題範囲。PMP は 2026 年 7 月から新版で、人 33%・プロセス 41%・ビジネス環境 26%。",
+    "certs": [
+      "pmp"
+    ],
+    "tags": [
+      "PMP"
     ]
   }
 ]
