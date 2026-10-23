@@ -28,6 +28,33 @@ const names = Object.fromEntries(certs.map((c) => [c.id, displayName(c)]));
     </div>
   </section>
 
+  <section class="card" aria-labelledby="app-title">
+    <h2 id="app-title">ホーム画面のアプリ</h2>
+    <p class="app-state" id="app-state">確認しています…</p>
+    <div id="install-help" hidden>
+      <p class="small">iPhone では、ホーム画面に追加するとアプリのように全画面で使えます。</p>
+      <ol class="small steps">
+        <li>Safari でこのサイトを開き、<strong>共有ボタン</strong>（四角から上向きの矢印）をタップします。</li>
+        <li><strong>「ホーム画面に追加」</strong>を選びます。「Web アプリとして開く」が表示されたら、オンのままにします。</li>
+        <li>名前が「資格マップ」になっていることを確かめて、<strong>「追加」</strong>をタップします。</li>
+      </ol>
+    </div>
+    <p class="small notice" id="storage-note" hidden>
+      ホーム画面のアプリと Safari では、学習記録が<strong>別々に</strong>保存されます。Safari で学習していた場合は、Safari 側の「記録を引き継ぐ」で記録をコピーし、アプリ側で貼り付けて読み込んでください。
+    </p>
+
+    <h3 class="sub">オフライン用に保存</h3>
+    <p class="small muted">
+      全ページと教材を端末に保存して、電波のない場所でも学習できるようにします<span id="offline-size"></span>。一度開いたページは自動でも保存されます。
+    </p>
+    <div class="btn-row">
+      <button class="btn btn-primary" type="button" id="offline-save">オフライン用に保存</button>
+      <button class="btn btn-ghost" type="button" id="offline-clear" hidden>保存したデータを削除</button>
+    </div>
+    <div class="progress offline-progress" id="offline-progress" hidden aria-hidden="true"><span></span></div>
+    <p class="small offline-status" id="offline-status" role="status"></p>
+  </section>
+
   <section class="card" aria-labelledby="summary-title">
     <h2 id="summary-title">学習記録</h2>
     <div class="stats" id="summary"></div>
@@ -42,6 +69,18 @@ const names = Object.fromEntries(certs.map((c) => [c.id, displayName(c)]));
       <label class="btn" for="import">ファイルを読み込む</label>
       <input type="file" id="import" accept="application/json,.json" class="visually-hidden" />
     </div>
+    <details class="transfer">
+      <summary>記録を引き継ぐ（コピーと貼り付け）</summary>
+      <p class="small muted">Safari とホーム画面のアプリの間など、同じ端末の中で記録を移すときに便利です。</p>
+      <div class="btn-row">
+        <button class="btn" type="button" id="copy">記録をコピー</button>
+      </div>
+      <label class="small paste-label" for="paste">コピーした記録をここに貼り付けて、「貼り付けた記録を読み込む」を押します。</label>
+      <textarea id="paste" rows="3" spellcheck="false" autocomplete="off"></textarea>
+      <div class="btn-row">
+        <button class="btn" type="button" id="paste-import">貼り付けた記録を読み込む</button>
+      </div>
+    </details>
     <p class="small message" id="message" role="status"></p>
   </section>
 
@@ -60,6 +99,7 @@ const names = Object.fromEntries(certs.map((c) => [c.id, displayName(c)]));
   <script>
     import { exportProgress, importProgress, loadPrefs, loadProgress, resetProgress, savePrefs, type DisplayPrefs } from '../lib/storage';
     import { readJson, studyStreak } from '../lib/progress';
+    import { clearOffline, isIOS, isStandalone, offlineStatus, saveAllForOffline } from '../lib/pwa';
 
     const names = readJson<Record<string, string>>('names');
     const message = document.getElementById('message')!;
@@ -131,6 +171,97 @@ const names = Object.fromEntries(certs.map((c) => [c.id, displayName(c)]));
       input.value = '';
     });
 
+    // 記録の引き継ぎ（コピーと貼り付け）
+    const paste = document.getElementById('paste') as HTMLTextAreaElement;
+    document.getElementById('copy')!.addEventListener('click', async () => {
+      const json = exportProgress();
+      try {
+        await navigator.clipboard.writeText(json);
+        message.textContent = '記録をコピーしました。引き継ぎ先で貼り付けてください。';
+      } catch {
+        // コピーできない環境では、選択した状態で見せて手でコピーしてもらう
+        paste.value = json;
+        paste.select();
+        message.textContent = 'コピーできなかったので、下の欄の内容を選択しました。長押しでコピーしてください。';
+      }
+    });
+    document.getElementById('paste-import')!.addEventListener('click', () => {
+      if (!paste.value.trim()) {
+        message.textContent = '貼り付ける欄が空です。';
+        return;
+      }
+      if (!window.confirm('今の記録を、貼り付けた内容で置き換えます。よろしいですか？')) return;
+      try {
+        importProgress(paste.value);
+        paste.value = '';
+        message.textContent = '読み込みました。';
+        render();
+      } catch (err) {
+        message.textContent = `読み込めませんでした: ${err instanceof Error ? err.message : String(err)}`;
+      }
+    });
+
+    // ホーム画面のアプリとオフライン保存
+    const appState = document.getElementById('app-state')!;
+    const offlineStatusEl = document.getElementById('offline-status')!;
+    const saveBtn = document.getElementById('offline-save') as HTMLButtonElement;
+    const clearBtn = document.getElementById('offline-clear') as HTMLButtonElement;
+    const progress = document.getElementById('offline-progress')!;
+    const standalone = isStandalone();
+    appState.textContent = standalone
+      ? '✓ ホーム画面のアプリとして開いています。'
+      : 'いまはブラウザで開いています。';
+    document.getElementById('install-help')!.hidden = standalone;
+    document.getElementById('storage-note')!.hidden = !isIOS();
+
+    fetch(`${import.meta.env.BASE_URL}precache.json`, { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((list: { bytes: number } | null) => {
+        if (list) document.getElementById('offline-size')!.textContent = `（約 ${Math.max(1, Math.round(list.bytes / 1024 / 1024))} MB）`;
+      })
+      .catch(() => {});
+
+    async function renderOffline() {
+      const s = await offlineStatus();
+      if (!s) {
+        saveBtn.disabled = true;
+        offlineStatusEl.textContent = 'この環境ではオフライン保存を使えません（一度ページを読み込み直すと使えるようになることがあります）。';
+        return;
+      }
+      saveBtn.disabled = false;
+      clearBtn.hidden = !s.saved && s.pages === 0;
+      if (s.saved) {
+        saveBtn.textContent = s.upToDate ? 'もう一度保存し直す' : '最新の教材に更新する';
+        offlineStatusEl.textContent = `${s.upToDate ? '✓ 保存済み' : '保存済み（新しい教材があります）'}：${new Date(s.savedAt!).toLocaleString('ja-JP')}`;
+      } else {
+        saveBtn.textContent = 'オフライン用に保存';
+        offlineStatusEl.textContent = s.pages ? `開いたことのある ${s.pages} ページは保存されています。` : '';
+      }
+    }
+    saveBtn.addEventListener('click', async () => {
+      saveBtn.disabled = true;
+      progress.hidden = false;
+      const bar = progress.querySelector('span')!;
+      try {
+        const r = await saveAllForOffline((done, total) => {
+          bar.style.width = `${Math.round((done / total) * 100)}%`;
+          offlineStatusEl.textContent = `保存しています… ${done} / ${total}`;
+        });
+        await renderOffline();
+        if (r.failed) offlineStatusEl.textContent += `（${r.failed} 件は保存できませんでした。電波の良い場所でもう一度お試しください）`;
+      } catch (err) {
+        offlineStatusEl.textContent = `保存できませんでした: ${err instanceof Error ? err.message : String(err)}`;
+        saveBtn.disabled = false;
+      }
+      progress.hidden = true;
+    });
+    clearBtn.addEventListener('click', async () => {
+      if (!window.confirm('オフライン用に保存したページとファイルを削除します（学習記録は消えません）。よろしいですか？')) return;
+      await clearOffline().catch(() => {});
+      await renderOffline();
+    });
+    renderOffline();
+
     document.getElementById('reset')!.addEventListener('click', () => {
       if (!window.confirm('すべての学習記録を削除します。元に戻せません。よろしいですか？')) return;
       resetProgress();
@@ -170,6 +301,59 @@ const names = Object.fromEntries(certs.map((c) => [c.id, displayName(c)]));
   }
   .message:empty {
     display: none;
+  }
+  .app-state {
+    margin: 0 0 8px;
+    font-weight: 600;
+  }
+  .steps {
+    padding-left: 1.4em;
+    margin: 8px 0 12px;
+  }
+  .steps li + li {
+    margin-top: 4px;
+  }
+  .sub {
+    font-size: 0.95rem;
+    margin: 20px 0 4px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .offline-progress {
+    margin-top: 12px;
+  }
+  .offline-status {
+    margin: 8px 0 0;
+  }
+  .offline-status:empty {
+    display: none;
+  }
+  .transfer {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .transfer summary {
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+  .transfer[open] summary {
+    margin-bottom: 8px;
+  }
+  .paste-label {
+    display: block;
+    margin: 12px 0 4px;
+  }
+  .transfer textarea {
+    width: 100%;
+    font: inherit;
+    font-size: 16px;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text);
+    margin-bottom: 8px;
   }
   .danger-zone {
     border-color: color-mix(in srgb, var(--danger) 40%, var(--border));

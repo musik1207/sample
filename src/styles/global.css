@@ -114,6 +114,8 @@
 html {
   -webkit-text-size-adjust: 100%;
   scroll-padding-top: calc(var(--header-h) + 16px);
+  /* iPhone のタップ時の灰色の四角を消す（代わりに :active で反応を出す） */
+  -webkit-tap-highlight-color: transparent;
 }
 
 [hidden] {
@@ -122,6 +124,9 @@ html {
 
 body {
   margin: 0;
+  /* 横向きのとき、画面のくぼみ（ダイナミックアイランド）に文字がかからないようにする */
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
   background: var(--bg);
   color: var(--text);
   font-family: system-ui, -apple-system, 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic UI', Meiryo, sans-serif;
@@ -315,7 +320,7 @@ main.container {
     z-index: 30;
     margin: 0;
     gap: 0;
-    padding: 4px 4px env(safe-area-inset-bottom);
+    padding: 4px max(4px, env(safe-area-inset-right)) env(safe-area-inset-bottom) max(4px, env(safe-area-inset-left));
     background: color-mix(in srgb, var(--surface) 94%, transparent);
     backdrop-filter: saturate(180%) blur(12px);
     -webkit-backdrop-filter: saturate(180%) blur(12px);
@@ -421,6 +426,20 @@ main.container {
   background: var(--surface-hover);
   border-color: var(--accent);
   color: var(--text);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+/* ボタンやメニューの長押しで文字が選択されないようにする */
+.btn,
+.site-nav a,
+.segmented,
+.pal,
+.choice-key {
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .btn-primary {
@@ -594,7 +613,8 @@ main.container {
   position: relative;
 }
 
-.row-link:hover {
+.row-link:hover,
+.row-link:active {
   background: var(--surface-hover);
 }
 
