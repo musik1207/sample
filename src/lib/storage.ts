@@ -252,6 +252,12 @@ export function savePrefs(prefs: DisplayPrefs): void {
   else root.dataset.theme = prefs.theme;
   if (prefs.size === 'normal') delete root.dataset.size;
   else root.dataset.size = prefs.size;
+  // ステータスバー（ホーム画面のアプリ）などの色も合わせる
+  const colors = { light: '#ffffff', dark: '#161d25' };
+  document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach((m) => {
+    const scheme = m.media.includes('dark') ? 'dark' : 'light';
+    m.content = colors[prefs.theme === 'auto' ? scheme : prefs.theme];
+  });
 }
 
 export interface ReadingPos {
