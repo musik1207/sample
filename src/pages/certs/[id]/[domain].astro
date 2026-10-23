@@ -24,6 +24,9 @@ const { Content, headings } = await render(lesson);
 const study = domainBreakdown(cert, domain.id, lessonStats(lesson.body ?? ''));
 const shortName = displayName(cert);
 const step = steps.find((s) => s.id === cert.step)!;
+const canListen = cert.listen === true;
+// 読み上げはおよそ 1 分 300 文字（読む速さの 500 文字より遅い）
+const listenMinutes = Math.max(1, Math.round((study.readMinutes * 500) / 300));
 
 // 目次: h2 の下に h3 をぶら下げる
 const toc: { slug: string; text: string; children: { slug: string; text: string }[] }[] = [];
@@ -58,6 +61,19 @@ const otherHours = study.otherMinutes ? Math.round(study.otherMinutes / 30) / 2 
           {study.totalHours !== null && <li>目安 約 {formatHours(study.totalHours)}</li>}
           <li class="done-badge" data-done-badge hidden>✓ 読了</li>
         </ul>
+        {
+          canListen && (
+            <div class="listen-row">
+              <button class="btn btn-primary btn-sm" type="button" id="tts-start" hidden>
+                <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M8 5v14l11-7z" fill="currentColor" />
+                </svg>
+                聞く（約 {listenMinutes} 分）
+              </button>
+              <span class="small muted">本文を音声で読み上げます</span>
+            </div>
+          )
+        }
         <details class="more">
           <summary>学習時間の内訳{domain.objectives?.length ? '・公式の出題目標' : ''}</summary>
           <div class="more-body small">
@@ -228,6 +244,59 @@ const otherHours = study.otherMinutes ? Math.round(study.otherMinutes / 30) / 2 
     )
   }
 
+  {
+    canListen && (
+      <div class="tts-player" id="tts-player" role="region" aria-label="読み上げ" hidden>
+        <div class="tts-top">
+          <div class="tts-meta">
+            <span class="tts-section" id="tts-section" />
+            <span class="tts-count" id="tts-count" aria-live="polite" />
+          </div>
+          <button class="tts-btn tts-close" type="button" id="tts-close" aria-label="読み上げを閉じる">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+              <path d="M6 6l12 12M18 6 6 18" />
+            </svg>
+          </button>
+        </div>
+        <div class="tts-progress" aria-hidden="true">
+          <span id="tts-bar" />
+        </div>
+        <div class="tts-controls">
+          <label class="tts-rate">
+            <span class="visually-hidden">読み上げの速さ</span>
+            <select id="tts-rate">
+              <option value="0.8">0.8 倍</option>
+              <option value="1">1.0 倍</option>
+              <option value="1.25">1.25 倍</option>
+              <option value="1.5">1.5 倍</option>
+              <option value="1.75">1.75 倍</option>
+              <option value="2">2.0 倍</option>
+            </select>
+          </label>
+          <button class="tts-btn" type="button" id="tts-prev" aria-label="前の段落へ">
+            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 5h2v14H6zM20 5v14L9 12z" fill="currentColor" />
+            </svg>
+          </button>
+          <button class="tts-btn tts-main" type="button" id="tts-toggle" aria-label="一時停止">
+            <svg class="icon-pause" width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 5h4v14H7zM13 5h4v14h-4z" fill="currentColor" />
+            </svg>
+            <svg class="icon-play" width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8 5v14l11-7z" fill="currentColor" />
+            </svg>
+          </button>
+          <button class="tts-btn" type="button" id="tts-next" aria-label="次の段落へ">
+            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M16 5h2v14h-2zM4 5v14l11-7z" fill="currentColor" />
+            </svg>
+          </button>
+          <span class="tts-hint">本文をタップすると<br />そこから読みます</span>
+        </div>
+      </div>
+    )
+  }
+
   <script>
     import { getReadingPos, isLessonDone, loadProgress, setLessonDone, setReadingPos } from '../../../lib/storage';
 
@@ -352,6 +421,72 @@ const otherHours = study.otherMinutes ? Math.round(study.otherMinutes / 30) / 2 
       if (e.target === sheet) sheet.close();
       if ((e.target as HTMLElement).closest('a')) sheet.close();
     });
+  </script>
+  <script>
+    import { isListenSupported, LessonReader } from '../../../lib/listen';
+    import { loadListenPrefs, saveListenPrefs } from '../../../lib/storage';
+
+    const startBtn = document.getElementById('tts-start');
+    const player = document.getElementById('tts-player');
+    const article = document.getElementById('lesson');
+    if (startBtn && player && article && isListenSupported()) {
+      startBtn.hidden = false;
+      const $ = (id: string) => document.getElementById(id)!;
+      const toggleBtn = $('tts-toggle');
+      const rateSel = $('tts-rate') as HTMLSelectElement;
+      rateSel.value = String(loadListenPrefs().rate);
+      if (!rateSel.value) rateSel.value = '1';
+      let reader: LessonReader | null = null;
+
+      const getReader = () =>
+        (reader ??= new LessonReader(article, {
+          onChange: (s) => {
+            $('tts-section').textContent = s.section || 'はじめに';
+            $('tts-count').textContent = s.finished ? '最後まで聞きました' : `${s.index + 1} / ${s.total}`;
+            $('tts-bar').style.width = `${s.total ? ((s.finished ? s.total : s.index) / s.total) * 100 : 0}%`;
+            player.classList.toggle('is-playing', s.playing);
+            toggleBtn.setAttribute('aria-label', s.playing ? '一時停止' : '再生');
+          },
+        }));
+
+      const open = () => {
+        player.hidden = false;
+        document.body.classList.add('tts-open');
+        article.classList.add('tts-mode');
+      };
+      const close = () => {
+        reader?.stop();
+        player.hidden = true;
+        document.body.classList.remove('tts-open');
+        article.classList.remove('tts-mode');
+        startBtn.focus();
+      };
+
+      // 今見ているところから読み始める
+      startBtn.addEventListener('click', () => {
+        const r = getReader();
+        open();
+        r.play(r.firstVisibleIndex(80));
+      });
+      toggleBtn.addEventListener('click', () => getReader().toggle());
+      $('tts-prev').addEventListener('click', () => getReader().prev());
+      $('tts-next').addEventListener('click', () => getReader().next());
+      $('tts-close').addEventListener('click', close);
+      rateSel.addEventListener('change', () => {
+        const rate = Number(rateSel.value);
+        saveListenPrefs({ ...loadListenPrefs(), rate });
+        getReader().setRate(rate);
+      });
+      // 読み上げ中は、本文をタップするとそこから読む
+      article.addEventListener('click', (e) => {
+        if (!article.classList.contains('tts-mode') || !reader) return;
+        const target = e.target as HTMLElement;
+        if (target.closest('a, button, summary, input, label, select')) return;
+        if (window.getSelection()?.toString()) return;
+        const i = reader.indexOf(target);
+        if (i >= 0) reader.play(i);
+      });
+    }
   </script>
   <script>
     import { renderDiagrams } from '../../../lib/diagrams';
@@ -754,6 +889,147 @@ const otherHours = study.otherMinutes ? Math.round(study.otherMinutes / 30) / 2 
   .toc-sheet[open] {
     display: flex;
     flex-direction: column;
+  }
+  /* 読み上げ */
+  .listen-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+    margin: 0 0 12px;
+  }
+  .listen-row:has(#tts-start[hidden]) {
+    display: none;
+  }
+  .tts-player {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 16px;
+    width: min(560px, calc(100% - 24px));
+    z-index: 35;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: var(--shadow-md);
+    padding: 10px 12px 12px 16px;
+  }
+  @media (max-width: 719px) {
+    .tts-player {
+      bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 8px);
+    }
+  }
+  .tts-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tts-meta {
+    flex: 1;
+    min-width: 0;
+    display: grid;
+    line-height: 1.4;
+  }
+  .tts-section {
+    font-weight: 700;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tts-count {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .tts-progress {
+    height: 3px;
+    background: var(--surface-2);
+    border-radius: 999px;
+    overflow: hidden;
+    margin: 6px 0 8px;
+  }
+  .tts-progress span {
+    display: block;
+    height: 100%;
+    width: 0;
+    background: var(--step-color, var(--accent));
+    transition: width 0.3s ease;
+  }
+  .tts-controls {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto 1fr;
+    align-items: center;
+    gap: 6px;
+  }
+  .tts-rate select {
+    min-height: 36px;
+    padding: 4px 8px;
+    font-size: 16px;
+  }
+  .tts-hint {
+    justify-self: end;
+    text-align: right;
+    font-size: 0.68rem;
+    line-height: 1.3;
+    color: var(--text-muted);
+  }
+  .tts-btn {
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .tts-btn:hover {
+    background: var(--surface-2);
+  }
+  .tts-main {
+    width: 54px;
+    height: 54px;
+    background: var(--accent);
+    color: var(--accent-text);
+  }
+  .tts-main:hover {
+    background: var(--accent-hover);
+  }
+  .tts-close {
+    width: 36px;
+    height: 36px;
+    color: var(--text-muted);
+  }
+  .tts-main .icon-play,
+  .tts-player.is-playing .tts-main .icon-pause {
+    display: block;
+  }
+  .tts-main .icon-pause,
+  .tts-player.is-playing .tts-main .icon-play {
+    display: none;
+  }
+  .lesson :global(.tts-active) {
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 16%, transparent);
+    border-radius: 4px;
+  }
+  .lesson.tts-mode :global(:is(h2, h3, h4, p, li, tr)) {
+    cursor: pointer;
+  }
+  :global(body.tts-open main) {
+    padding-bottom: 180px;
+  }
+  :global(body.tts-open) .toc-fab {
+    bottom: 160px;
+  }
+  @media (max-width: 719px) {
+    :global(body.tts-open) .toc-fab {
+      bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 150px);
+    }
   }
   .toc-sheet::backdrop {
     background: rgb(0 0 0 / 40%);

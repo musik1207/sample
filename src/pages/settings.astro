@@ -28,6 +28,32 @@ const names = Object.fromEntries(certs.map((c) => [c.id, displayName(c)]));
     </div>
   </section>
 
+  <section class="card" id="listen-section" aria-labelledby="listen-title" hidden>
+    <h2 id="listen-title">読み上げ（聞く）</h2>
+    <p class="small muted">PMP のレッスンで使えます。端末に入っている日本語の声で、本文を読み上げます。</p>
+    <div class="setting">
+      <label class="setting-label" for="voice">声</label>
+      <select id="voice"></select>
+    </div>
+    <div class="setting">
+      <label class="setting-label" for="rate">速さ</label>
+      <select id="rate">
+        <option value="0.8">0.8 倍</option>
+        <option value="1">1.0 倍</option>
+        <option value="1.25">1.25 倍</option>
+        <option value="1.5">1.5 倍</option>
+        <option value="1.75">1.75 倍</option>
+        <option value="2">2.0 倍</option>
+      </select>
+    </div>
+    <div class="btn-row listen-test">
+      <button class="btn" type="button" id="voice-test">試しに聞く</button>
+    </div>
+    <p class="small muted">
+      iPhone では「設定」→「アクセシビリティ」→「読み上げコンテンツ」→「声」→「日本語」から、より自然な声（拡張・高品質）を追加できます。追加した声はここで選べるようになります。
+    </p>
+  </section>
+
   <section class="card" aria-labelledby="app-title">
     <h2 id="app-title">ホーム画面のアプリ</h2>
     <p class="app-state" id="app-state">確認しています…</p>
@@ -100,6 +126,42 @@ const names = Object.fromEntries(certs.map((c) => [c.id, displayName(c)]));
     import { exportProgress, importProgress, loadPrefs, loadProgress, resetProgress, savePrefs, type DisplayPrefs } from '../lib/storage';
     import { readJson, studyStreak } from '../lib/progress';
     import { clearOffline, isIOS, isStandalone, offlineStatus, saveAllForOffline } from '../lib/pwa';
+    import { chooseVoice, isListenSupported, japaneseVoices } from '../lib/listen';
+    import { loadListenPrefs, saveListenPrefs } from '../lib/storage';
+
+    // 読み上げの声と速さ
+    if (isListenSupported()) {
+      document.getElementById('listen-section')!.hidden = false;
+      const voiceSel = document.getElementById('voice') as HTMLSelectElement;
+      const rateSel = document.getElementById('rate') as HTMLSelectElement;
+      const listen = loadListenPrefs();
+      rateSel.value = String(listen.rate);
+      if (!rateSel.value) rateSel.value = '1';
+      japaneseVoices().then((voices) => {
+        if (!voices.length) {
+          voiceSel.innerHTML = '<option>日本語の声が見つかりません</option>';
+          voiceSel.disabled = true;
+          return;
+        }
+        const chosen = chooseVoice(voices, listen.voice);
+        for (const v of voices) {
+          const opt = new Option(v.name + (v.default ? '（標準）' : ''), v.name);
+          opt.selected = v === chosen;
+          voiceSel.add(opt);
+        }
+      });
+      voiceSel.addEventListener('change', () => saveListenPrefs({ ...loadListenPrefs(), voice: voiceSel.value }));
+      rateSel.addEventListener('change', () => saveListenPrefs({ ...loadListenPrefs(), rate: Number(rateSel.value) }));
+      document.getElementById('voice-test')!.addEventListener('click', async () => {
+        speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance('こんにちは。この声と速さで、レッスンを読み上げます。');
+        u.lang = 'ja-JP';
+        u.rate = Number(rateSel.value);
+        const voice = chooseVoice(await japaneseVoices(), voiceSel.value);
+        if (voice) u.voice = voice;
+        speechSynthesis.speak(u);
+      });
+    }
 
     const names = readJson<Record<string, string>>('names');
     const message = document.getElementById('message')!;
