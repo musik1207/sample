@@ -14,7 +14,7 @@ export interface QuizOptions {
   title: string;
   domains: DomainInfo[];
   /** 模擬試験の設定 */
-  mock?: { certId: string; minutes: number; passingScore: number | null };
+  mock?: { certId: string; minutes: number; passingScore: number | null; scoreLabel?: string };
   /** 終了画面に出す「戻る」リンク */
   backHref: string;
   backLabel: string;
@@ -504,10 +504,11 @@ export function runQuiz(opts: QuizOptions): void {
       byDomain: Object.fromEntries(stats),
     });
     const passing = opts.mock?.passingScore;
+    const label = opts.mock?.scoreLabel ?? '合格ライン';
     const verdict =
       passing == null
         ? null
-        : el('p', { class: `verdict ${pct >= passing ? 'ok' : 'ng'}` }, pct >= passing ? `合格ライン（${passing}%）を超えました` : `合格ライン（${passing}%）まであと ${passing - pct} ポイント`);
+        : el('p', { class: `verdict ${pct >= passing ? 'ok' : 'ng'}` }, pct >= passing ? `${label}（${passing}%）を超えました` : `${label}（${passing}%）まであと ${passing - pct} ポイント`);
     root.replaceChildren(
       el(
         'div',

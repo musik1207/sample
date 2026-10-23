@@ -10,7 +10,7 @@ interface Props {
   wide?: boolean;
 }
 
-const { title, description = 'Salesforce 認定資格の学習サイト', nav, wide = false } = Astro.props;
+const { title, description = 'PMP と Salesforce 認定資格の学習サイト', nav, wide = false } = Astro.props;
 
 // アイコンは線だけのシンプルなもの（24×24）
 const icons = {
@@ -38,7 +38,7 @@ const navItems = [
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0f141a" media="(prefers-color-scheme: dark)" />
     <link rel="icon" type="image/svg+xml" href={url('favicon.svg')} />
-    <title>{title === 'SF 資格ロードマップ' ? title : `${title} | SF 資格ロードマップ`}</title>
+    <title>{title === '資格ロードマップ' ? title : `${title} | 資格ロードマップ`}</title>
     <script is:inline>
       // 画面が描かれる前にテーマと文字サイズを反映して、ちらつきを防ぐ
       try {
@@ -54,7 +54,7 @@ const navItems = [
       <div class:list={['container', { wide }]}>
         <a class="brand" href={url()}>
           <img src={url('favicon.svg')} alt="" width="24" height="24" />
-          SF 資格ロードマップ
+          資格ロードマップ
         </a>
         <nav class="site-nav" aria-label="メインメニュー">
           {
@@ -86,7 +86,7 @@ const navItems = [
     </main>
     <footer class="site-footer">
       <div class:list={['container', { wide }]}>
-        個人の学習用サイトです。練習問題はすべてオリジナルで、実際の試験問題ではありません。試験の最新情報は必ず Trailhead の公式試験ガイドで確認してください。
+        個人の学習用サイトです。練習問題はすべてオリジナルで、実際の試験問題ではありません。試験の最新情報は必ず各資格の公式情報（Salesforce は Trailhead、PMP は PMI）で確認してください。
       </div>
     </footer>
     <script>

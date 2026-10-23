@@ -1,9 +1,9 @@
 ---
 import Base from '../layouts/Base.astro';
-import { certs, glossary } from '../lib/data';
+import { certs, displayName, glossary } from '../lib/data';
 
 const terms = glossary.slice().sort((a, b) => a.term.localeCompare(b.term, 'ja'));
-const certName = (id: string) => certs.find((c) => c.id === id)?.name.replace('Salesforce Certified ', '') ?? id;
+const certName = (id: string) => (() => { const c = certs.find((x) => x.id === id); return c ? displayName(c) : id; })();
 const usedCerts = certs.filter((c) => terms.some((t) => t.certs.includes(c.id)));
 ---
 
@@ -16,7 +16,7 @@ const usedCerts = certs.filter((c) => terms.some((t) => t.certs.includes(c.id)))
     <label class="visually-hidden" for="cert">資格で絞り込み</label>
     <select id="cert">
       <option value="">すべての資格</option>
-      {usedCerts.map((c) => <option value={c.id}>{c.name.replace('Salesforce Certified ', '')}</option>)}
+      {usedCerts.map((c) => <option value={c.id}>{displayName(c)}</option>)}
     </select>
   </div>
   <p class="small muted count" id="count" aria-live="polite"></p>

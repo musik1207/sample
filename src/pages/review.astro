@@ -1,13 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
-import { certs, getAllQuestions, url } from '../lib/data';
+import { certs, displayName, getAllQuestions, url } from '../lib/data';
 import '../styles/quiz.css';
 
 // 範囲 ID は資格をまたぐと重複しうるので、資格 ID を付けて一意にする
 const payload = {
   questions: getAllQuestions().map((q) => ({ ...q, domain: `${q.certId}:${q.domain}` })),
   domains: certs.flatMap((c) => c.domains.map((d) => ({ id: `${c.id}:${d.id}`, name: d.name, weight: d.weight }))),
-  certs: certs.map((c) => ({ id: c.id, name: c.name.replace('Salesforce Certified ', '') })),
+  certs: certs.map((c) => ({ id: c.id, name: displayName(c) })),
 };
 ---
 

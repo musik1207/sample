@@ -102,9 +102,8 @@ export function domainAccuracy(cert: CertSummary, data: ProgressData, domainId: 
   return { answered, lastCorrect, rate: answered ? Math.round((lastCorrect / answered) * 100) : null };
 }
 
-/** 苦手な範囲: 5 問以上解いて、正答率が合格ラインに届いていない範囲（低い順） */
-export function weakDomains(cert: CertSummary, data: ProgressData, passingScore: number | null) {
-  const line = passingScore ?? 65;
+/** 苦手な範囲: 5 問以上解いて、正答率が基準（合格ラインか目安）に届いていない範囲（低い順） */
+export function weakDomains(cert: CertSummary, data: ProgressData, line: number) {
   return cert.domains
     .map((d) => ({ ...d, acc: domainAccuracy(cert, data, d.id) }))
     .filter((d) => d.acc.answered >= 5 && d.acc.rate !== null && d.acc.rate < line)

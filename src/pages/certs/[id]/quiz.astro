@@ -1,6 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
-import { certs, getQuestions, url } from '../../../lib/data';
+import { certs, displayName, getQuestions, scoreLine, url } from '../../../lib/data';
 import type { Cert } from '../../../lib/types';
 import '../../../styles/quiz.css';
 
@@ -9,13 +9,14 @@ export function getStaticPaths() {
 }
 
 const { cert } = Astro.props as { cert: Cert };
-const shortName = cert.name.replace('Salesforce Certified ', '');
+const shortName = displayName(cert);
 const payload = {
   certId: cert.id,
   shortName,
   questions: getQuestions(cert.id),
   domains: cert.domains.map((d) => ({ id: d.id, name: d.name, weight: d.weight })),
   exam: cert.exam,
+  line: scoreLine(cert),
   backHref: url(`certs/${cert.id}/`),
 };
 ---
@@ -37,6 +38,7 @@ const payload = {
       questions: QuizQuestion[];
       domains: DomainInfo[];
       exam: ExamInfo;
+      line: { value: number; label: string };
       backHref: string;
     }>('quiz-data');
     const params = new URLSearchParams(location.search);
@@ -54,7 +56,7 @@ const payload = {
         mode: 'mock',
         questions: pickMockQuestions(data.questions, data.domains, count),
         title: `模擬試験（${count} 問・${minutes} 分）`,
-        mock: { certId: data.certId, minutes, passingScore: data.exam.passingScore },
+        mock: { certId: data.certId, minutes, passingScore: data.line.value, scoreLabel: data.line.label },
       });
     } else if (domainId) {
       const name = data.domains.find((d) => d.id === domainId)?.name ?? domainId;

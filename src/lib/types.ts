@@ -1,4 +1,4 @@
-export type StepId = 1 | 2 | 3 | 4 | 5;
+export type StepId = 1 | 2 | 3 | 4 | 5 | 6;
 
 export interface Step {
   id: StepId;
@@ -19,8 +19,12 @@ export interface Domain {
 export interface ExamInfo {
   questions: number | null;
   minutes: number | null;
-  /** 合格ライン（%） */
+  /** 合格ライン（%）。公表されていない試験は null */
   passingScore: number | null;
+  /** 合格ラインが null のときの表示（例: 非公開） */
+  passingNote?: string;
+  /** 合格ラインが公表されていない試験で、模擬試験や苦手判定に使う目安（%） */
+  targetScore?: number;
   fee: string | null;
   retakeFee: string | null;
   prerequisite: string;
@@ -36,6 +40,8 @@ export interface Cert {
   step: StepId;
   order: number;
   name: string;
+  /** 画面に出す短い名前（なければ name から「Salesforce Certified」を外したもの） */
+  shortName?: string;
   formerName?: string;
   summary: string;
   /** ready: 教材あり / outline: 試験概要のみ */
