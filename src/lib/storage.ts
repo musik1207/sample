@@ -280,3 +280,21 @@ export function setReadingPos(lessonKey: string, pos: ReadingPos | null): void {
   else delete map[lessonKey];
   writeLocal(READING_KEY, map);
 }
+
+/** 読み上げの設定（端末ごと） */
+const LISTEN_KEY = 'sf-cert-study:listen';
+
+export interface ListenPrefs {
+  /** 速さ（1 が標準） */
+  rate: number;
+  /** 声の名前。null なら端末の標準の日本語の声 */
+  voice: string | null;
+}
+
+export function loadListenPrefs(): ListenPrefs {
+  return readLocal<ListenPrefs>(LISTEN_KEY, { rate: 1, voice: null });
+}
+
+export function saveListenPrefs(prefs: ListenPrefs): void {
+  writeLocal(LISTEN_KEY, prefs);
+}

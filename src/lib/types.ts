@@ -50,6 +50,8 @@ export interface Cert {
   domains: Domain[];
   /** 学習時間の目安（時間）と前提 */
   study?: { hours: number; note: string };
+  /** レッスンの読み上げ（聞く）を使えるか */
+  listen?: boolean;
   /** 初期の受験目標日（ユーザーが設定すると上書き） */
   suggestedTarget?: string;
   links: { label: string; url: string }[];
