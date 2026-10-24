@@ -10,7 +10,12 @@ function token(name: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
 
-export async function renderDiagrams(root: ParentNode = document): Promise<void> {
+export interface DiagramOptions {
+  /** 問題の図など、スマホの幅に収めたい図。グラフを小さめに描き、横スクロールを減らす */
+  compact?: boolean;
+}
+
+export async function renderDiagrams(root: ParentNode = document, opts: DiagramOptions = {}): Promise<void> {
   const blocks = [...root.querySelectorAll<HTMLElement>(SELECTOR)].map((code) => code.closest('pre') ?? code);
   if (!blocks.length) return;
 
@@ -65,8 +70,14 @@ export async function renderDiagrams(root: ParentNode = document): Promise<void>
         yAxisTickColor: token('--border-strong'),
       },
     },
-    flowchart: { htmlLabels: true, curve: 'basis', useMaxWidth: true },
+    flowchart: { htmlLabels: true, curve: 'basis', useMaxWidth: true, ...(opts.compact ? { nodeSpacing: 28, rankSpacing: 36 } : {}) },
     sequence: { useMaxWidth: true },
+    ...(opts.compact
+      ? {
+          xyChart: { width: 420, height: 320, titleFontSize: 16, xAxis: { labelFontSize: 13 }, yAxis: { labelFontSize: 13, titleFontSize: 13 } },
+          quadrantChart: { chartWidth: 380, chartHeight: 380, titleFontSize: 16, quadrantLabelFontSize: 13, pointLabelFontSize: 13, xAxisLabelFontSize: 13, yAxisLabelFontSize: 13 },
+        }
+      : {}),
   });
 
   for (const [i, pre] of blocks.entries()) {
@@ -79,7 +90,7 @@ export async function renderDiagrams(root: ParentNode = document): Promise<void>
       // スマホで縮みすぎて読めなくならないよう、最小幅を決めて横スクロールさせる
       const el = figure.querySelector('svg');
       const width = el?.viewBox.baseVal?.width ?? 0;
-      if (el && width) el.style.minWidth = `${Math.min(width, 640)}px`;
+      if (el && width) el.style.minWidth = `${Math.min(width, opts.compact ? 300 : 640)}px`;
     } catch {
       // 描画に失敗したら元のテキストを残す
       figure.append(pre.cloneNode(true));

@@ -218,18 +218,22 @@ export function runQuiz(opts: QuizOptions): void {
     running = true;
   }
 
+  const secondsLeft = () => (opts.mock?.minutes ?? 105) * 60 - elapsedSec();
+
+  /** 残り時間を表示する（画面を描き直した直後も空にならないよう、描画のたびにも呼ぶ） */
+  function paintTimer(t: Element | null, left = secondsLeft()) {
+    if (!t) return;
+    const m = Math.max(0, Math.floor(left / 60));
+    const s = Math.max(0, left % 60);
+    t.textContent = `残り ${m}:${String(s).padStart(2, '0')}`;
+    t.classList.toggle('timer-warn', left <= 300);
+  }
+
   function startTimer() {
     window.clearInterval(timer);
-    const limit = (opts.mock?.minutes ?? 105) * 60;
     const tick = () => {
-      const left = limit - elapsedSec();
-      const t = root.querySelector('[data-timer]');
-      if (t) {
-        const m = Math.max(0, Math.floor(left / 60));
-        const s = Math.max(0, left % 60);
-        t.textContent = `残り ${m}:${String(s).padStart(2, '0')}`;
-        t.classList.toggle('timer-warn', left <= 300);
-      }
+      const left = secondsLeft();
+      paintTimer(root.querySelector('[data-timer]'), left);
       if (left <= 0) finishMock(true);
     };
     timer = window.setInterval(tick, 1000);
@@ -250,6 +254,8 @@ export function runQuiz(opts: QuizOptions): void {
         : `問題 ${index + 1} / ${items.length} ・ 正解 ${correct} / ${answered}`;
     const bar = el('span');
     bar.style.width = `${(answered / items.length) * 100}%`;
+    const clock = mode === 'mock' ? el('span', { class: 'timer', 'data-timer': '', 'aria-live': 'off' }, '') : null;
+    paintTimer(clock);
     return el(
       'div',
       { class: 'quiz-header' },
@@ -257,7 +263,7 @@ export function runQuiz(opts: QuizOptions): void {
         'div',
         { class: 'quiz-header-row' },
         el('div', {}, el('p', { class: 'quiz-title' }, opts.title), el('p', { class: 'small muted' }, status)),
-        mode === 'mock' ? el('span', { class: 'timer', 'data-timer': '', 'aria-live': 'off' }, '') : null,
+        clock,
       ),
       el('div', { class: 'progress', 'aria-hidden': 'true' }, bar),
     );
@@ -457,7 +463,7 @@ export function runQuiz(opts: QuizOptions): void {
       );
     }
     updateButtons();
-    if (root.querySelector('code.language-mermaid')) renderDiagrams(root);
+    if (root.querySelector('code.language-mermaid')) renderDiagrams(root, { compact: true });
   }
 
   /** 次の問題に進んだとき、問題文が画面の上に隠れていれば戻す */
