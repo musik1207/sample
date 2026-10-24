@@ -257,3 +257,118 @@ kbd {
     flex: 1 1 auto;
   }
 }
+
+/* 事例（ケース）問題の本文 */
+.case-card {
+  margin-bottom: 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  background: var(--surface);
+}
+.case-card summary {
+  font-weight: 700;
+  line-height: 1.6;
+}
+.case-card[open] summary {
+  margin-bottom: 8px;
+}
+.case-card p {
+  margin: 0 0 8px;
+  line-height: 1.8;
+}
+
+/* 問題や事例に付ける図 */
+.quiz-card figure.diagram,
+.case-card figure.diagram {
+  margin: 0 0 16px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  overflow-x: auto;
+  text-align: center;
+}
+.quiz-card figure.diagram svg,
+.case-card figure.diagram svg {
+  height: auto;
+}
+.quiz-diagram {
+  min-height: 120px;
+  color: transparent;
+  background: var(--surface-2);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 0 0 16px;
+}
+.diagram-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+
+/* マッチング */
+.match-list {
+  display: grid;
+  gap: 8px;
+}
+.match-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px 12px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+}
+.match-prompt {
+  font-weight: 600;
+  line-height: 1.6;
+}
+.match-select {
+  width: 100%;
+  font-size: 16px;
+}
+.match-row.is-correct {
+  border-color: var(--success);
+  background: var(--success-soft);
+}
+.match-row.is-wrong {
+  border-color: var(--danger);
+  background: var(--danger-soft);
+}
+.match-answer {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--success);
+  font-weight: 700;
+}
+@media (max-width: 559px) {
+  .match-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 見直しの番号: 一部だけ答えたマッチング */
+.pal.partial {
+  border-style: dashed;
+  border-color: var(--accent);
+}
+
+/* 休憩 */
+.break-card {
+  text-align: center;
+}
+.break-card h2 {
+  margin-top: 0;
+}
+.break-clock {
+  font-size: 2.6rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  margin: 8px 0 16px;
+}
+.break-card .btn-row {
+  justify-content: center;
+}

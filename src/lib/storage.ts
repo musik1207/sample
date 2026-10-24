@@ -18,6 +18,26 @@ export interface QuestionStat {
   lastAt: string;
   /** 復習リストに入っているか */
   inReview: boolean;
+  /** 初めて解いたときに正解したか（初見の実力の目安。古い記録にはない） */
+  first?: boolean;
+  /** 間隔をあけた復習の段階（0 から） */
+  box?: number;
+  /** 次に復習する日（YYYY-MM-DD） */
+  due?: string;
+}
+
+/** 復習の間隔（日）。間違えたら翌日、正解するたびに間隔を広げる */
+export const REVIEW_INTERVALS = [1, 3, 7, 14, 30];
+
+export function addDays(day: string, n: number): string {
+  const d = new Date(`${day}T00:00:00`);
+  d.setDate(d.getDate() + n);
+  return todayKey(d);
+}
+
+/** 今日復習する問題か */
+export function isDue(stat: QuestionStat | undefined, today = todayKey()): boolean {
+  return Boolean(stat?.inReview && (!stat.due || stat.due <= today));
 }
 
 export interface MockResult {
@@ -159,6 +179,16 @@ export function recordAnswer(questionId: string, correct: boolean): QuestionStat
     let inReview = prev?.inReview ?? false;
     if (!correct) inReview = true;
     else if (inReview && streak >= REVIEW_CLEAR_STREAK) inReview = false;
+    const today = todayKey();
+    let box = prev?.box ?? 0;
+    let due: string | undefined;
+    if (!correct) {
+      box = 0;
+      due = addDays(today, REVIEW_INTERVALS[0]);
+    } else if (inReview) {
+      box = Math.min(box + 1, REVIEW_INTERVALS.length - 1);
+      due = addDays(today, REVIEW_INTERVALS[box]);
+    }
     result = {
       attempts: (prev?.attempts ?? 0) + 1,
       correct: (prev?.correct ?? 0) + (correct ? 1 : 0),
@@ -166,6 +196,9 @@ export function recordAnswer(questionId: string, correct: boolean): QuestionStat
       streak,
       lastAt: new Date().toISOString(),
       inReview,
+      // 初めて解いた問題だけ、初見の結果として残す
+      first: prev ? prev.first : correct,
+      ...(inReview ? { box, due } : {}),
     };
     d.questions[questionId] = result;
     countActivity(d);

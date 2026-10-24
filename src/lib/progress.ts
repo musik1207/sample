@@ -1,5 +1,5 @@
 import type { CertSummary } from './data';
-import type { ProgressData } from './storage';
+import { isDue, type ProgressData } from './storage';
 
 export interface CertProgress {
   lessonsDone: number;
@@ -135,4 +135,92 @@ export function nextAction(cert: CertSummary, data: ProgressData, base: string):
   }
   if (p.questionsTotal > 0) return { label: '模擬試験に挑戦', href: `${base}/certs/${cert.id}/quiz/?mode=mock` };
   return null;
+}
+
+export interface UnitAccuracy {
+  domainId: string;
+  /** タスク番号（タスクがない資格は null で、範囲ごとに集計） */
+  task: number | null;
+  label: string;
+  total: number;
+  answered: number;
+  rate: number | null;
+}
+
+/** タスクごと（タスクがない資格は範囲ごと）の正答率。各問題の直近の回答で数える */
+export function unitAccuracy(cert: CertSummary, data: ProgressData): UnitAccuracy[] {
+  const units: UnitAccuracy[] = [];
+  for (const d of cert.domains) {
+    const groups = d.tasks.length ? d.tasks.map((label, i) => ({ task: i + 1, label })) : [{ task: null, label: d.name }];
+    for (const g of groups) {
+      const qs = cert.questions.filter((q) => q.domain === d.id && (g.task === null || q.task === g.task));
+      let answered = 0;
+      let ok = 0;
+      for (const q of qs) {
+        const s = data.questions[q.id];
+        if (!s) continue;
+        answered++;
+        if (s.last) ok++;
+      }
+      units.push({ domainId: d.id, task: g.task, label: g.label, total: qs.length, answered, rate: answered ? Math.round((ok / answered) * 100) : null });
+    }
+  }
+  return units;
+}
+
+export interface ReadinessCheck {
+  label: string;
+  value: string;
+  target: string;
+  ok: boolean;
+}
+
+/**
+ * 合格の準備度。すべて満たしたら受験の目安。
+ * - 全問題の 8 割以上を解いた
+ * - 初めて解いたときの正答率（初見の実力）が基準以上
+ * - 直近 2 回の模擬試験（本番に近い問題数）が基準以上
+ * - すべてのタスク（範囲）を 5 問以上解き、正答率が基準以上
+ * - 今日の復習が残っていない
+ */
+export function readiness(cert: CertSummary, data: ProgressData, line: number, fullMock: number) {
+  const ids = cert.questions.map((q) => q.id);
+  const stats = ids.map((id) => data.questions[id]).filter(Boolean);
+  const coverage = ids.length ? Math.round((stats.length / ids.length) * 100) : 0;
+  const firstKnown = stats.map((s) => s!.first ?? s!.last);
+  const firstRate = firstKnown.length ? Math.round((firstKnown.filter(Boolean).length / firstKnown.length) * 100) : null;
+  const mocks = data.mocks.filter((m) => m.certId === cert.id && m.total >= Math.floor(fullMock * 0.9)).slice(-2);
+  const mockRates = mocks.map((m) => Math.round((m.score / m.total) * 100));
+  const units = unitAccuracy(cert, data);
+  const weakUnits = units.filter((u) => u.total > 0 && (u.answered < 5 || (u.rate ?? 0) < line));
+  const due = ids.filter((id) => isDue(data.questions[id])).length;
+  const checks: ReadinessCheck[] = [
+    { label: '解いた問題', value: `${coverage}%`, target: '80% 以上', ok: coverage >= 80 },
+    {
+      label: '初見の正答率',
+      value: firstRate === null ? '—' : `${firstRate}%`,
+      target: `${line}% 以上`,
+      ok: firstRate !== null && firstRate >= line && stats.length >= Math.min(100, ids.length * 0.5),
+    },
+    {
+      label: '直近 2 回の模擬試験',
+      value: mockRates.length ? mockRates.map((r) => `${r}%`).join('・') : 'まだ',
+      target: `2 回とも ${line}% 以上`,
+      ok: mockRates.length === 2 && mockRates.every((r) => r >= line),
+    },
+    {
+      label: units.some((u) => u.task !== null) ? 'すべてのタスク' : 'すべての範囲',
+      value: weakUnits.length ? `${weakUnits.length} 個が未達` : 'すべて達成',
+      target: `5 問以上・${line}% 以上`,
+      ok: weakUnits.length === 0,
+    },
+    { label: '今日の復習', value: due ? `${due} 問残り` : 'なし', target: '0 問', ok: due === 0 },
+  ];
+  return { checks, ready: checks.every((c) => c.ok), units, weakUnits };
+}
+
+/** 今日復習する問題の数 */
+export function dueCount(data: ProgressData, ids?: string[]): number {
+  const list = ids ?? Object.keys(data.questions);
+  return list.filter((id) => isDue(data.questions[id])).length;
 }

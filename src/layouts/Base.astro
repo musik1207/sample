@@ -116,10 +116,11 @@ const navItems = [
       </div>
     </footer>
     <script>
-      import { loadProgress } from '../lib/storage';
+      import { isDue, loadProgress } from '../lib/storage';
       import { registerServiceWorker } from '../lib/pwa';
       registerServiceWorker();
-      const count = Object.values(loadProgress().questions).filter((q) => q.inReview).length;
+      // メニューのバッジは「今日の復習」の数
+      const count = Object.values(loadProgress().questions).filter((q) => isDue(q)).length;
       document.querySelectorAll<HTMLElement>('[data-review-count]').forEach((el) => {
         el.textContent = count > 0 ? String(count) : '';
       });

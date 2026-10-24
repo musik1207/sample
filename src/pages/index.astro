@@ -43,7 +43,7 @@ const stepOf = Object.fromEntries(certs.map((c) => [c.id, c.step]));
         <span class="stat-value"><span id="streak">0</span><small>日</small></span>
       </div>
       <a class="stat stat-link" href={url('review/')}>
-        <span class="stat-label">復習待ち</span>
+        <span class="stat-label">今日の復習</span>
         <span class="stat-value"><span id="review-total">0</span><small>問</small></span>
       </a>
     </div>
@@ -109,7 +109,7 @@ const stepOf = Object.fromEntries(certs.map((c) => [c.id, c.step]));
   <script>
     import type { CertSummary } from '../lib/data';
     import { getReadingPos, loadProgress } from '../lib/storage';
-    import { certProgress, daysLabel, daysUntil, nextAction, paceText, readJson, studyStreak } from '../lib/progress';
+    import { certProgress, daysLabel, daysUntil, dueCount, nextAction, paceText, readJson, studyStreak } from '../lib/progress';
 
     const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     const summaries = readJson<CertSummary[]>('cert-data');
@@ -173,7 +173,7 @@ const stepOf = Object.fromEntries(certs.map((c) => [c.id, c.step]));
 
     // 今日の学習
     const { streak, today } = studyStreak(data.activity);
-    const reviewTotal = Object.values(data.questions).filter((q) => q.inReview).length;
+    const reviewTotal = dueCount(data);
     $('today-count').textContent = String(today);
     $('streak').textContent = String(streak);
     $('review-total').textContent = String(reviewTotal);

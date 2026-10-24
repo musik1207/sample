@@ -1,6 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
-import { certs, steps, url, certSummaries, getLessonKeys, domainStudyHours, formatHours, displayName, scoreLine } from '../../../lib/data';
+import { certs, steps, url, certSummaries, getLessonKeys, domainStudyHours, formatHours, displayName, scoreLine, getCases } from '../../../lib/data';
 import type { Cert } from '../../../lib/types';
 
 export function getStaticPaths() {
@@ -16,6 +16,9 @@ const show = (v: string | number | null, suffix = '') => (v === null ? '要確�
 const shortName = displayName(cert);
 const passing = cert.exam.passingScore;
 const line = scoreLine(cert);
+const fullMock = Math.min(cert.exam.questions ?? 60, summary.questions.length);
+const hasCases = Object.keys(getCases(cert.id)).length > 0;
+const taskCount = summary.domains.reduce((s, d) => s + d.tasks.length, 0);
 ---
 
 <Base title={shortName}>
@@ -57,7 +60,7 @@ const line = scoreLine(cert);
         hasQuestions && (
           <>
             <a class="btn" href={url(`certs/${cert.id}/quiz/?mode=mock`)}>
-              模擬試験（{Math.min(cert.exam.questions ?? 60, summary.questions.length)} 問）
+              模擬試験（{fullMock} 問）
             </a>
             <a class="btn" href={url(`certs/${cert.id}/quiz/?mode=all`)}>
               全範囲から演習
@@ -83,6 +86,44 @@ const line = scoreLine(cert);
 
     <div id="mock-history"></div>
   </section>
+
+  {
+    hasQuestions && (
+      <section class="card ready" aria-labelledby="ready-title">
+        <div class="ready-head">
+          <h2 id="ready-title">合格の準備度</h2>
+          <span class="tag" id="ready-badge" />
+        </div>
+        <p class="small muted ready-note">
+          すべて達成したら受験の目安です。
+          {line.label === '目安'
+            ? `合格点が公表されていないため、正答率 ${line.value}% を基準にしています。`
+            : `基準は合格ライン（${line.value}%）です。`}
+          初見の正答率は、問題を初めて解いたときの結果で計算します。
+        </p>
+        <ul class="ready-list" id="ready-list" />
+        <div class="btn-row">
+          <a class="btn btn-sm" id="new-btn" href={url(`certs/${cert.id}/quiz/?mode=new`)}>
+            まだ解いていない問題
+          </a>
+          {hasCases && (
+            <a class="btn btn-sm" href={url(`certs/${cert.id}/quiz/?mode=case`)}>
+              事例（ケース）問題
+            </a>
+          )}
+          <a class="btn btn-sm" href={url('review/')}>
+            今日の復習
+          </a>
+        </div>
+        {taskCount > 0 && (
+          <details class="tasks">
+            <summary>タスク別の正答率（{taskCount} タスク）</summary>
+            <ol class="task-list" id="task-list" />
+          </details>
+        )}
+      </section>
+    )
+  }
 
   <h2 class="section-title">出題範囲</h2>
   <ol class="list domains">
@@ -176,19 +217,63 @@ const line = scoreLine(cert);
   </section>
 
   <script type="application/json" id="cert-data" set:html={JSON.stringify(summary)} />
-  <script type="application/json" id="cert-line" set:html={JSON.stringify(line)} />
+  <script type="application/json" id="cert-line" set:html={JSON.stringify({ ...line, fullMock })} />
   <script>
     import type { CertSummary } from '../../../lib/data';
     import { getReadingPos, loadProgress, setPlan } from '../../../lib/storage';
-    import { certProgress, daysLabel, daysUntil, domainAccuracy, nextAction, paceText, readJson, weakDomains } from '../../../lib/progress';
+    import { certProgress, daysLabel, daysUntil, domainAccuracy, nextAction, paceText, readiness, readJson, weakDomains } from '../../../lib/progress';
 
     const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     const cert = readJson<CertSummary>('cert-data');
-    const line = readJson<{ value: number; label: string }>('cert-line');
+    const line = readJson<{ value: number; label: string; fullMock: number }>('cert-line');
     const targetInput = document.getElementById('target-date') as HTMLInputElement;
     const passedInput = document.getElementById('passed-date') as HTMLInputElement;
     const $ = (id: string) => document.getElementById(id)!;
     const escape = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+
+    /** 合格の準備度とタスク別の正答率 */
+    function renderReadiness(data: ReturnType<typeof loadProgress>) {
+      const list = document.getElementById('ready-list');
+      if (!list) return;
+      const r = readiness(cert, data, line.value, line.fullMock);
+      list.innerHTML = r.checks
+        .map(
+          (c) => `<li class="${c.ok ? 'ok' : ''}">
+            <span class="ready-mark" aria-hidden="true">${c.ok ? '✓' : ''}</span>
+            <span class="ready-label">${c.label}</span>
+            <span class="ready-value">${escape(c.value)}</span>
+            <span class="ready-target">${escape(c.target)}</span>
+            <span class="visually-hidden">${c.ok ? '達成' : '未達成'}</span>
+          </li>`,
+        )
+        .join('');
+      const done = r.checks.filter((c) => c.ok).length;
+      const badge = $('ready-badge');
+      badge.textContent = r.ready ? '受験の準備ができています' : `${done} / ${r.checks.length} 達成`;
+      badge.className = `tag ${r.ready ? 'tag-success' : ''}`;
+      const unseen = cert.questions.filter((q) => !data.questions[q.id]).length;
+      const newBtn = $('new-btn');
+      newBtn.textContent = `まだ解いていない問題（${unseen} 問）`;
+      newBtn.hidden = unseen === 0;
+      const tasks = document.getElementById('task-list');
+      if (tasks) {
+        tasks.innerHTML = r.units
+          .filter((u) => u.task !== null && u.total > 0)
+          .map((u) => {
+            const ok = u.answered >= 5 && (u.rate ?? 0) >= line.value;
+            const domain = cert.domains.find((d) => d.id === u.domainId)?.name.replace(/（.*）/, '') ?? '';
+            return `<li class="${ok ? 'ok' : u.answered ? 'weak' : ''}">
+              <div class="task-main">
+                <span class="task-name"><span class="muted">${escape(domain)}</span> ${escape(u.label)}</span>
+                <span class="task-rate">${u.rate === null ? '—' : `${u.rate}%`}<small> ${u.answered}/${u.total} 問</small></span>
+              </div>
+              <div class="progress" aria-hidden="true"><span style="width:${u.rate ?? 0}%"></span></div>
+              <a class="small" href="${base}/certs/${cert.id}/quiz/?task=${u.domainId}-${u.task}">このタスクを練習 →</a>
+            </li>`;
+          })
+          .join('');
+      }
+    }
 
     function render() {
       const data = loadProgress();
@@ -197,6 +282,7 @@ const line = scoreLine(cert);
       passedInput.value = plan.passedDate ?? '';
 
       const p = certProgress(cert, data);
+      renderReadiness(data);
       $('overall-percent').textContent = `${p.percent}%`;
       $('overall-bar').style.width = `${p.percent}%`;
       $('overall-detail').textContent = `レッスン ${p.lessonsDone}/${p.lessonsTotal} ・ 正解した問題 ${p.mastered}/${p.questionsTotal} ・ 復習待ち ${p.reviewCount} 問`;
@@ -326,6 +412,121 @@ const line = scoreLine(cert);
     margin: 0 0 8px;
     font-weight: 700;
     color: var(--danger);
+  }
+  .ready {
+    margin-top: 16px;
+  }
+  .ready-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .ready-head h2 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+  .ready-note {
+    margin: 4px 0 12px;
+  }
+  .ready-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 16px;
+    display: grid;
+    gap: 6px;
+  }
+  .ready-list :global(li) {
+    display: grid;
+    grid-template-columns: 22px minmax(0, 1fr) auto;
+    grid-template-areas: 'mark label value' 'mark target target';
+    column-gap: 8px;
+    align-items: baseline;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+  }
+  .ready-list :global(li.ok) {
+    background: var(--success-soft);
+  }
+  .ready-list :global(.ready-mark) {
+    grid-area: mark;
+    width: 20px;
+    height: 20px;
+    border-radius: 999px;
+    border: 2px solid var(--border-strong);
+    display: grid;
+    place-items: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    align-self: center;
+  }
+  .ready-list :global(li.ok .ready-mark) {
+    background: var(--success);
+    border-color: var(--success);
+    color: var(--surface);
+  }
+  .ready-list :global(.ready-label) {
+    grid-area: label;
+    font-weight: 600;
+  }
+  .ready-list :global(.ready-value) {
+    grid-area: value;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .ready-list :global(.ready-target) {
+    grid-area: target;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+  .tasks {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .tasks summary {
+    font-weight: 600;
+  }
+  .task-list {
+    list-style: none;
+    padding: 0;
+    margin: 12px 0 0;
+    display: grid;
+    gap: 12px;
+  }
+  .task-list :global(li) {
+    display: grid;
+    gap: 4px;
+  }
+  .task-list :global(.task-main) {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    align-items: baseline;
+  }
+  .task-list :global(.task-name) {
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  .task-list :global(.task-rate) {
+    font-weight: 700;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .task-list :global(.task-rate small) {
+    font-weight: 400;
+    color: var(--text-muted);
+  }
+  .task-list :global(li.weak .task-rate) {
+    color: var(--danger);
+  }
+  .task-list :global(li.weak .progress > span) {
+    background: var(--danger);
+  }
+  .task-list :global(li.ok .progress > span) {
+    background: var(--success);
   }
   .plan-dates {
     display: flex;

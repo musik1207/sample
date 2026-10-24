@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { certs, displayName, getAllQuestions, url } from '../lib/data';
+import { certs, displayName, getAllQuestions, getCases, url } from '../lib/data';
 import '../styles/quiz.css';
 
 // 範囲 ID は資格をまたぐと重複しうるので、資格 ID を付けて一意にする
@@ -8,13 +8,16 @@ const payload = {
   questions: getAllQuestions().map((q) => ({ ...q, domain: `${q.certId}:${q.domain}` })),
   domains: certs.flatMap((c) => c.domains.map((d) => ({ id: `${c.id}:${d.id}`, name: d.name, weight: d.weight }))),
   certs: certs.map((c) => ({ id: c.id, name: displayName(c) })),
+  cases: Object.assign({}, ...certs.map((c) => getCases(c.id))),
 };
 ---
 
 <Base title="復習" nav="review">
   <div id="intro">
     <h1>復習</h1>
-    <p class="muted">間違えた問題が自動で集まります。<strong>2 回続けて正解</strong>すると、このリストから外れます。</p>
+    <p class="muted">
+      間違えた問題が自動で集まり、<strong>翌日・3 日後・1 週間後…</strong>と間をあけて出てきます。間をあけて<strong>2 回続けて正解</strong>すると、リストから外れます。
+    </p>
   </div>
 
   <section class="card empty" id="empty" hidden>
@@ -32,8 +35,14 @@ const payload = {
 
   <section id="picker" hidden>
     <div class="card start">
-      <p class="start-count"><strong id="total">0</strong> 問が復習待ちです</p>
-      <a class="btn btn-primary" href="?cert=all">すべて復習する</a>
+      <div>
+        <p class="start-count">今日の復習 <strong id="due">0</strong> 問</p>
+        <p class="small muted start-sub" id="total-line"></p>
+      </div>
+      <div class="btn-row">
+        <a class="btn btn-primary" id="start-due" href="?cert=all&due=1">今日の復習を始める</a>
+        <a class="btn" href="?cert=all">復習待ちをすべて解く</a>
+      </div>
     </div>
     <h2 class="section-title">資格ごとに復習する</h2>
     <ul class="list" id="cert-list"></ul>
@@ -43,18 +52,26 @@ const payload = {
 
   <script type="application/json" id="quiz-data" set:html={JSON.stringify(payload)} />
   <script>
-    import type { QuizQuestion } from '../lib/types';
-    import { loadProgress } from '../lib/storage';
+    import type { CaseStudy, QuizQuestion } from '../lib/types';
+    import { isDue, loadProgress } from '../lib/storage';
     import { readJson } from '../lib/progress';
     import { runQuiz, type DomainInfo } from '../lib/quiz-runner';
 
-    const data = readJson<{ questions: QuizQuestion[]; domains: DomainInfo[]; certs: { id: string; name: string }[] }>('quiz-data');
+    const data = readJson<{
+      questions: QuizQuestion[];
+      domains: DomainInfo[];
+      certs: { id: string; name: string }[];
+      cases: Record<string, CaseStudy>;
+    }>('quiz-data');
     const progress = loadProgress();
     const targets = data.questions.filter((q) => progress.questions[q.id]?.inReview);
+    const dueTargets = targets.filter((q) => isDue(progress.questions[q.id]));
     const home = import.meta.env.BASE_URL;
     const reviewHref = `${home}review/`;
     const $ = (id: string) => document.getElementById(id)!;
-    const certParam = new URLSearchParams(location.search).get('cert');
+    const params = new URLSearchParams(location.search);
+    const certParam = params.get('cert');
+    const dueOnly = params.get('due') === '1';
 
     if (!targets.length) {
       $('empty').hidden = false;
@@ -66,7 +83,8 @@ const payload = {
         cta.textContent = `${current.name} の練習問題へ`;
       }
     } else if (certParam) {
-      const list = certParam === 'all' ? targets : targets.filter((q) => q.certId === certParam);
+      const pool = dueOnly ? dueTargets : targets;
+      const list = certParam === 'all' ? pool : pool.filter((q) => q.certId === certParam);
       const name = data.certs.find((c) => c.id === certParam)?.name;
       $('intro').hidden = true;
       runQuiz({
@@ -74,24 +92,39 @@ const payload = {
         mode: 'practice',
         questions: list,
         domains: data.domains,
-        title: name ? `復習: ${name}（${list.length} 問）` : `復習（${list.length} 問）`,
+        cases: data.cases,
+        title: `${dueOnly ? '今日の復習' : '復習'}${name ? `: ${name}` : ''}（${list.length} 問）`,
         backHref: reviewHref,
         backLabel: '復習の一覧へ',
       });
     } else {
       $('picker').hidden = false;
-      $('total').textContent = String(targets.length);
-      const counts = new Map<string, number>();
-      for (const q of targets) counts.set(q.certId, (counts.get(q.certId) ?? 0) + 1);
+      $('due').textContent = String(dueTargets.length);
+      $('total-line').textContent = `復習待ちは全部で ${targets.length} 問（残りは後日に出てきます）`;
+      if (!dueTargets.length) {
+        const a = $('start-due') as HTMLAnchorElement;
+        a.removeAttribute('href');
+        a.classList.add('is-disabled');
+        a.textContent = '今日の復習は終わりました';
+      }
+      const counts = new Map<string, { due: number; all: number }>();
+      for (const q of targets) {
+        const c = counts.get(q.certId) ?? { due: 0, all: 0 };
+        c.all++;
+        if (isDue(progress.questions[q.id])) c.due++;
+        counts.set(q.certId, c);
+      }
       $('cert-list').innerHTML = data.certs
         .filter((c) => counts.has(c.id))
-        .map(
-          (c) => `<li class="row-link review-row">
-            <a class="stretched" href="?cert=${c.id}">${c.name}</a>
-            <span class="tag tag-danger">${counts.get(c.id)} 問</span>
+        .map((c) => {
+          const n = counts.get(c.id)!;
+          return `<li class="row-link review-row">
+            <a class="stretched" href="?cert=${c.id}${n.due ? '&due=1' : ''}">${c.name}</a>
+            ${n.due ? `<span class="tag tag-danger">今日 ${n.due} 問</span>` : ''}
+            <span class="tag">全 ${n.all} 問</span>
             <svg class="chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
-          </li>`,
-        )
+          </li>`;
+        })
         .join('');
     }
   </script>
@@ -112,7 +145,14 @@ const payload = {
   }
   .start-count strong {
     font-size: 1.6rem;
-    margin-right: 2px;
+    margin: 0 2px;
+  }
+  .start-sub {
+    margin: 0;
+  }
+  .start :global(.is-disabled) {
+    opacity: 0.55;
+    pointer-events: none;
   }
   .empty {
     margin-top: 16px;
@@ -120,7 +160,7 @@ const payload = {
   #cert-list :global(.review-row) {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
     padding: 14px 16px;
   }
   #cert-list :global(.review-row .stretched) {

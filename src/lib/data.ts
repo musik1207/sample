@@ -1,6 +1,6 @@
 import certData from '../data/certs.json';
 import glossaryData from '../data/glossary.json';
-import type { Cert, GlossaryTerm, Question, QuizQuestion, Step } from './types';
+import type { CaseStudy, Cert, GlossaryTerm, Question, QuizQuestion, Step } from './types';
 
 export const steps = certData.steps as Step[];
 export const certs = (certData.certs as Cert[]).slice().sort((a, b) => a.step - b.step || a.order - b.order);
@@ -23,6 +23,23 @@ export function displayName(cert: Pick<Cert, 'name' | 'shortName'>): string {
 export function scoreLine(cert: Cert): { value: number; label: string } {
   if (cert.exam.passingScore !== null) return { value: cert.exam.passingScore, label: '合格ライン' };
   return { value: cert.exam.targetScore ?? 65, label: '目安' };
+}
+
+const caseModules = import.meta.glob<{ default: CaseStudy[] }>('../data/cases/*.json', { eager: true });
+const casesByCert: Record<string, CaseStudy[]> = {};
+for (const [path, mod] of Object.entries(caseModules)) {
+  casesByCert[path.split('/').pop()!.replace(/\.json$/, '')] = mod.default;
+}
+
+/** 資格の事例（ケース）問題の本文（ID → 事例） */
+export function getCases(certId: string): Record<string, CaseStudy> {
+  return Object.fromEntries((casesByCert[certId] ?? []).map((c) => [c.id, c]));
+}
+
+/** 出題目標の「タスク N 名前: 説明」から、タスクの名前を取り出す（タスクがない資格は空） */
+export function taskLabels(objectives: string[] | undefined): string[] {
+  if (!objectives?.length || !objectives.every((o) => /^タスク \d+ /.test(o))) return [];
+  return objectives.map((o) => o.split(':')[0].trim());
 }
 
 export function getCert(id: string): Cert | undefined {
@@ -59,8 +76,14 @@ export function certSummaries(lessonKeys: Set<string>) {
     status: c.status,
     suggestedTarget: c.suggestedTarget ?? null,
     studyHours: c.study?.hours ?? null,
-    domains: c.domains.map((d) => ({ id: d.id, name: d.name, weight: d.weight, hours: domainStudyHours(c, d.id) })),
-    questions: getQuestions(c.id).map((q) => ({ id: q.id, domain: q.domain })),
+    domains: c.domains.map((d) => ({
+      id: d.id,
+      name: d.name,
+      weight: d.weight,
+      hours: domainStudyHours(c, d.id),
+      tasks: taskLabels(d.objectives),
+    })),
+    questions: getQuestions(c.id).map((q) => ({ id: q.id, domain: q.domain, task: q.task ?? null })),
     lessonDomains: c.domains.map((d) => d.id).filter((d) => lessonKeys.has(`${c.id}/${d}`)),
   }));
 }

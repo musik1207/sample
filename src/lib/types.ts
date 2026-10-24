@@ -25,6 +25,10 @@ export interface ExamInfo {
   passingNote?: string;
   /** 合格ラインが公表されていない試験で、模擬試験や苦手判定に使う目安（%） */
   targetScore?: number;
+  /** 試験中の休憩の回数（休憩の後は前のセクションに戻れない） */
+  breaks?: number;
+  /** 1 回の休憩の長さ（分） */
+  breakMinutes?: number;
   fee: string | null;
   retakeFee: string | null;
   prerequisite: string;
@@ -60,13 +64,32 @@ export interface Cert {
 export interface Question {
   id: string;
   domain: string;
-  type: 'single' | 'multi';
+  /** single: 1 つ選ぶ / multi: 複数選ぶ / match: 左の項目ごとに右から選ぶ */
+  type: 'single' | 'multi' | 'match';
   question: string;
+  /** 選択肢。match では右側の候補 */
   choices: string[];
-  /** 正解の選択肢インデックス（0 始まり） */
+  /** 正解の選択肢インデックス（0 始まり）。match では prompts の順に、対応する choices の番号 */
   answer: number[];
+  /** match の左側の項目 */
+  prompts?: string[];
   explanation: string;
   refs?: string[];
+  /** 公式の試験内容のタスク番号（範囲の中で 1 から） */
+  task?: number;
+  /** 事例（ケース）問題の ID */
+  caseId?: string;
+  /** 問題に付ける図（Mermaid） */
+  diagram?: string;
+}
+
+/** 事例（ケース）問題の本文。複数の問題が同じ事例を使う */
+export interface CaseStudy {
+  id: string;
+  title: string;
+  /** 段落は改行で区切る */
+  scenario: string;
+  diagram?: string;
 }
 
 /** クライアントに渡す問題（資格 ID 付き） */

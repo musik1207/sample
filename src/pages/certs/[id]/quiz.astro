@@ -1,6 +1,6 @@
 ---
 import Base from '../../../layouts/Base.astro';
-import { certs, displayName, getQuestions, scoreLine, url } from '../../../lib/data';
+import { certs, displayName, getCases, getQuestions, scoreLine, taskLabels, url } from '../../../lib/data';
 import type { Cert } from '../../../lib/types';
 import '../../../styles/quiz.css';
 
@@ -14,7 +14,8 @@ const payload = {
   certId: cert.id,
   shortName,
   questions: getQuestions(cert.id),
-  domains: cert.domains.map((d) => ({ id: d.id, name: d.name, weight: d.weight })),
+  cases: getCases(cert.id),
+  domains: cert.domains.map((d) => ({ id: d.id, name: d.name, weight: d.weight, tasks: taskLabels(d.objectives) })),
   exam: cert.exam,
   line: scoreLine(cert),
   backHref: url(`certs/${cert.id}/`),
@@ -22,21 +23,23 @@ const payload = {
 ---
 
 <Base title={`演習 - ${shortName}`}>
-  <nav class="breadcrumb">
-    <a href={url()}>ロードマップ</a> › <a href={url(`certs/${cert.id}/`)}>{shortName}</a> › 演習
+  <nav class="breadcrumb" aria-label="現在の位置">
+    <a href={url()}>ロードマップ</a><span aria-hidden="true">›</span><a href={url(`certs/${cert.id}/`)}>{shortName}</a><span aria-hidden="true">›</span><span>演習</span>
   </nav>
   <div id="quiz"><p class="muted">読み込み中…</p></div>
   <script type="application/json" id="quiz-data" set:html={JSON.stringify(payload)} />
   <script>
-    import type { QuizQuestion, ExamInfo } from '../../../lib/types';
+    import type { CaseStudy, QuizQuestion, ExamInfo } from '../../../lib/types';
     import { readJson } from '../../../lib/progress';
+    import { loadProgress } from '../../../lib/storage';
     import { pickMockQuestions, runQuiz, type DomainInfo } from '../../../lib/quiz-runner';
 
     const data = readJson<{
       certId: string;
       shortName: string;
       questions: QuizQuestion[];
-      domains: DomainInfo[];
+      cases: Record<string, CaseStudy>;
+      domains: (DomainInfo & { tasks: string[] })[];
       exam: ExamInfo;
       line: { value: number; label: string };
       backHref: string;
@@ -44,23 +47,44 @@ const payload = {
     const params = new URLSearchParams(location.search);
     const mode = params.get('mode');
     const domainId = params.get('domain');
+    const task = params.get('task'); // 例: people-3
+    const progress = loadProgress();
     const root = document.getElementById('quiz')!;
-    const common = { root, domains: data.domains, backHref: data.backHref, backLabel: '資格ページに戻る' };
+    const common = { root, domains: data.domains, cases: data.cases, backHref: data.backHref, backLabel: '資格ページに戻る' };
+    const domainName = (id: string) => data.domains.find((d) => d.id === id)?.name ?? id;
 
     if (mode === 'mock') {
       const examCount = data.exam.questions ?? 60;
       const count = Math.min(examCount, data.questions.length);
       const minutes = Math.round(((data.exam.minutes ?? 105) * count) / examCount);
+      const full = count === examCount;
       runQuiz({
         ...common,
         mode: 'mock',
-        questions: pickMockQuestions(data.questions, data.domains, count),
-        title: `模擬試験（${count} 問・${minutes} 分）`,
-        mock: { certId: data.certId, minutes, passingScore: data.line.value, scoreLabel: data.line.label },
+        questions: pickMockQuestions(data.questions, data.domains, count, progress),
+        title: `模擬試験（${count} 問・${minutes} 分${full && data.exam.breaks ? `・休憩 ${data.exam.breaks} 回` : ''}）`,
+        mock: {
+          certId: data.certId,
+          minutes,
+          passingScore: data.line.value,
+          scoreLabel: data.line.label,
+          // 本番と同じ問題数のときだけ、本番どおり休憩を入れる
+          breaks: full ? (data.exam.breaks ?? 0) : 0,
+          breakMinutes: data.exam.breakMinutes ?? 10,
+        },
       });
+    } else if (mode === 'new') {
+      // まだ解いていない問題だけ（初見の実力を測る・積み上げる）
+      const fresh = data.questions.filter((q) => !progress.questions[q.id]);
+      runQuiz({ ...common, mode: 'practice', questions: fresh, title: `まだ解いていない問題（${fresh.length} 問）` });
+    } else if (task) {
+      const [d, n] = [task.slice(0, task.lastIndexOf('-')), Number(task.slice(task.lastIndexOf('-') + 1))];
+      const label = data.domains.find((x) => x.id === d)?.tasks[n - 1] ?? task;
+      runQuiz({ ...common, mode: 'practice', questions: data.questions.filter((q) => q.domain === d && q.task === n), title: `${domainName(d)}: ${label}` });
     } else if (domainId) {
-      const name = data.domains.find((d) => d.id === domainId)?.name ?? domainId;
-      runQuiz({ ...common, mode: 'practice', questions: data.questions.filter((q) => q.domain === domainId), title: `練習問題: ${name}` });
+      runQuiz({ ...common, mode: 'practice', questions: data.questions.filter((q) => q.domain === domainId), title: `練習問題: ${domainName(domainId)}` });
+    } else if (mode === 'case') {
+      runQuiz({ ...common, mode: 'practice', questions: data.questions.filter((q) => q.caseId), title: '事例（ケース）問題' });
     } else {
       runQuiz({ ...common, mode: 'practice', questions: data.questions, title: `全範囲から演習: ${data.shortName}` });
     }
